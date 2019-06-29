@@ -131,6 +131,116 @@ double constrain_width(unsigned n, const double *x,
 }
 
 //------------------------------------------------------------------------------
+double constrain_height(unsigned n, const double *x, 
+                        double *grad, void *data) {
+
+	using namespace std;
+
+  // Unpacking data structure
+  data_constraint *d = (data_constraint *) data;
+  
+  vector< bool > sign = d->sign;	
+  vector< int > peak_number = d->peak_number_1;	
+  double offset = d->offset;
+
+  // Ensuring that the gradient is zero for all unaffected terms
+  if ( grad ) {
+    for (int i = 0; i < n; i++) {
+      grad[i] = 0;
+    }
+  }
+
+  // Unlike position the height constraints divides the sum
+  // of all "positive" indexes by the sum of all "negative" indexes so
+  // it's necessary to do 2 passes: one to calculate the evaluation and another
+  // to calculate the gradients.
+
+  // First pass to calculate evaluation
+  double numerator = 0;
+  double denominator = 0;
+
+  for (int i = 0; i < peak_number.size(); i++) {
+
+    // Converting peak number to index of height
+    int j = (peak_number.at(i) - 1)*4 + 2;
+
+    // Extracting out sign
+    bool neg = sign.at(i);
+
+    if ( neg ) { denominator += x[j]; }
+    else { numerator += x[j]; }
+  }
+
+  double eval = numerator/denominator;
+
+  // Second pass to calculate gradients
+  if ( grad ) {
+
+    // All gradient terms are the same
+    double grad_pos = 1/denominator;
+    double grad_neg = -eval/denominator;
+
+    for (int i = 0; i < peak_number.size(); i++) {
+
+      // Converting peak number to index of height
+      int j = (peak_number.at(i) - 1)*4 + 2;
+
+      // Extracting out sign
+      bool neg = sign.at(i);
+
+      if ( neg ) { grad[j] = grad_neg; }
+      else {  grad[j] = grad_pos; }
+    }
+  }
+  
+  return (eval - offset);
+}
+
+//------------------------------------------------------------------------------
+double constrain_fraction(unsigned n, const double *x, 
+                          double *grad, void *data) {
+
+	using namespace std;
+
+  // Unpacking data structure
+  data_constraint *d = (data_constraint *) data;
+  
+  vector< bool > sign = d->sign;	
+  vector< int > peak_number = d->peak_number_1;	
+  double offset = d->offset;
+
+  // Ensuring that the gradient is zero for all unaffected terms
+  if ( grad ) {
+    for (int i = 0; i < n; i++) {
+      grad[i] = 0;
+    }
+  }
+
+  // Evaluating
+  double eval = 0;
+
+  for (int i = 0; i < peak_number.size(); i++) {
+
+    // Converting peak number to index offset to fraction
+    int j = (peak_number.at(i) - 1)*4 + 3;
+
+    // Extracting out sign
+    bool neg = sign.at(i);
+
+    if ( neg ) { eval -= x[j]; }
+    else { eval += x[j]; }
+
+    if (grad) {
+      if ( neg ) { grad[j] = -1; }
+      else { grad[j] = 1; }
+    }
+  }
+  
+  return (eval - offset);
+}
+
+
+//------------------------------------------------------------------------------
 double constrain_area(unsigned n, const double *x, 
                       double *grad, void *data) {
 
@@ -168,10 +278,19 @@ double constrain_area(unsigned n, const double *x,
     double h = x[j+2];
     double f = x[j+3];
     double area = 0;
+    double wg;
+    double scalar;
 
     // Area calculation depends on fraction
-    if ( f < 1e-6 ) { area = M_PI * w * h; }
-    else { Rcpp::stop("Gauss and Voigt peaks are not currently supported"); }
+    if ( f < 1e-6 ) { 
+      area = M_PI * w * h; 
+    } else if ( f < (1-1e-6) ) { 
+      wg = w*f/(1 - f);
+      scalar = real(Faddeeva::w( (std::complex<double> (0, w/(sqrt(2) * wg))) ))
+      area = sqrt(2 * M_PI) * wg * h / scalar;
+    } else {
+      area = sqrt(2 * M_PI) * w * h;
+    }
 
     // Extracting out sign
     bool neg = sign.at(i);
@@ -211,8 +330,13 @@ double constrain_area(unsigned n, const double *x,
         grad[j+1] = dfda * M_PI * h;
         // Height
         grad[j+2] = dfda * M_PI * w;
-      } else { 
-        Rcpp::stop("Gauss and Voigt peaks are not currently supported"); 
+      } else if ( f < (1-1e-6) ) { 
+        Rcpp::stop("Voigt peak area gradients are not currently supported");
+      } else {
+        // Width
+        grad[j+1] = dfda * sqrt(2 * M_PI) * h;
+        // Height
+        grad[j+2] = dfda * sqrt(2 * M_PI) * w;
       }
     }
   }
@@ -582,6 +706,10 @@ double fit_lineshape_1d(
     } else if ( flag == 1) {
       nlopt_add_equality_constraint(opt, constrain_width, &data_eq[i], 1e-8);
     } else if ( flag == 2) {
+      nlopt_add_equality_constraint(opt, constrain_height, &data_eq[i], 1e-8);
+    } else if ( flag == 3) {
+      nlopt_add_equality_constraint(opt, constrain_fraction, &data_eq[i], 1e-8);
+    } else if ( flag == 4) {
       nlopt_add_equality_constraint(opt, constrain_area, &data_eq[i], 1e-8);
     } else {
       Rcpp::stop("Encountered undefined equality constraint. Aborting.");
@@ -618,6 +746,12 @@ double fit_lineshape_1d(
       nlopt_add_inequality_constraint(opt, constrain_width, 
                                       &data_ineq[i], 1e-8);
     } else if ( flag == 2) {
+      nlopt_add_inequality_constraint(opt, constrain_height, 
+                                      &data_ineq[i], 1e-8);
+    } else if ( flag == 3) {
+      nlopt_add_inequality_constraint(opt, constrain_fraction, 
+                                      &data_ineq[i], 1e-8);
+    } else if ( flag == 4) {
       nlopt_add_inequality_constraint(opt, constrain_area, 
                                       &data_ineq[i], 1e-8);
     } else {

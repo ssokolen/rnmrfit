@@ -1,9 +1,9 @@
-# Definition of a class structure for collections of 1D resonances.
+# Definition of a class structure for collection of 1D resonances.
 
 
 
 #==============================================================================>
-#  NMRSpecies1D -- collection of NMRSpecies1D objects
+#  NMRSpecies1D -- collection of NMRResonance1D objects
 #==============================================================================>
 
 
@@ -26,6 +26,7 @@
 #' @name NMRSpecies1D-class
 #' @export
 NMRSpecies1D <- setClass("NMRSpecies1D",
+  contains = 'NMRScaffold1D',
   slots = c(
     id = 'character',
     resonances = 'list',
@@ -232,60 +233,6 @@ nmrspecies_1d <- function(resonances, areas = NULL, id = NULL,
 
 
 #==============================================================================>
-#  Display function
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' Display NMRSpecies1D object
-#'
-#' Display a quick summary of resonance parameters.
-#'
-#' @export
-setMethod("show", "NMRSpecies1D", 
-  function(object) {
-
-    # Generating compiled data frames
-    peaks <- peaks(object)
-    bounds <- bounds(object)
-    couplings <- couplings(object)
-
-    cat('An object of NMRSpecies1D class\n\n')
-
-    # Peaks
-    cat('Peaks:\n\n')
-    print(peaks)
-    cat('\n')
-
-    # Bounds
-    columns <- c('position', 'width', 'height', 'fraction.gauss')
-
-    lower <- unlist(bounds$lower[ , columns])
-    upper <- unlist(bounds$upper[ , columns])
-    
-    range <- paste('(', lower, ', ', upper, ')', sep = '')
-    peaks[ , columns] <- range
-
-    cat('Bounds (lower, upper):\n\n')
-    print(peaks)
-    cat('\n')   
-
-    # Couplings
-    if ( nrow(couplings) > 0 ) {
-      cat('Couplings:\n\n')
-      print(couplings)
-      cat('\n')
-    }
-    else {
-      cat('No couplings defined.\n')
-    }
-
-  })
-
-
-
-#==============================================================================>
 # Basic setter and getter functions
 #==============================================================================>
 
@@ -471,20 +418,6 @@ setMethod("bounds", "NMRSpecies1D",
 
 
 #==============================================================================>
-#  Initialization functions (generating parameter estimates based on data)
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' @rdname initialize_heights
-#' @export
-setMethod("initialize_heights", "NMRSpecies1D",
-          getMethod("initialize_heights", "NMRResonance1D"))
-
-
-
-#==============================================================================>
 #  Bounds
 #==============================================================================>
 
@@ -530,31 +463,3 @@ setMethod("set_peak_type", "NMRSpecies1D",
   })
 
 
-
-#========================================================================>
-#  Lineshape and area calculations
-#========================================================================>
-
-
-
-#------------------------------------------------------------------------
-#' @rdname f_lineshape
-#' @export
-setMethod("f_lineshape", "NMRSpecies1D", 
-          getMethod("f_lineshape", "NMRResonance1D"))
-
-
-
-#------------------------------------------------------------------------
-#' @rdname values
-#' @export
-setMethod("values", "NMRSpecies1D",
-           getMethod("values", "NMRResonance1D"))
-
-
-
-#------------------------------------------------------------------------
-#' @rdname areas 
-#' @export
-setMethod("areas", "NMRSpecies1D",
-           getMethod("areas", "NMRResonance1D"))

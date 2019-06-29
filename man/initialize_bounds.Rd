@@ -6,18 +6,20 @@
 \alias{.initialize_bounds,NMRResonance1D-method}
 \title{Initialize empty set of bounds}
 \usage{
-.initialize_bounds(object, overwrite = FALSE, ...)
+.initialize_bounds(object, ...)
 
 \S4method{.initialize_bounds}{NMRResonance1D}(object, overwrite = FALSE)
 }
 \arguments{
 \item{object}{NMRResonance1D object}
 
+\item{...}{Additional arguments passed to inheriting methods.}
+
 \item{overwrite}{TRUE to overwrite existing bounds (to reset them), FALSE to
 quietly ignore any existing bounds.}
 }
 \value{
-Modified NMRResonacen1D object.
+Modified NMRResonance1D object.
 }
 \description{
 Initalize lower and upper bounds with the correct dimensions, but set to

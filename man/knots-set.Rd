@@ -16,7 +16,7 @@ knots(object) <- value
 \item{value}{A vector of chemical shifts used to designate the internal
 baseline b-spline knots. Note that the number of internal knots
 impacts the length of the baseline and if the length of knots is
-changes, current baseline values may not feasible with the new
+changed, current baseline values may not feasible with the new
 knots.}
 }
 \description{

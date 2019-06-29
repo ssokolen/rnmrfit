@@ -18,7 +18,7 @@ nmrfit_1d(species, nmrdata,
 converted to NMRSpecies1D objects. See ?nmrresonance_1d and
 ?nmrspecies_1d for more details about this conversion. If list
 elements are named, these names will be use to replace
-resonance ids.}
+species ids.}
 
 \item{nmrdata}{An NMRData1D object used to fit the supplied peaks.
 automatically generated from the resonance names.}

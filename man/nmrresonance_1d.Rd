@@ -6,7 +6,7 @@
 \usage{
 nmrresonance_1d(peaks, sf = nmrsession_1d("sf"), id = NULL,
   width = 1, fraction.gauss = 0, position.leeway = 0,
-  area.leeway = 0, width.leeway = 0)
+  width.leeway = 0, fraction.gauss.leeway = 0, area.leeway = 0)
 }
 \arguments{
 \item{peaks}{A numeric vector of singlet chemical shifts or a character
@@ -40,12 +40,17 @@ constant is exact, whereas couping.leeway = 0.1
 specifies that the coupling constant may differ by +/-
 10 percent.}
 
-\item{area.leeway}{Similar to position.leeway but for peak areas. Determines
-how strictly the coupling area ratios are enforced.}
-
 \item{width.leeway}{Similar to position.leeway but for peak widths.
 Determines how strictly equal peak widths for all coupled
 peaks are enforced.}
+
+\item{fraction.gauss.leeway}{Similar to position.leeway but for
+fraction.gauss parameters. Determines how
+strictly equal gauss components are enforced for
+all coupled peaks.}
+
+\item{area.leeway}{Similar to position.leeway but for peak areas. Determines
+how strictly the coupling area ratios are enforced.}
 }
 \value{
 An NMRResonance1D object.

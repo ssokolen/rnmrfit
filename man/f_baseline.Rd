@@ -15,6 +15,8 @@ f_baseline(object, components = "r/i", ...)
 
 \item{components}{'r/i' to output both real and imaginary data, 'r' to output
 only real and 'i' to output only imaginary.}
+
+\item{...}{Additional arguments passed to inheriting methods.}
 }
 \value{
 A function that outputs spectral intensity data of the fit baseline

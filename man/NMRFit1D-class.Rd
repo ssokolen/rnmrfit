@@ -6,20 +6,18 @@
 \alias{NMRFit1D}
 \title{Definition of an NMR fit.}
 \description{
-Essentially, this class is used to combine an NMRData1D object with multiple
-NMRSpecies1D objects while also defining baseline and phase correction
-terms. There is just one primary method associated with this class: fit().
-fit() takes input data and peak definitions, applies a nonlinear least
-squares fit, and generates best-fit peak parameters, overwriting the initial
-values. Since the fit process is destructive, the nmrfit_1d() function used
-to initialize a fit object has an option to delay the fit, allowing pre-fit
-and post-fit objects to be saved as different variables.
+This class is used to extend an NMRMixture1D object with NMRData1D while
+also defining baseline and phase correction terms. There is just one primary
+method associated with this class: fit(). fit() takes input data and peak
+definitions, applies a nonlinear least squares fit, and generates best-fit
+peak parameters, overwriting the initial values. Since the fit process is
+destructive, the nmrfit_1d() function used to initialize a fit object has an
+option to delay the fit, allowing pre-fit and post-fit objects to be saved
+as different variables.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{species}}{A list of NMRSpecies1D objects.}
-
 \item{\code{nmrdata}}{An NMRData1D object used to fit the peaks.}
 
 \item{\code{knots}}{A vector of chemical shifts corresponding to the internal knots

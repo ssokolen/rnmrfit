@@ -11,16 +11,15 @@
 #------------------------------------------------------------------------------
 #' Definition of an NMR fit.
 #' 
-#' Essentially, this class is used to combine an NMRData1D object with multiple
-#' NMRSpecies1D objects while also defining baseline and phase correction
-#' terms. There is just one primary method associated with this class: fit().
-#' fit() takes input data and peak definitions, applies a nonlinear least
-#' squares fit, and generates best-fit peak parameters, overwriting the initial
-#' values. Since the fit process is destructive, the nmrfit_1d() function used
-#' to initialize a fit object has an option to delay the fit, allowing pre-fit
-#' and post-fit objects to be saved as different variables.
+#' This class is used to extend an NMRMixture1D object with NMRData1D while
+#' also defining baseline and phase correction terms. There is just one primary
+#' method associated with this class: fit(). fit() takes input data and peak
+#' definitions, applies a nonlinear least squares fit, and generates best-fit
+#' peak parameters, overwriting the initial values. Since the fit process is
+#' destructive, the nmrfit_1d() function used to initialize a fit object has an
+#' option to delay the fit, allowing pre-fit and post-fit objects to be saved
+#' as different variables.
 #' 
-#' @slot species A list of NMRSpecies1D objects.
 #' @slot nmrdata An NMRData1D object used to fit the peaks.
 #' @slot knots A vector of chemical shifts corresponding to the internal knots
 #'             of the baseline term (two boundary knots are always included).
@@ -48,8 +47,8 @@
 #' @name NMRFit1D-class
 #' @export
 NMRFit1D <- setClass("NMRFit1D",
+  contains = 'NMRMixture1D',
   slots = c(
-    species = 'list',
     nmrdata = 'NMRData1D',
     knots = 'numeric',
     baseline = 'complex',
@@ -58,7 +57,6 @@ NMRFit1D <- setClass("NMRFit1D",
     time = 'numeric'
   ),
   prototype = prototype(
-    species = list(),
     knots = numeric(0), 
     baseline = complex(re = rep(0, 4), im = rep(0, 4)),
     phase = c(0),
@@ -80,31 +78,14 @@ NMRFit1D <- setClass("NMRFit1D",
 #'
 validNMRFit1D <- function(object) {
 
-  species <- object@species
   nmrdata <- object@nmrdata
   knots <- object@knots
   baseline <- object@baseline
   phase <- object@phase
   bounds <- object@bounds
 
-  # The result list is not validated as it should be relatively safe to assume
-  # that this slot would not be touched directly.
-
   valid <- TRUE
   err <- c()
-
-  #---------------------------------------
-  # Checking that all species list items are valid
-  for ( specie in species ) {
-    logic1 <- class(specie) != 'NMRSpecies1D'
-    logic2 <- ! validObject(specie)
-    if ( logic1 || logic2 ) {
-      valid <- FALSE
-      new.err <- paste('All elements of "species" list must be valid',
-                       'NMRSpecies1D objects.')
-      err <- c(err, new.err)
-    }
-  }
 
   #---------------------------------------
   # Checking nmrdata
@@ -237,7 +218,7 @@ setValidity("NMRFit1D", validNMRFit1D)
 #'                converted to NMRSpecies1D objects. See ?nmrresonance_1d and
 #'                ?nmrspecies_1d for more details about this conversion. If list
 #'                elements are named, these names will be use to replace
-#'                resonance ids.
+#'                species ids.
 #' @param nmrdata An NMRData1D object used to fit the supplied peaks.
 #'                automatically generated from the resonance names.
 #' @param baseline.order An integer specifying the order of the baseline spline
@@ -295,29 +276,8 @@ nmrfit_1d <- function(
   #---------------------------------------
   # Generating list of species 
 
-  # If the original species aren't a list, place them into a list
-  if ( class(species) == 'character' ) species <- as.list(species)
-  else if ( class(species) != 'list' ) species <- list(species)
-
-  species.list <- list()
-
-  for (i in 1:length(species)) {
-
-    specie <- species[[i]]
-
-    # If the object is already an NMRSpecies1D object, add it directly
-    if ( class(specie) == 'NMRSpecies1D' ) {
-      species.list <- c(species.list, specie)
-    }
-    # Otherwise, feed it into the nmrspecies_1d constructor
-    else {
-      species.list <- c(species.list, nmrspecies_1d(specie, ...))
-    }
-        
-    # Modifying id if provided
-    specie.id <- names(species)[i]
-    if (! is.null(specie.id) ) id(species.list[[i]]) <- specie.id
-  }
+  # Generate an NMRMixture object that will be used as a template for the fit
+  mixture <- nmrmixture_1d(species, ...)
 
   #---------------------------------------
   # Checking nmrdata
@@ -355,7 +315,7 @@ nmrfit_1d <- function(
 
   #---------------------------------------
   # Resulting fit object
-  out <- new('NMRFit1D', species = species.list, nmrdata = nmrdata,
+  out <- new('NMRFit1D', mixture, nmrdata = nmrdata,
                          knots = knots, baseline = baseline, phase = phase,
                          bounds = bounds)
 
@@ -446,6 +406,7 @@ setMethod("fit", "NMRFit1D",
 
     # Normalizing data
     x <- (x - x.range[1])/x.span
+    y <- complex(re = Re(y), im = Im(y))
     y <- y/y.range[2]
 
     # Baseline knots have to be scaled along with 
@@ -515,7 +476,8 @@ setMethod("fit", "NMRFit1D",
     # Generating constraint lists
     # Each element in the list is an encoded constraint in the form of a vector.
     # The elements are decoded as follows:
-    # 1: Code of either 0, 1, 2. 0 means position, 1, width, 2 area
+    # 1: Code of either 0, 1, 2, 3, 4. 0 means position, 1 width, 2 height, 
+    #    3 fraction.gauss, 4 area
     # 2: The equality or inequality target value. 
     # 3+: Integers corresponding to peak indexes in the overall parameter 
     #     vector. Positive vs negative values are treated differently depending
@@ -549,17 +511,17 @@ setMethod("fit", "NMRFit1D",
           logic.2 <- logic & (resonance.2 == peaks$resonance)
 
           if ( leeway == 0 ) {
-            new.constraint <- c(2, ratio, which(logic.2), -which(logic.1))
+            new.constraint <- c(4, ratio, which(logic.2), -which(logic.1))
             eq.constraints <- c(eq.constraints, list(new.constraint))
           }
           else {
             # The upper bounds
-            new.constraint <- c(2, ratio*(1+leeway), 
+            new.constraint <- c(4, ratio*(1+leeway), 
                                 which(logic.2), -which(logic.1))
             ineq.constraints <- c(ineq.constraints, list(new.constraint))
 
             # The lower bound
-            new.constraint <- c(2, 1/(ratio*(1-leeway)), 
+            new.constraint <- c(4, 1/(ratio*(1-leeway)), 
                                 -which(logic.2), which(logic.1))
             ineq.constraints <- c(ineq.constraints, list(new.constraint))
           }
@@ -573,6 +535,7 @@ setMethod("fit", "NMRFit1D",
         id <- resonance@id
         position.leeway <- abs(resonance@couplings.leeway$position)
         width.leeway <- abs(resonance@couplings.leeway$width)
+        fraction.leeway <- abs(resonance@couplings.leeway$fraction.gauss)
         area.leeway <- abs(resonance@couplings.leeway$area)
 
         # Only continue if there are couplings defined
@@ -610,7 +573,7 @@ setMethod("fit", "NMRFit1D",
               ineq.constraints <- c(ineq.constraints, list(new.constraint))
             }
 
-            # Then, the width
+            # Then, the width (same by default)
             leeway <- width.leeway
             if ( leeway == 0 ) {
               new.constraint <- c(1, 1, which(logic.2), -which(logic.1))
@@ -628,10 +591,28 @@ setMethod("fit", "NMRFit1D",
               ineq.constraints <- c(ineq.constraints, list(new.constraint))
             }
 
+            # Then, the fraction Gauss (same by default)
+            leeway <- fraction.leeway
+            if ( leeway == 0 ) {
+              new.constraint <- c(3, 0, which(logic.2), -which(logic.1))
+              eq.constraints <- c(eq.constraints, list(new.constraint))
+            }
+            else {
+              # The upper bounds
+              new.constraint <- c(3, leeway, 
+                                  which(logic.2), -which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+
+              # The lower bound
+              new.constraint <- c(3, -leeway, 
+                                  -which(logic.2), which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+            }
+
             # Finally, the area
             leeway <- area.leeway
             if ( leeway == 0 ) {
-              new.constraint <- c(2, ratio, which(logic.2), -which(logic.1))
+              new.constraint <- c(4, ratio, which(logic.2), -which(logic.1))
               eq.constraints <- c(eq.constraints, list(new.constraint))
             }
             else {
@@ -648,12 +629,12 @@ setMethod("fit", "NMRFit1D",
               }
 
               # The upper bounds
-              new.constraint <- c(2, ratio*(1+leeway), 
+              new.constraint <- c(4, ratio*(1+leeway), 
                                   which(logic.2), -which(logic.1))
               ineq.constraints <- c(ineq.constraints, list(new.constraint))
 
               # The lower bound
-              new.constraint <- c(2, 1/(ratio*(1-leeway)), 
+              new.constraint <- c(4, 1/(ratio*(1-leeway)), 
                                   -which(logic.2), which(logic.1))
               ineq.constraints <- c(ineq.constraints, list(new.constraint))
             }
@@ -673,6 +654,13 @@ setMethod("fit", "NMRFit1D",
       # Creating a mock basis that will be ignored in the Rcpp code
       basis <- matrix(0, nrow = length(x), ncol = 1)
     }
+
+    print(head(x))
+    print(head(y))
+    print(par)
+    print(head(basis))
+    print(eq.constraints)
+    print(ineq.constraints)
 
     start.time <- proc.time()
     fit_lineshape_1d(x, y, par$par, par$lb, par$ub, basis, 
@@ -846,160 +834,14 @@ setMethod("show", "NMRFit1D",
 
 
 #------------------------------------------------------------------------------
-# Peaks
-
-#' @rdname peaks
-#' @export
-setMethod("peaks", "NMRFit1D", 
-  function(object) {
-    peaks.list <- lapply(object@species, peaks, include.id = TRUE)
-    do.call(rbind, peaks.list)
-  })
-
-#' @rdname peaks-set
-#' @export
-setReplaceMethod("peaks", "NMRFit1D",
-  function(object, value) {
-
-    # Check that data.frame has a species column
-    err <- 'New peaks data.frame must value a "species" column.'
-    if (! 'species' %in% colnames(value) ) stop(err)
-
-    # Check that new resonances match current resonances
-    new.names <- unique(value$species)
-    old.names <- unlist(lapply(object@species, id))
-    logic <- ! new.names %in% old.names
-    wrn <- sprintf('The following species are not defined, ignoring: %s',
-                   paste(new.names[logic], collapse = ', '))
-
-    if ( any(logic) ) warning(wrn)
-
-    # Splitting up new values and assigning
-    new.peaks <- by(value, value$species, function(d) select(d, -species))
-    indexes <- which(old.names %in% new.names)
-
-    for ( i in indexes ) {
-      specie <- object@species[[i]]
-      peaks(specie) <- new.peaks[[old.names[i]]]
-      object@species[[i]] <- specie
-    }
-
-    validObject(object)
-    object 
-  })
-
-#' @rdname update_peaks
-setMethod("update_peaks", "NMRFit1D",
-  function(object, peaks, exclusion.level = nmrsession_1d$exclusion$level,
-           exclusion.notification = nmrsession_1d$exclusion$notification) {
-
-  # Check that columns match before continuing
-  current.peaks <- peaks(object)
-  err <- '"peaks" columns must match those of current peaks data.frame.'
-  if (! all(colnames(peaks) %in% colnames(current.peaks))) stop(err)
-
-  # Check for missing peaks
-  current.ids <- apply(current.peaks[, c('species', 'resonance', 'peak')], 1, 
-                       paste, collapse = '-')
-
-  new.ids <- apply(peaks[, c('species', 'resonance', 'peak')], 1, 
-                   paste, collapse = '-')
-  logic <- ! current.ids %in% new.ids
-
-  if ( any(logic) ) {
-
-    msg <- paste('The following peaks were found outside the data range',
-                 'and were therefore excluded:\n',
-                  paste(current.ids[logic], collapse = ', '))
-
-    # Expanding message based on level
-    if ( exclusion.level == 'species' ) {
-      removed.species <- unique(current.peaks$species[logic])
-
-      msg <- paste(msg, 
-                   '\nBased on the current exclusion.level, the following',
-                   'species were further excluded:\n',
-                    paste(removed.species, collapse = ', '))
-
-      # Removing resonances from updated peaks
-      peaks <- filter(peaks, ! species %in% removed.species)
-    }
-    else if ( exclusion.level == 'resonance' ) {
-      ids <- paste(current.peaks$species, current.peaks$resonance, sep = '-')
-      removed.resonances <- unique(ids[logic])
-
-      msg <- paste(msg, 
-                   '\nBased on the current exclusion.level, the following',
-                   'resonances were further excluded:\n',
-                   paste(removed.resonances, collapse = ', '))
-
-      # Removing resonances from updated peaks
-      peaks <- filter(peaks, ! resonance %in% removed.resonances)
-    }
-
-    # Issue notification as requested
-    f.error <- function(x) {
-      msg <- paste('"exclusion.notification" must be one "none", "message",',
-                   '"warning", or "stop"')
-      stop(msg)
-    }
-
-    f.notification = switch(exclusion.notification, none = identity,
-                            message = message, warning = warning, stop = stop,
-                            f.error)
-    f.notification(msg)
-  }
-
-  # Initializing removal index
-  indexes <- c()
-
-  # Updating peaks
-  for ( i in 1:length(object@species) ) {
-    species <- object@species[[i]]
-    id <- species@id
-    sub.peaks <- peaks %>% filter(species == id) %>% select(-species)
-
-    if ( nrow(sub.peaks) == 0 ) indexes <- c(indexes, i) 
-
-    species <- update_peaks(species, sub.peaks,
-                            exclusion.level = exclusion.level,
-                            exclusion.notification = 'none')
-    object@species[[i]] <- species
-  }
-
-  if ( length(indexes) > 0 ) object@species <- object@species[-indexes]
-
-  object
-})
-
-
-#------------------------------------------------------------------------------
-# Couplings
-
-#' @rdname couplings
-#' @export
-setMethod("couplings", "NMRFit1D", 
-  function(object, include.id = FALSE) {
-    couplings.list <- lapply(object@species, couplings, include.id = TRUE)
-    do.call(rbind, couplings.list)
-  })
-
-
-
-#------------------------------------------------------------------------------
 # Bounds
 
 #' @rdname bounds
 #' @export
 setMethod("bounds", "NMRFit1D", 
   function(object) {
-    # Extracting peak bounds from species
-    f <- function(o, sublist) bounds(o, include.id = TRUE)[[sublist]]
-    lower.list <- lapply(object@species, f, sublist = 'lower')
-    upper.list <- lapply(object@species, f, sublist = 'upper')
-
-    lower.peaks <- do.call(rbind, lower.list)
-    upper.peaks <- do.call(rbind, upper.list)
+    # Extracting peak bounds from species using the NMRMixture1D signature
+    bounds <- selectMethod("bounds", signature="NMRMixture1D")(object)
 
     # Baseline and phase
     lower.baseline <- object@bounds$lower$baseline
@@ -1015,9 +857,9 @@ setMethod("bounds", "NMRFit1D",
     upper.phase <- ifelse(length(upper.phase) == 0, Inf, upper.phase)   
 
     # Outputting
-    list(lower = list(peaks = lower.peaks, baseline = lower.baseline, 
+    list(lower = list(peaks = bounds$lower, baseline = lower.baseline, 
                       phase = lower.phase), 
-         upper = list(peaks = upper.peaks, baseline = upper.baseline,
+         upper = list(peaks = bounds$upper, baseline = upper.baseline,
                       phase = upper.phase))
   })
 
@@ -1039,13 +881,13 @@ setMethod("bounds", "NMRFit1D",
 #' @export
 setGeneric("baseline", 
   function(object, ...) standardGeneric("baseline")
-  )
+)
 
 #' @rdname baseline
 #' @export
 setMethod("baseline", "NMRFit1D", 
   function(object) object@baseline
-  )
+)
 
 #---------------------------------------
 #' Set object baseline
@@ -1063,7 +905,8 @@ setMethod("baseline", "NMRFit1D",
 #' @name baseline-set
 #' @export
 setGeneric("baseline<-", 
-  function(object, value) standardGeneric("baseline<-"))
+  function(object, value) standardGeneric("baseline<-")
+)
 
 #' @rdname baseline-set
 #' @export
@@ -1100,13 +943,13 @@ setReplaceMethod("baseline", "NMRFit1D",
 #' @export
 setGeneric("knots", 
   function(object, ...) standardGeneric("knots")
-  )
+)
 
 #' @rdname knots
 #' @export
 setMethod("knots", "NMRFit1D", 
   function(object) object@knots
-  )
+)
 
 #---------------------------------------
 #' Set object baseline knots
@@ -1118,7 +961,7 @@ setMethod("knots", "NMRFit1D",
 #' @param value A vector of chemical shifts used to designate the internal
 #'              baseline b-spline knots. Note that the number of internal knots
 #'              impacts the length of the baseline and if the length of knots is
-#'              changes, current baseline values may not feasible with the new
+#'              changed, current baseline values may not feasible with the new
 #'              knots.
 #' 
 #' @name knots-set
@@ -1165,6 +1008,9 @@ setReplaceMethod("knots", "NMRFit1D",
 
 
 
+#------------------------------------------------------------------------------
+# Phase
+
 #---------------------------------------
 #' Get object phase 
 #' 
@@ -1178,13 +1024,13 @@ setReplaceMethod("knots", "NMRFit1D",
 #' @export
 setGeneric("phase", 
   function(object, ...) standardGeneric("phase")
-  )
+)
 
 #' @rdname phase
 #' @export
 setMethod("phase", "NMRFit1D", 
   function(object) object@phase
-  )
+)
 
 #---------------------------------------
 #' Set object phase
@@ -1211,20 +1057,6 @@ setReplaceMethod("phase", "NMRResonance1D",
     validObject(object)
     object 
   })
-
-
-
-#==============================================================================>
-#  Initialization functions (generating parameter estimates based on data)
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' @rdname initialize_heights
-#' @export
-setMethod("initialize_heights", "NMRFit1D",
-          getMethod("initialize_heights", "NMRResonance1D"))
 
 
 
@@ -1322,7 +1154,7 @@ setMethod("set_general_bounds", "NMRFit1D",
 
   validObject(object)
   object
-})
+  })
 
 
 
@@ -1394,7 +1226,7 @@ setMethod("set_peak_type", "NMRFit1D",
 #' @param object An NMRFit1D object.
 #' @param components 'r/i' to output both real and imaginary data, 'r' to output
 #'                   only real and 'i' to output only imaginary.
-#' @inheritParams methodEllipse
+#' @param ... Additional arguments passed to inheriting methods.
 #' 
 #' @return A function that outputs spectral intensity data of the fit baseline
 #'         given a vector input of chemical shifts.
@@ -1402,9 +1234,8 @@ setMethod("set_peak_type", "NMRFit1D",
 #' @name f_baseline
 #' @export
 setGeneric("f_baseline", 
-  function(object, components = 'r/i', ...) {
-    standardGeneric("f_baseline")
-})
+  function(object, components = 'r/i', ...) standardGeneric("f_baseline")
+)
 
 #' @rdname f_baseline
 #' @export
@@ -1441,29 +1272,6 @@ setMethod("f_baseline", "NMRFit1D",
       }
     }
   })
-
-
-#------------------------------------------------------------------------
-#' @rdname f_lineshape
-#' @export
-setMethod("f_lineshape", "NMRFit1D", 
-          getMethod("f_lineshape", "NMRResonance1D"))
-
-
-
-#------------------------------------------------------------------------
-#' @rdname values
-#' @export
-setMethod("values", "NMRFit1D",
-           getMethod("values", "NMRResonance1D"))
-
-
-
-#------------------------------------------------------------------------
-#' @rdname areas 
-#' @export
-setMethod("areas", "NMRFit1D",
-           getMethod("areas", "NMRResonance1D"))
 
 
 
