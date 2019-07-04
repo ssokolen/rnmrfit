@@ -95,12 +95,12 @@ setValidity("NMRResonance2D", validNMRResonance2D)
 #' @param direct.sf Sweep frequency (MHz) in the direct dimension -- needed to
 #'                  convert coupling constants from Hz to ppm. In most cases, it
 #'                  is recommended to set a single default value using
-#'                  nmrsession_2d$sf$direct  = ..., but an override can be
+#'                  nmroptions$direct$sf  = ..., but an override can be
 #'                  provided here.
 #' @param indirect.sf Sweep frequency (MHz) in the indirect dimension -- needed
 #'                    to convert coupling constants from Hz to ppm. In most
 #'                    cases, it is recommended to set a single default value
-#'                    using nmrsession_2d$sf$indirect  = ..., but an override
+#'                    using nmroptions$indirect$sf  = ..., but an override
 #'                    can be provided here.
 #' @param id A string specifying resonance name. If left empty, a name is
 #'           automatically generated from the peaks argument.
@@ -130,8 +130,8 @@ setValidity("NMRResonance2D", validNMRResonance2D)
 #' 
 #' @export
 nmrresonance_2d <- function(direct.peaks, indirect.peaks, 
-                            direct.sf = nmrsession_2d('sf')$direct, 
-                            indirect.sf = nmrsession_2d('sf')$indirect, 
+                            direct.sf = nmroptions$direct$sf, 
+                            indirect.sf = nmroptions$indirect$sf, 
                             id = NULL, width = 1, fraction.gauss = 0, 
                             position.leeway = 0, area.leeway = 0, 
                             width.leeway = 0) {
@@ -165,16 +165,7 @@ nmrresonance_2d <- function(direct.peaks, indirect.peaks,
   #---------------------------------------
   # Aligning the ids
 
-  # If an id is provided apply it directly to both components
-  if (! is.null(id) ) {
-    direct@id <- id
-    indirect@id <- id
-  }
-  # If the id is not provided, and individual ids are different, combine them.
-  else if ( direct@id != indirect@id ) {
-    id <- paste(direct@id, indirect@id, sep = ' / ')
-    direct@id <- id
-    indirect@id <- id
+  # If an id is provided apply it directly to both component
   }
 
   #---------------------------------------

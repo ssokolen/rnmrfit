@@ -29,13 +29,14 @@
 #'                intensity values of the baseline based on the chemical shift
 #'                locations of the knots. The default baseline order and the
 #'                number of internal knots can be set using
-#'                nmrsession_1d(baseline = list(order = 3, n.knots = 0)), with
-#'                the baseline vector length equal to the order + n.knots + 1.
+#'                nmrpotions$direct$baseline = list(order = 3, n.knots = 0),
+#'                with the baseline vector length equal to the order + n.knots +
+#'                1.
 #' @slot phase A vector of phase correction terms, corresponding to either 0 or
 #'             1st order phase correction. The default phase correction order
-#'             can be set using nmrsession_1d(phase = list(order=1)). Note that
-#'             the 0 order term is always calculated with respect to 0 ppm and
-#'             the first order term has units of degrees per ppm.
+#'             can be set using nmroptions$direct$phase = list(order=1). Note
+#'             that the 0 order term is always calculated with respect to 0 ppm
+#'             and the first order term has units of degrees per ppm.
 #' @slot bounds A lower and upper bounds on baseline and phase terms. Both lower
 #'              and upper bounds are lists containing "baseline", and "phase"
 #'              elements. A "peaks" element is also generated dynamically from
@@ -238,15 +239,15 @@ setValidity("NMRFit1D", validNMRFit1D)
 #'                  run manually using fit().
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 #'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmrsession_1d(sf = ...), but an override can be
+#'           value using nmroptions$direct$sf, but an override can be
 #'           provided here.
 #' @param init An initialization, function that takes an NMRFit1D object and
 #'             returns a modified NMRFit1D object. Use the "identity" function
 #'             to override the default initialization in the
-#'             nmrsession_1d$fit$init. Note that all arguments provided to the
+#'             nmroptions$fit$init. Note that all arguments provided to the
 #'             fit() function are also passed on the init() function.
 #' @param opts A list of NLOPT fit options to override the default options in
-#'             the nmrsession_1d$fit$opts.
+#'             the nmroptions$fit$opts.
 #' @param exclusion.level A string specifying what to do when peaks are found to
 #'                        fall outside of the data range: either 'species' to
 #'                        exclude the whole species to which the offending peak
@@ -265,13 +266,13 @@ setValidity("NMRFit1D", validNMRFit1D)
 #' 
 #' @export
 nmrfit_1d <- function(
-  species, nmrdata, baseline.order = nmrsession_1d$baseline$order,
-  n.knots = nmrsession_1d$baseline$n.knots, 
-  phase.order = nmrsession_1d$phase$order, 
-  delay.fit = FALSE, sf = nmrsession_1d$sf,
-  init = nmrsession_1d$fit$init, opts = nmrsession_1d$fit$opts, 
-  exclusion.level = nmrsession_1d$exclusion$level, 
-  exclusion.notification = nmrsession_1d$exclusion$notification, ...) {
+  species, nmrdata, baseline.order = nmroptions$direct$baseline$order,
+  n.knots = nmroptions$direct$baseline$n.knots, 
+  phase.order = nmroptions$direct$phase$order, 
+  delay.fit = FALSE, sf = nmroptions$direct$sf,
+  init = nmroptions$fit$init, opts = nmroptions$fit$opts, 
+  exclusion.level = nmroptions$exclusion$level, 
+  exclusion.notification = nmroptions$exclusion$notification, ...) {
 
   #---------------------------------------
   # Generating list of species 
@@ -355,15 +356,15 @@ nmrfit_1d <- function(
 #' @param object An NMRFit1D object.
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 #'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmrsession_1d(sf = ...), but an override can be
+#'           value using nmroptions$direct$sf = ..., but an override can be
 #'           provided here.
 #' @param init An initialization function that takes NMRFit1D object and returns
 #'             a modified NMRFit1D object. Use the "identity" function to
 #'             override the default initialization in the
-#'             nmrsession_1d$fit$init. Note that all arguments provided to the
+#'             nmroptions$fit$init. Note that all arguments provided to the
 #'             fit() function are also passed on the init() function.
 #' @param opts A list of NLOPT fit options to override the default options in
-#'             the nmrsession_1d$fit$opts.
+#'             the nmroptionsd$fit$opts.
 #' @param exclusion.level A string specifying what to do when peaks are found to
 #'                        fall outside of the data range: either 'species' to
 #'                        exclude the whole species to which the offending peak
@@ -386,10 +387,10 @@ setGeneric("fit",
 #' @rdname fit
 #' @export
 setMethod("fit", "NMRFit1D",
-  function(object, sf = nmrsession_1d('sf'), init = nmrsession_1d$fit$init, 
-           opts = nmrsession_1d$fit$opts, 
-           exclusion.level = nmrsession_1d$exclusion$level,
-           exclusion.notification = nmrsession_1d$exclusion$notification) {
+  function(object, sf = nmroptions$direct$sf, init = nmroptions$fit$init, 
+           opts = nmroptions$fit$opts, 
+           exclusion.level = nmroptions$exclusion$level,
+           exclusion.notification = nmroptions$exclusion$notification) {
 
     # First, run the initialization
     object <- init(object, sf = sf, init = init, opts = opts, 
@@ -1321,7 +1322,7 @@ plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,
 
   # The overall fit
   sf <- get_parameter(x@nmrdata, 'sfo1', 'acqus')
-  if ( is.null(sf) ) sf <- nmrsession_1d$sf
+  if ( is.null(sf) ) sf <- nmroptions$direct$sf
 
   f <- f_lineshape(x, sf = sf, sum.peaks = TRUE)
   y.fit <- f(direct.shift)

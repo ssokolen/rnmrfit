@@ -315,6 +315,8 @@ setMethod("id", "NMRScaffold2D",
   function(object) object@direct@id
 )
 
+
+
 #' @rdname id-set
 #' @export
 setReplaceMethod("id", "NMRScaffold2D",
@@ -349,6 +351,12 @@ setReplaceMethod("peaks", "NMRScaffold2D",
     split_setter(object, `peaks<-`, value)
 })
 
+
+
+#' @rdname update_peaks
+setMethod("update_peaks", "NMRResonance1D",
+  function(object, peaks, exclusion.level = nmroptions$exclusion$level,
+           exclusion.notification = nmroptions$exclusion$notification) {
 
 
 

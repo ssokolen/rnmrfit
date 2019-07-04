@@ -506,8 +506,8 @@ setGeneric("initialize_heights",
 #' @rdname initialize_heights
 #' @export
 setMethod("initialize_heights", "NMRScaffold1D",
-  function(object, nmrdata, exclusion.level = nmrsession_1d$exclusion$level,
-           exclusion.notification = nmrsession_1d$exclusion$notification) {
+  function(object, nmrdata, exclusion.level = nmroptions$exclusion$level,
+           exclusion.notification = nmroptions$exclusion$notification) {
 
   # Checking nmrdata
   if ( class(nmrdata) != 'NMRData1D' ) {
@@ -569,7 +569,7 @@ setMethod("initialize_heights", "NMRScaffold1D",
 #' @param object An NMRScaffold1D object.
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 #'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmrsession_1d(sf = ...), but an override can be
+#'           value using nmroptions$direct$sf = ..., but an override can be
 #'           provided here.
 #' @param sum.peaks TRUE to add all individual peaks together and output a
 #'                  single function, FALSE to output a data frame of functions
@@ -593,11 +593,11 @@ setGeneric("f_lineshape",
 #' @rdname f_lineshape
 #' @export
 setMethod("f_lineshape", "NMRScaffold1D",
-  function(object, sf = nmrsession_1d('sf'), sum.peaks = TRUE, 
+  function(object, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
            include.id = FALSE, components = 'r/i') {
 
     # Checking to make sure that sweep frequency is defined
-    err <- '"sf" must be provided as input or set using nmrsession_1d()'
+    err <- '"sf" must be provided as input or set using nmroptions$direct$sf'
     if ( is.null(sf) ) stop(err)
 
     # Defining which components to return
@@ -665,7 +665,7 @@ setMethod("f_lineshape", "NMRScaffold1D",
 #' @param direct.shift Vector of chemical shift data in ppm.
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 #'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmrsession_1d(sf = ...), but an override can be
+#'           value using nmroptions$direct$sf = ..., but an override can be
 #'           provided here.
 #' @param sum.peaks TRUE to add all individual peaks together and output a
 #'                  single set of values, FALSE to output a data frame of values
@@ -691,7 +691,7 @@ setGeneric("values",
 #' @rdname values
 #' @export
 setMethod("values", "NMRScaffold1D",
-  function(object, direct.shift, sf = nmrsession_1d('sf'), sum.peaks = TRUE, 
+  function(object, direct.shift, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
            sum.baseline = FALSE, include.id = FALSE, components = 'r/i') {
 
   # Generating baseline if necessaru
@@ -734,7 +734,7 @@ setMethod("values", "NMRScaffold1D",
 #' @param object An NMRScaffold1D object.
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 #'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmrsession_1d(sf = ...), but an override can be
+#'           value using nmroptions$direct$sf, but an override can be
 #'           provided here.
 #' @param sum.peaks TRUE to add all individual peaks together and output a
 #'                  single area, FALSE to output a data frame of peak area
@@ -755,7 +755,7 @@ setGeneric("areas",
 #' @rdname areas 
 #' @export
 setMethod("areas", "NMRScaffold1D",
-  function(object, sf = nmrsession_1d('sf'), sum.peaks = TRUE, 
+  function(object, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
            include.id = FALSE, components = 'r/i') {
 
   # Defining area function

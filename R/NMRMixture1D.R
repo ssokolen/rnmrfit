@@ -185,8 +185,8 @@ setReplaceMethod("peaks", "NMRMixture1D",
 
 #' @rdname update_peaks
 setMethod("update_peaks", "NMRMixture1D",
-  function(object, peaks, exclusion.level = nmrsession_1d$exclusion$level,
-           exclusion.notification = nmrsession_1d$exclusion$notification) {
+  function(object, peaks, exclusion.level = nmroptions$exclusion$level,
+           exclusion.notification = nmroptions$exclusion$notification) {
 
   # Check that columns match before continuing
   current.peaks <- peaks(object)

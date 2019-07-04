@@ -404,8 +404,8 @@ enforce_couplings_1d <- function(nmrresonance, peaks = NULL) {
 #'              ?parse_peaks_1d for more information.
 #' @param sf Sweep frequency (in MHz) -- needed to convert coupling constants
 #'           from Hz to ppm. In most cases, it is recommended to set a single
-#'           default value using nmrsession_1d(sf = ...), but an override can be
-#'           provided here.
+#'           default value using nmroptions$direct$sf = ..., but an override can
+#'           be provided here.
 #' @param id A string specifying resonance name. If left empty, a name is
 #'           automatically generated from the peaks argument.
 #' @param width Initial estimate of peak width (in Hz). For Voigt lineshapes,
@@ -439,7 +439,7 @@ enforce_couplings_1d <- function(nmrresonance, peaks = NULL) {
 #' @return An NMRResonance1D object.
 #' 
 #' @export
-nmrresonance_1d <- function(peaks, sf = nmrsession_1d('sf'), id = NULL, 
+nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL, 
                             width = 1, fraction.gauss = 0, 
                             position.leeway = 0, width.leeway = 0, 
                             fraction.gauss.leeway = 0, area.leeway = 0) {
@@ -468,7 +468,7 @@ nmrresonance_1d <- function(peaks, sf = nmrsession_1d('sf'), id = NULL,
     if ( any(coupling$number > 1) ) {
 
       # Checking to make sure that sweep frequency is defined
-      err <- '"sf" must be provided as input or set using nmrsession_1d()'
+      err <- '"sf" must be provided as input or set using nmroptions$direct$sf'
       if ( is.null(sf) ) stop(err)
 
       # Converting coupling constant from Hz to ppm
@@ -572,8 +572,8 @@ setReplaceMethod("peaks", "NMRResonance1D",
 
 #' @rdname update_peaks
 setMethod("update_peaks", "NMRResonance1D",
-  function(object, peaks, exclusion.level = nmrsession_1d$exclusion$level,
-           exclusion.notification = nmrsession_1d$exclusion$notification) {
+  function(object, peaks, exclusion.level = nmroptions$exclusion$level,
+           exclusion.notification = nmroptions$exclusion$notification) {
 
   # Check that columns match before continuing
   current.peaks <- peaks(object)
