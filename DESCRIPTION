@@ -38,4 +38,4 @@ Collate:
     'misc.R'
     'processing.R'
     'RcppExports.R'
-    'session.R'
+    'options.R'

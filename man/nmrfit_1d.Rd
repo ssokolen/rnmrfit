@@ -5,13 +5,13 @@
 \title{Generate an NMRFit1D object}
 \usage{
 nmrfit_1d(species, nmrdata,
-  baseline.order = nmrsession_1d$baseline$order,
-  n.knots = nmrsession_1d$baseline$n.knots,
-  phase.order = nmrsession_1d$phase$order, delay.fit = FALSE,
-  sf = nmrsession_1d$sf, init = nmrsession_1d$fit$init,
-  opts = nmrsession_1d$fit$opts,
-  exclusion.level = nmrsession_1d$exclusion$level,
-  exclusion.notification = nmrsession_1d$exclusion$notification, ...)
+  baseline.order = nmroptions$direct$baseline$order,
+  n.knots = nmroptions$direct$baseline$n.knots,
+  phase.order = nmroptions$direct$phase$order, delay.fit = FALSE,
+  sf = nmroptions$direct$sf, init = nmroptions$fit$init,
+  opts = nmroptions$fit$opts,
+  exclusion.level = nmroptions$exclusion$level,
+  exclusion.notification = nmroptions$exclusion$notification, ...)
 }
 \arguments{
 \item{species}{A list of NMRSpecies1D objects or other objects that can be
@@ -44,17 +44,17 @@ run manually using fit().}
 
 \item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 to ppm. In most cases, it is recommended to set a single default
-value using nmrsession_1d(sf = ...), but an override can be
+value using nmroptions$direct$sf, but an override can be
 provided here.}
 
 \item{init}{An initialization, function that takes an NMRFit1D object and
 returns a modified NMRFit1D object. Use the "identity" function
 to override the default initialization in the
-nmrsession_1d$fit$init. Note that all arguments provided to the
+nmroptions$fit$init. Note that all arguments provided to the
 fit() function are also passed on the init() function.}
 
 \item{opts}{A list of NLOPT fit options to override the default options in
-the nmrsession_1d$fit$opts.}
+the nmroptions$fit$opts.}
 
 \item{exclusion.level}{A string specifying what to do when peaks are found to
 fall outside of the data range: either 'species' to

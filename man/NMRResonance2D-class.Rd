@@ -6,17 +6,18 @@
 \alias{NMRResonance2D}
 \title{Definition of an NMR resonance.}
 \description{
-An NMRResonance2D object is nothing but a container for 2 NMRResonance1D
-objects, one for the direct and one for the indirect dimension. All methods
-are merely wrappers applied to both of these objects. To modify an
-NMRResonance 1D object associated with a specific dimension, use
-\code{direct()} and \code{indirect()} methods.
+Essentially, this class is used to define coupling relationships to group
+individual peaks into resonances. A resonances is a series of peaks that are
+constrained by a set of relations between their position, width, and,
+fraction.gauss parameters as well as overall areas. A 2D resonance is simply
+a collection of 1D resonances in the direct and indirect dimension with
+separate set of coupling constraints.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{dimensions}}{A list containing "direct" and "indirect" elements
-corresponding to NMRResonance1D object describing peaks in
-the direct and indirect dimensions.}
+\item{\code{direct}}{An NMRResonance1D object.}
+
+\item{\code{indirect}}{An NMRResonance1D object.}
 }}
 

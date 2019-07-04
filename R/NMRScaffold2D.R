@@ -354,9 +354,148 @@ setReplaceMethod("peaks", "NMRScaffold2D",
 
 
 #' @rdname update_peaks
-setMethod("update_peaks", "NMRResonance1D",
+setMethod("update_peaks", "NMRScaffold2D",
   function(object, peaks, exclusion.level = nmroptions$exclusion$level,
            exclusion.notification = nmroptions$exclusion$notification) {
+    split_setter(object, update_peaks, peaks, 
+                 exclusion.level, exclusion.notification)
+})
 
 
 
+#------------------------------------------------------------------------------
+# Couplings
+
+
+
+#' @rdname couplings
+#' @export
+setMethod("couplings", "NMRScaffold2D", 
+  function(object, include.id = FALSE) {
+    combine_getter(object, couplings, include.id = include.id)
+})
+
+
+
+#' @rdname couplings-set
+#' @export
+setReplaceMethod("couplings", "NMRScaffold2D",
+  function(object, value) {
+    split_setter(object, `couplings<-`, value)
+})
+
+
+
+#==============================================================================>
+#  Bounds
+#==============================================================================>
+
+
+
+#' @rdname set_general_bounds
+#' @export
+setMethod("set_general_bounds", "NMRScaffold2D",
+  function(object, position = NULL, height = NULL, width = NULL,
+           fraction.gauss = NULL, nmrdata = NULL, widen = FALSE) {
+
+  # Since the nmrdata object is only used to determine maximum and minimum
+  # values of chemical shift and intensity, the 2D data is simply split
+  # into 1D components
+  if (! is.null(nmrdata) ) {
+
+    if ( class(nmrdata) != 'NMRData2D' ) {
+      err <- '"nmrdata" must be a valid NMRData2D object.'
+      stop(err)
+    }
+    else {
+      validObject(nmrdata)
+    }
+
+    columns <- c('direct.shift', 'intensity')
+    direct <- new("NMRData1D", processed = processed(nmrdata)[, columns])
+
+    columns <- c('indirect.shift', 'intensity')
+    indirect <- new("NMRData1D", processed = processed(nmrdata)[, columns])
+  
+  } else {
+    direct <- NULL
+    indirect <- NULL
+  }
+
+  object@direct <- set_general_bounds(object@direct, position, height,
+                                      width, fraction.gauss, direct, widen)
+  object@indirect <- set_general_bounds(object@indirect, position, height,
+                                        width, fraction.gauss, indirect, widen)
+
+  validObject(object)
+  object
+})
+
+
+
+#' @rdname set_offset_bounds
+#' @export
+setMethod("set_offset_bounds", "NMRScaffold2D",
+  function(object, position = NULL, height = NULL, width = NULL, 
+           relative = FALSE, widen = FALSE) {
+
+  object@direct <- set_offset_bounds(object@direct, position, height,
+                                     width, relative, widen)
+  object@indirect <- set_offset_bounds(object@indirect, position, height,
+                                       width, relative, widen)
+
+  validobject(object)
+  object
+})
+
+
+
+#' @rdname set_conservative_bounds
+#' @export
+setMethod("set_conservative_bounds", "NMRScaffold2D",
+  function(object, position = TRUE,  height = TRUE, width = TRUE, 
+           nmrdata = NULL, widen = FALSE) { 
+
+  # The nmrdata object is split up as for general_bounds
+  if (! is.null(nmrdata) ) {
+
+    if ( class(nmrdata) != 'NMRData2D' ) {
+      err <- '"nmrdata" must be a valid NMRData2D object.'
+      stop(err)
+    }
+    else {
+      validObject(nmrdata)
+    }
+
+    columns <- c('direct.shift', 'intensity')
+    direct <- new("NMRData1D", processed = processed(nmrdata)[, columns])
+
+    columns <- c('indirect.shift', 'intensity')
+    indirect <- new("NMRData1D", processed = processed(nmrdata)[, columns])
+  
+  } else {
+    direct <- NULL
+    indirect <- NULL
+  }
+
+  object@direct <- set_conservative_bounds(object@direct, position, height,
+                                           width, direct, widen)
+  object@indirect <- set_conservative_bounds(object@indirect, position, height,
+                                             width, indirect, widen)
+
+  validObject(object)
+  object
+})
+
+
+#' @rdname set_peak_type
+#' @export
+setMethod("set_peak_type", "NMRScaffold2D",
+  function(object, peak.type) {
+
+  object@direct <- set_peak_type(object@direct, peak.type)
+  object@indirect <- set_peak_type(object@indirect, peak.type)
+
+  validObject(object)
+  object
+})

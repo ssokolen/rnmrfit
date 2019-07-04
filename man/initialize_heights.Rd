@@ -9,8 +9,8 @@
 initialize_heights(object, ...)
 
 \S4method{initialize_heights}{NMRScaffold1D}(object, nmrdata,
-  exclusion.level = nmrsession_1d$exclusion$level,
-  exclusion.notification = nmrsession_1d$exclusion$notification)
+  exclusion.level = nmroptions$exclusion$level,
+  exclusion.notification = nmroptions$exclusion$notification)
 }
 \arguments{
 \item{object}{An NMRScaffold1D object.}

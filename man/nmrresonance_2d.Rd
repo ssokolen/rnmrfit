@@ -5,8 +5,8 @@
 \title{Generate an NMRResonance2D object based on simplified peak list}
 \usage{
 nmrresonance_2d(direct.peaks, indirect.peaks,
-  direct.sf = nmrsession_2d("sf")$direct,
-  indirect.sf = nmrsession_2d("sf")$indirect, id = NULL, width = 1,
+  direct.sf = nmroptions$direct$sf,
+  indirect.sf = nmroptions$indirect$sf, id = NULL, width = 1,
   fraction.gauss = 0, position.leeway = 0, area.leeway = 0,
   width.leeway = 0)
 }
@@ -24,13 +24,13 @@ for more information.}
 \item{direct.sf}{Sweep frequency (MHz) in the direct dimension -- needed to
 convert coupling constants from Hz to ppm. In most cases, it
 is recommended to set a single default value using
-nmrsession_2d$sf$direct  = ..., but an override can be
+nmroptions$direct$sf  = ..., but an override can be
 provided here.}
 
 \item{indirect.sf}{Sweep frequency (MHz) in the indirect dimension -- needed
 to convert coupling constants from Hz to ppm. In most
 cases, it is recommended to set a single default value
-using nmrsession_2d$sf$indirect  = ..., but an override
+using nmroptions$indirect$sf  = ..., but an override
 can be provided here.}
 
 \item{id}{A string specifying resonance name. If left empty, a name is

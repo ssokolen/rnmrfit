@@ -4,7 +4,7 @@
 \alias{nmrresonance_1d}
 \title{Generate an NMRResonance1D object based on simplified peak list}
 \usage{
-nmrresonance_1d(peaks, sf = nmrsession_1d("sf"), id = NULL,
+nmrresonance_1d(peaks, sf = nmroptions$direct$sf, id = NULL,
   width = 1, fraction.gauss = 0, position.leeway = 0,
   width.leeway = 0, fraction.gauss.leeway = 0, area.leeway = 0)
 }
@@ -15,8 +15,8 @@ string specifying multiplets of the form "3 d 1.2". See
 
 \item{sf}{Sweep frequency (in MHz) -- needed to convert coupling constants
 from Hz to ppm. In most cases, it is recommended to set a single
-default value using nmrsession_1d(sf = ...), but an override can be
-provided here.}
+default value using nmroptions$direct$sf = ..., but an override can
+be provided here.}
 
 \item{id}{A string specifying resonance name. If left empty, a name is
 automatically generated from the peaks argument.}
@@ -47,7 +47,9 @@ peaks are enforced.}
 \item{fraction.gauss.leeway}{Similar to position.leeway but for
 fraction.gauss parameters. Determines how
 strictly equal gauss components are enforced for
-all coupled peaks.}
+all coupled peaks. A leeway of 0.1, for example,
+would enable one peak to be 24\% gauss while
+another peak within the same resonance is 34\%.}
 
 \item{area.leeway}{Similar to position.leeway but for peak areas. Determines
 how strictly the coupling area ratios are enforced.}

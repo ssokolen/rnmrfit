@@ -9,7 +9,7 @@
 values(object, ...)
 
 \S4method{values}{NMRScaffold1D}(object, direct.shift,
-  sf = nmrsession_1d("sf"), sum.peaks = TRUE, sum.baseline = FALSE,
+  sf = nmroptions$direct$sf, sum.peaks = TRUE, sum.baseline = FALSE,
   include.id = FALSE, components = "r/i")
 }
 \arguments{
@@ -21,7 +21,7 @@ values(object, ...)
 
 \item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 to ppm. In most cases, it is recommended to set a single default
-value using nmrsession_1d(sf = ...), but an override can be
+value using nmroptions$direct$sf = ..., but an override can be
 provided here.}
 
 \item{sum.peaks}{TRUE to add all individual peaks together and output a

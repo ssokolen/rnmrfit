@@ -8,7 +8,7 @@
 \usage{
 areas(object, ...)
 
-\S4method{areas}{NMRScaffold1D}(object, sf = nmrsession_1d("sf"),
+\S4method{areas}{NMRScaffold1D}(object, sf = nmroptions$direct$sf,
   sum.peaks = TRUE, include.id = FALSE, components = "r/i")
 }
 \arguments{
@@ -18,7 +18,7 @@ areas(object, ...)
 
 \item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 to ppm. In most cases, it is recommended to set a single default
-value using nmrsession_1d(sf = ...), but an override can be
+value using nmroptions$direct$sf, but an override can be
 provided here.}
 
 \item{sum.peaks}{TRUE to add all individual peaks together and output a

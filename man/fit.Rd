@@ -8,27 +8,27 @@
 \usage{
 fit(object, ...)
 
-\S4method{fit}{NMRFit1D}(object, sf = nmrsession_1d("sf"),
-  init = nmrsession_1d$fit$init, opts = nmrsession_1d$fit$opts,
-  exclusion.level = nmrsession_1d$exclusion$level,
-  exclusion.notification = nmrsession_1d$exclusion$notification)
+\S4method{fit}{NMRFit1D}(object, sf = nmroptions$direct$sf,
+  init = nmroptions$fit$init, opts = nmroptions$fit$opts,
+  exclusion.level = nmroptions$exclusion$level,
+  exclusion.notification = nmroptions$exclusion$notification)
 }
 \arguments{
 \item{object}{An NMRFit1D object.}
 
 \item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 to ppm. In most cases, it is recommended to set a single default
-value using nmrsession_1d(sf = ...), but an override can be
+value using nmroptions$direct$sf = ..., but an override can be
 provided here.}
 
 \item{init}{An initialization function that takes NMRFit1D object and returns
 a modified NMRFit1D object. Use the "identity" function to
 override the default initialization in the
-nmrsession_1d$fit$init. Note that all arguments provided to the
+nmroptions$fit$init. Note that all arguments provided to the
 fit() function are also passed on the init() function.}
 
 \item{opts}{A list of NLOPT fit options to override the default options in
-the nmrsession_1d$fit$opts.}
+the nmroptionsd$fit$opts.}
 
 \item{exclusion.level}{A string specifying what to do when peaks are found to
 fall outside of the data range: either 'species' to

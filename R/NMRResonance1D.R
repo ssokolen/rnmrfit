@@ -431,8 +431,8 @@ enforce_couplings_1d <- function(nmrresonance, peaks = NULL) {
 #'                              fraction.gauss parameters. Determines how
 #'                              strictly equal gauss components are enforced for
 #'                              all coupled peaks. A leeway of 0.1, for example,
-#'                              would enable one peak to be 24% gauss while
-#'                              another peak within the same resonance is 34%.
+#'                              would enable one peak to be 24\% gauss while
+#'                              another peak within the same resonance is 34\%.
 #' @param area.leeway Similar to position.leeway but for peak areas. Determines
 #'                    how strictly the coupling area ratios are enforced.
 #' 

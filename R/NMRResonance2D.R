@@ -165,8 +165,17 @@ nmrresonance_2d <- function(direct.peaks, indirect.peaks,
   #---------------------------------------
   # Aligning the ids
 
-  # If an id is provided apply it directly to both component
+  # If an id is provided apply it directly to both components
+  if (! is.null(id) ) {
+    direct@id <- id
+    indirect@id <- id
   }
+  # If the id is not provided, and individual ids are different, combine them.
+  else if ( direct@id != indirect@id ) {
+    id <- paste(direct@id, indirect@id, sep = ' / ')
+    direct@id <- id
+    indirect@id <- id
+}
 
   #---------------------------------------
   # Generate object
