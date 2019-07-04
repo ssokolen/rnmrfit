@@ -22,7 +22,9 @@ NULL
 #' 
 #' @name NMRScaffold1D-class
 #' @export
-NMRScaffold1D <- setClass("NMRScaffold1D")
+NMRScaffold1D <- setClass("NMRScaffold1D", 
+  contains = "VIRTUAL"
+)
 
 
 
@@ -150,10 +152,10 @@ setGeneric("peaks",
 #' unpredictable consequences.
 #' 
 #' @param object An NMRScaffold1D object.
-#' @param value A data frame with a minimum of "position", "width", "height", and
-#'              "fraction.gauss" columns. Peaks may be defined by one to three
-#'              columns of "peak", "resonance", and "species" depending on the
-#'              nature of the original object.
+#' @param value A data frame with a minimum of "position", "width", "height",
+#'              and "fraction.gauss" columns. Peaks may be defined by one to
+#'              three columns of "peak", "resonance", and "species" depending on
+#'              the nature of the original object.
 #' 
 #' @name peaks-set
 #' @export

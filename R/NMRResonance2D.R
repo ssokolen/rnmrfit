@@ -1,8 +1,6 @@
 # Definition of a class structure for 2D resonance data.
 
-#' @import Rcpp
-#' @useDynLib rnmrfit
-NULL
+
 
 #==============================================================================>
 #  NMRResonance2D -- peak description 
@@ -13,22 +11,20 @@ NULL
 #------------------------------------------------------------------------------
 #' Definition of an NMR resonance.
 #' 
-#' An NMRResonance2D object is nothing but a container for 2 NMRResonance1D
-#' objects, one for the direct and one for the indirect dimension. All methods
-#' are merely wrappers applied to both of these objects. To modify an
-#' NMRResonance 1D object associated with a specific dimension, use
-#' \code{direct()} and \code{indirect()} methods.
+#' Essentially, this class is used to define coupling relationships to group
+#' individual peaks into resonances. A resonances is a series of peaks that are
+#' constrained by a set of relations between their position, width, and,
+#' fraction.gauss parameters as well as overall areas. A 2D resonance is simply
+#' a collection of 1D resonances in the direct and indirect dimension with
+#' separate set of coupling constraints.
 #' 
-#' @slot dimensions A list containing "direct" and "indirect" elements
-#'                  corresponding to NMRResonance1D object describing peaks in
-#'                  the direct and indirect dimensions.
+#' @slot direct An NMRResonance1D object.
+#' @slot indirect An NMRResonance1D object.
 #' 
 #' @name NMRResonance2D-class
 #' @export
 NMRResonance2D <- setClass("NMRResonance2D",
-  slots = c(
-    dimensions = list()
-  )
+  contains = 'NMRScaffold2D',
 )
 
 
@@ -51,27 +47,18 @@ validNMRResonance2D <- function(object) {
   err <- c()
 
   #---------------------------------------
-  # Both 1D elements must be valid NMRResonance1D objects
-  logic1 <- validObject(direct)
-  logic2 <- validObject(indirect)
+  # Both direct and indirect objects must be NMRResonance1D objects
+  logic1 <- class(direct) == 'NMRResonance1D'
+  logic2 <- class(indirect) == 'NMRResonance1D'
 
-  if ( logic1 && logic2 ) {
+  if (! (logic1 && logic2) ) {
 
-    # If both are valid objects check ids
-    if ( direct@id != indirect@id ) {
-      valid <- FALSE
-      new.err <- '"direct" and "indirect" components must have the same id.'
-      err <- c(err, new.err)
-    }
-
-  } else {
-    
     valid <- FALSE
     new.err <- paste('"direct" and "indirect" components must be valid',
                      'NMRResonance1D objects.')
     err <- c(err, new.err)
-  } 
-
+  }   
+  
   #---------------------------------------
   # Output
   if (valid) TRUE
@@ -152,7 +139,7 @@ nmrresonance_2d <- function(direct.peaks, indirect.peaks,
   #---------------------------------------
   # First, generating the direct/indirect components
 
-  # If the direct.peaks component is already an NMRResonance 1D object,
+  # If the direct.peaks component is already an NMRResonance1D object,
   # then there is nothing to do, otherwise, pass input into nmrresonance_1d
   if ( 'NMRResonance1D' %in% class(direct.peaks) ) {
     direct <- direct.peaks
@@ -184,7 +171,7 @@ nmrresonance_2d <- function(direct.peaks, indirect.peaks,
     indirect@id <- id
   }
   # If the id is not provided, and individual ids are different, combine them.
-  else if ( direct@id != indirect.id ) {
+  else if ( direct@id != indirect@id ) {
     id <- paste(direct@id, indirect@id, sep = ' / ')
     direct@id <- id
     indirect@id <- id
@@ -195,162 +182,3 @@ nmrresonance_2d <- function(direct.peaks, indirect.peaks,
 
   new('NMRResonance2D', direct = direct, indirect = indirect)
 }
-
-
-
-#==============================================================================>
-#  Display function
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' Display NMRResonance2D object
-#'
-#' Display a quick summary of resonance parameters.
-#'
-#' @export
-setMethod("show", "NMRResonance2D", 
-  function(object) {
-
-    direct <- object@direct
-    indirect <- object@indirect
-
-    cat('==================================\n')
-    cat('An object of NMRResonance2D class:\n\n')
-
-
-    cat('In the direct dimension:\n\n')
-    cat('----------------------------------\n')
-    show(direct)
-
-    cat('In the indirect dimension:\n\n')
-    cat('----------------------------------\n')
-    show(indirect)
-
-  })
-
-
-
-#==============================================================================>
-# Basic setter and getter functions
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-# Direct
-
-#---------------------------------------
-#' Get direct dimension resonance object
-#' 
-#' Generic convenience method to access the direct dimension resonance
-#' component of an NMRResonance2D or NMRSpecies2D object.
-#' 
-#' @param object An NMRResonance2D or NMRSpecies2D object.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @name direct
-#' @export
-setGeneric("direct", 
-  function(object, ...) standardGeneric("direct")
-  )
-
-#' @rdname direct
-#' @export
-setMethod("direct", "NMRResonance2D", 
-  function(object) object@direct)
-
-#---------------------------------------
-#' Set direct dimension resonance object
-#' 
-#' Generic convenience method to set the direct dimension resonance component
-#' of an NMRResonance2D or NMRSpecies2D object.
-#' 
-#' @param object An NMRResonance2D or NMRSpecies2D object.
-#' @param value A valid NMRResonance1D object.
-#' 
-#' @name direct-set
-#' @export
-setGeneric("direct<-", 
-  function(object, value) standardGeneric("direct<-"))
-
-#' @rdname direct-set
-#' @export
-setReplaceMethod("direct", "NMRResonance2D",
-  function(object, value) {
-    object@direct <- value
-    validObject(object)
-    object 
-  })
-
-
-
-#------------------------------------------------------------------------------
-# Indirect
-
-#---------------------------------------
-#' Get indirect dimension resonance object
-#' 
-#' Generic convenience method to access the indirect dimension resonance
-#' component of an NMRResonance2D or NMRSpecies2D object.
-#' 
-#' @param object An NMRResonance2D or NMRSpecies2D object.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @name indirect
-#' @export
-setGeneric("indirect", 
-  function(object, ...) standardGeneric("indirect")
-  )
-
-#' @rdname indirect
-#' @export
-setMethod("indirect", "NMRResonance2D", 
-  function(object) object@indirect)
-
-#---------------------------------------
-#' Set indirect dimension resonance object
-#' 
-#' Generic convenience method to set the indirect dimension resonance component
-#' of an NMRResonance2D or NMRSpecies2D object.
-#' 
-#' @param object An NMRResonance2D or NMRSpecies2D object.
-#' @param value A valid NMRResonance1D object.
-#' 
-#' @name indirect-set
-#' @export
-setGeneric("indirect<-", 
-  function(object, value) standardGeneric("indirect<-"))
-
-#' @rdname indirect-set
-#' @export
-setReplaceMethod("indirect", "NMRResonance2D",
-  function(object, value) {
-    object@indirect <- value
-    validObject(object)
-    object 
-  })
-
-
-
-#------------------------------------------------------------------------------
-# Id
-
-#' @rdname id
-#' @export
-setMethod("id", "NMRResonance2D", 
-  function(object) object@direct@id)
-
-#' @rdname id-set
-#' @export
-setReplaceMethod("id", "NMRResonance2D",
-  function(object, value) {
-    id <- as.character(value)
-    object@direct@id <- id
-    object@indirect@id <- id
-    validObject(object)
-    object 
-  })
-
-

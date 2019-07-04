@@ -450,6 +450,9 @@ nmrresonance_1d <- function(peaks, sf = nmrsession_1d('sf'), id = NULL,
   # Couplings are not added in every case
   add.couplings <- FALSE
 
+  # If peaks is just a single number, it's better processed as a singlet
+  if ( is.numeric(peaks) && ( length(peaks) == 1) ) peaks <- paste(peaks, 's')
+
   # If peaks is a character, parse coupling information
   if ( is.character(peaks) ) {
     coupling <- parse_peaks_1d(peaks)

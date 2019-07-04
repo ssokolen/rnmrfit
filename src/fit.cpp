@@ -286,7 +286,7 @@ double constrain_area(unsigned n, const double *x,
       area = M_PI * w * h; 
     } else if ( f < (1-1e-6) ) { 
       wg = w*f/(1 - f);
-      scalar = real(Faddeeva::w( (std::complex<double> (0, w/(sqrt(2) * wg))) ))
+      scalar = real(Faddeeva::w( (std::complex<double> (0, w/(sqrt(2) * wg))) ));
       area = sqrt(2 * M_PI) * wg * h / scalar;
     } else {
       area = sqrt(2 * M_PI) * w * h;

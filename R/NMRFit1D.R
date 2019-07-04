@@ -745,22 +745,22 @@ setMethod("show", "NMRFit1D",
     cat('Baseline correction:\n\n')
 
     cat('Real baseline: ')
-    if ( length(baseline) > 0) {cat('\n'); print(Re(baseline))}
+    if ( length(baseline) > 0) {cat('\n'); print(round(Re(baseline), 4))}
     else cat('None\n')
 
     cat('Imaginary baseline: ')
-    if ( length(baseline) > 0) {cat('\n'); print(Im(baseline))}
+    if ( length(baseline) > 0) {cat('\n'); print(round(Im(baseline), 4))}
     else cat('None\n')
 
     cat('Internal knots: ')
-    if ( length(knots) > 0) {cat('\n'); print(knots)}
+    if ( length(knots) > 0) {cat('\n'); print(round(knots, 4))}
     else cat('None\n')
     cat('\n')
 
     # Phase
     cat('Phase correction:\n\n')
 
-    if ( length(phase) > 0) print(phase)
+    if ( length(phase) > 0) print(round(phase, 4))
     else cat('None\n')
     cat('\n')
 
@@ -782,8 +782,8 @@ setMethod("show", "NMRFit1D",
 
     cat('Real baseline: ')
     if ( length(bounds$lower$baseline) > 0) {
-      lower <- Re(bounds$lower$baseline)
-      upper <- Re(bounds$upper$baseline)
+      lower <- round(Re(bounds$lower$baseline), 4)
+      upper <- round(Re(bounds$upper$baseline), 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
@@ -792,8 +792,8 @@ setMethod("show", "NMRFit1D",
 
     cat('Imaginary baseline: ')
     if ( length(bounds$lower$baseline) > 0) {
-      lower <- Im(bounds$lower$baseline)
-      upper <- Im(bounds$upper$baseline)
+      lower <- round(Im(bounds$lower$baseline), 4)
+      upper <- round(Im(bounds$upper$baseline), 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
@@ -801,11 +801,11 @@ setMethod("show", "NMRFit1D",
     else cat('None\n')
 
     # Phase bounds
-    cat('Phase: ')
+    cat('Phase (radians): ')
 
     if ( length(bounds$lower$phase) > 0)  {
-      lower <- bounds$lower$phase
-      upper <- bounds$upper$phase
+      lower <- round(bounds$lower$phase, 4)
+      upper <- round(bounds$upper$phase, 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
