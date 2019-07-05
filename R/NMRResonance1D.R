@@ -987,7 +987,7 @@ setMethod("set_peak_type", "NMRResonance1D",
     # Getting rid of empty spaces and capitals
     peak.type <- tolower(gsub('\\s', '', peak.type))
     peak.types <- c('lorentz', 'voigt', 'gauss', 'any')
-    peak.type <- pmatch(peak.type, peak.types)
+    peak.type <- pmatch(peak.type, peak.types, nomatch = -1)
 
     if ( peak.type == 1 ) {
       lower$fraction.gauss <- 0
@@ -996,11 +996,7 @@ setMethod("set_peak_type", "NMRResonance1D",
     } else if ( peak.type == 2 ) {
       lower$fraction.gauss <- 1e-6
       upper$fraction.gauss <- 1 - 1e-6
-
-      logic <- peaks$fraction.gauss < lower$fraction.gauss
-      peaks[logic , 'fraction.gauss'] <- lower$fraction.gauss[logic] + 1e-6
-      logic <- peaks$fraction.gauss > upper$fraction.gauss
-      peaks[logic , 'fraction.gauss'] <- upper$fraction.gauss[logic] - 1e-6
+      peaks$fraction.gauss <- 0.5
     } else if ( peak.type == 3 ) {
       lower$fraction.gauss <- 1
       upper$fraction.gauss <- 1

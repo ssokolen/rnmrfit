@@ -605,7 +605,7 @@ setMethod("fit", "NMRFit1D",
               ineq.constraints <- c(ineq.constraints, list(new.constraint))
 
               # The lower bound
-              new.constraint <- c(3, -leeway, 
+              new.constraint <- c(3, leeway, 
                                   -which(logic.2), which(logic.1))
               ineq.constraints <- c(ineq.constraints, list(new.constraint))
             }

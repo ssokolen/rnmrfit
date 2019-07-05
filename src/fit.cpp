@@ -279,15 +279,16 @@ double constrain_area(unsigned n, const double *x,
     double f = x[j+3];
     double area = 0;
     double wg;
-    double scalar;
+    complex<double> z, F;
 
     // Area calculation depends on fraction
     if ( f < 1e-6 ) { 
       area = M_PI * w * h; 
     } else if ( f < (1-1e-6) ) { 
       wg = w*f/(1 - f);
-      scalar = real(Faddeeva::w( (std::complex<double> (0, w/(sqrt(2) * wg))) ));
-      area = sqrt(2 * M_PI) * wg * h / scalar;
+      z = complex<double> (0, w/(sqrt(2) * wg));
+      F = Faddeeva::w( z );
+      area = sqrt(2 * M_PI) * wg * h / real(F);
     } else {
       area = sqrt(2 * M_PI) * w * h;
     }
@@ -317,6 +318,8 @@ double constrain_area(unsigned n, const double *x,
       double w = x[j+1];
       double h = x[j+2];
       double f = x[j+3];
+      double wg;
+      complex<double> z, F;
 
       // Extracting out sign
       bool neg = sign.at(i);
@@ -331,12 +334,24 @@ double constrain_area(unsigned n, const double *x,
         // Height
         grad[j+2] = dfda * M_PI * w;
       } else if ( f < (1-1e-6) ) { 
-        Rcpp::stop("Voigt peak area gradients are not currently supported");
-      } else {
+        wg = w*f/(1-f);
+        z = complex<double> (0, w/(sqrt(2) * wg));
+        F = Faddeeva::w( z );
+        // Width
+        grad[j+1] = dfda * 2 * w * f * sqrt(2 * M_PI) / ( real(F) * (1-f) );
+        // Height
+        grad[j+2] = dfda * sqrt(2 * M_PI) * wg / real(F);
+        // Fraction gauss
+        grad[j+3] = dfda * w*w * sqrt(2 * M_PI) * 
+                    ( 1/real(F*(1-f)*(1-f)) + 1/real(F*f*f) - 
+                      2/real(F*F*(1-f)*f*sqrt( 2 * M_PI )) );
+      } else if ( f < (1+1e-6) ) { 
         // Width
         grad[j+1] = dfda * sqrt(2 * M_PI) * h;
         // Height
         grad[j+2] = dfda * sqrt(2 * M_PI) * w;
+      } else {
+        Rcpp::stop("Fraction gauss fell out of [0,1] range. Aborting");
       }
     }
   }
@@ -420,6 +435,148 @@ void lorentz(double p, double wl, double h,
   return; 
 }
 
+      
+
+//------------------------------------------------------------------------------
+void gauss(double p, double wg, double h, 
+             int i_res, int i_par, double *grad, void *data) {
+
+	using namespace std;
+
+  // Unpacking data structure
+  data_lineshape *d = (data_lineshape *) data;
+  
+  vector< double > x = d->x;
+  
+  vector< complex<double> > *peak_fit = &(d->peak_fit.at(i_res));
+  vector< vector < complex<double> > > *peak_partial = &(d->peak_partial);
+
+  // Main terms
+  complex<double> fo, dfdz, dfdp, dfdwg, dzdwg, dzdp;
+
+  // Commonly used intermediate values
+  double z;
+
+  // Looping through each x value
+  for(int i = 0; i < x.size(); i++ ) {
+
+    // Main terms
+    z = (x.at(i)-p)/(sqrt(2.0)*wg);
+    
+    // Calculating an intermediate f with no h term
+    fo = Faddeeva::w( complex<double> (z, 0) );
+       
+    // Tacking on the h
+    (*peak_fit).at(i) += ( complex<double> (h, 0) ) * fo;
+    
+    // Only compute derivatives if required
+    if ( grad ) {
+      dfdz = ( complex<double> (h, 0) ) *
+             ( complex<double> ( -2*z, 0 ) * fo + 
+               complex<double> ( 0, 2/sqrt(M_PI) ) );
+
+      // Derivatives of z for chain rule
+      dzdp = complex<double> (-1/(sqrt(2.0)*wg), 0);
+      dzdwg = complex<double> (-z/wg, 0);
+
+      // Position gradient
+      dfdp = dfdz * dzdp;
+      (*peak_partial).at(i).at(i_par) = dfdp;
+
+      // Gauss width gradient
+      dfdwg = dfdz * dzdwg;
+      (*peak_partial).at(i).at(i_par+1) = dfdwg;
+
+      // Height gradient
+      (*peak_partial).at(i).at(i_par+2) = fo;
+
+      // Fraction gradient
+      (*peak_partial).at(i).at(i_par+3) = 0;
+    }
+  }
+
+  return; 
+}
+
+
+
+void voigt(double p, double wl, double h, double f, 
+             int i_res, int i_par, double *grad, void *data) {
+
+	using namespace std;
+
+  // Unpacking data structure
+  data_lineshape *d = (data_lineshape *) data;
+  
+  vector< double > x = d->x;
+  
+  vector< complex<double> > *peak_fit = &(d->peak_fit.at(i_res));
+  vector< vector < complex<double> > > *peak_partial = &(d->peak_partial);
+
+  // Main terms
+  complex<double> z, f0, dfdz, dfdp, dfdwl, dfdf, dzdp, dzdwl, dzdf;
+
+  // Scaling terms
+  complex<double> zn, fn, fn2, dfndzn, dzndf;
+
+  // Pre-calculations
+  double wg = wl * f / (1 - f);
+
+  //Normalising factors
+  zn = complex<double> ( 0, wl / (sqrt(2.0) * wg) );
+  fn = Faddeeva::w( zn );
+  fn2 = fn*fn;
+
+  dfndzn = ( complex<double> ( -2, 0 ) * zn * fn + 
+             complex<double> ( 0, 2/sqrt(M_PI) ) );  
+
+  dzndf = -zn * wg / (wl * f*f);
+
+  // Looping through each x value
+  for(int i = 0; i < x.size(); i++ ) {
+
+    // Pre-calculating common values
+    z = ( complex<double> ( x.at(i) - p , wl ) ) / 
+        ( complex<double> ( (sqrt(2.0) * wg), 0 ) );
+
+    // Calculating an intermediate f with no h term
+    f0 = Faddeeva::w( z );
+       
+    // Tacking on the h
+    (*peak_fit).at(i) += ( complex<double> (h, 0) ) * f0 / fn;
+
+    // Only compute derivatives if required
+    if ( grad ) {
+      
+      dfdz = ( complex<double> ( -2, 0 ) * z * f0 + 
+               complex<double> ( 0, 2/sqrt(M_PI) ) );  
+
+      // Derivatives of z for chain rule
+      dzdp = complex<double> ( -1/( sqrt(2.0)*wg ), 0 );
+      dzdwl = complex<double> ( 0, 1/( sqrt(2.0)*wg ) );
+      dzdf = -z * wg / (wl * f*f);
+
+      // Position gradient
+      dfdp = dfdz * dzdp * h / fn;
+      (*peak_partial).at(i).at(i_par) = dfdp;
+
+      // Lorentz width gradient
+      dfdwl = h * (dfdz * fn - dfndzn * f0) / fn2 * dzdwl;
+      (*peak_partial).at(i).at(i_par+1) = dfdwl;
+      
+	    // Height gradient
+      (*peak_partial).at(i).at(i_par+2) = f0 / fn;
+
+      // Fraction gradient
+      dfdf = h * (dfdz * dzdf * fn - dfndzn * dzndf * f0) / fn2;
+      (*peak_partial).at(i).at(i_par+3) = dfdf;
+      
+    }
+  }
+
+  return; 
+}
+
 
 
 //==============================================================================
@@ -474,13 +631,19 @@ double f_obj_1d(unsigned n, const double *par, double *grad, void *data) {
   for (int i = 0; i < n_peaks; i++) {
 
     double p = par[i*4];
-    double wl = par[i*4+1];
+    double w = par[i*4+1];
     double h = par[i*4+2];
     double f = par[i*4+3];
-    
+
     // If the fraction gauss value is 0, proceed as Lorentz (w becomes wl)
-    if ( true ) {
-		  lorentz(p, wl, h, 0, i*4, grad, data_direct);	
+    if ( f < 1e-6 ) {
+		  lorentz(p, w, h, 0, i*4, grad, data_direct);	
+    } else if ( f < (1 - 1e-6) ) {
+		  voigt(p, w, h, f, 0, i*4, grad, data_direct);	
+    } else if ( f < (1 + 1e-6) ) {
+		  gauss(p, w, h, 0, i*4, grad, data_direct);	
+    } else {
+      Rcpp::stop("Fraction gauss fell out of [0,1] range. Aborting");
     }
   }
 
