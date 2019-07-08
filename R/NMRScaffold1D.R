@@ -620,7 +620,8 @@ setMethod("f_lineshape", "NMRScaffold1D",
     # If peaks are to be summed, just feed all parameters into the Rcpp function
     if ( sum.peaks ) {
       out <- function(x) {
-        y <- .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, parameters)
+        p <- as.vector(t(parameters))
+        y <- .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, p)
         f_out(y)
       }
     } 
@@ -641,7 +642,7 @@ setMethod("f_lineshape", "NMRScaffold1D",
       # Generating a list of functions, each with their parameters enclosed
       functions <- lapply(parameters, function (p) {
         function(x) {
-          p <- matrix(p, nrow = 1)
+          p <-as.vector(p)
           y <- .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, p)
           f_out(y)
         }

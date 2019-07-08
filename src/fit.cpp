@@ -501,7 +501,7 @@ void gauss(double p, double wg, double h,
 
 
 void voigt(double p, double wl, double h, double f, 
-             int i_res, int i_par, double *grad, void *data) {
+           int i_res, int i_par, double *grad, void *data) {
 
 	using namespace std;
 
@@ -944,6 +944,10 @@ double fit_lineshape_1d(
 
 	return minf;
 }
+
+
+
+
 
 
 

@@ -7,7 +7,18 @@
 #include <math.h>
 #include <stdlib.h>
 #include <Rcpp.h>
-#include "Faddeeva.h"
+
+//==============================================================================
+// Prototypes
+
+void lorentz(double p, double wl, double h, 
+             int i_res, int i_par, double *grad, void *data);
+
+void gauss(double p, double wg, double h, 
+           int i_res, int i_par, double *grad, void *data);
+
+void voigt(double p, double wl, double h,  double f,
+           int i_res, int i_par, double *grad, void *data);
 
 //==============================================================================
 // Data structures
@@ -35,13 +46,6 @@ typedef struct {
   std::vector< int > peak_number_2;	
   double offset;
 } data_constraint;
-
-
-//==============================================================================
-// Prototypes
-
-void lorentz(double p, double wl, double h, 
-             int i_res, int i_par, bool grad, void *data);
 
 #endif
 

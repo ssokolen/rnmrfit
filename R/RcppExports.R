@@ -11,21 +11,7 @@ fit_lineshape_1d <- function(x_val, y_val, par, lb, ub, basis_val, eq, ineq, n_p
     .Call('_rnmrfit_fit_lineshape_1d', PACKAGE = 'rnmrfit', x_val, y_val, par, lb, ub, basis_val, eq, ineq, n_peaks, n_baseline, n_phase)
 }
 
-#' Generate 1D-NMR peak lineshape
-#'
-#' Calculates complex lineshapes based on chemical shift and peak parameters.
-#'
-#' @param x Vector of chemical shift data in ppm.
-#' @param par n-by-4 matrix with each row corresponding to a separate
-#'            peak to be added together and the 4 columns corresponding
-#'            to position, width, height, and fraction_gauss.
-#' 
-#' @return complex vector
-lineshape_1d <- function(x, par) {
-    .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, par)
-}
-
-test_list <- function(x) {
-    invisible(.Call('_rnmrfit_test_list', PACKAGE = 'rnmrfit', x))
+lineshape_1d <- function(x_val, par) {
+    .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x_val, par)
 }
 
