@@ -621,8 +621,9 @@ setMethod("f_lineshape", "NMRScaffold1D",
     if ( sum.peaks ) {
       out <- function(x) {
         p <- as.vector(t(parameters))
-        y <- .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, p)
-        f_out(y)
+        y <- matrix(0, nrow = length(x), ncol = 2)
+        .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, y, p)
+        f_out(cmplx1(r = y[,1], i = y[,2]))
       }
     } 
     # Otherwise, generate a tbl_df data frame
@@ -642,9 +643,10 @@ setMethod("f_lineshape", "NMRScaffold1D",
       # Generating a list of functions, each with their parameters enclosed
       functions <- lapply(parameters, function (p) {
         function(x) {
-          p <-as.vector(p)
-          y <- .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, p)
-          f_out(y)
+          p <- as.vector(p)
+          y <- matrix(0, nrow = length(x), ncol = 2)
+          .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, y, p)
+          f_out(cmplx1(r = y[,1], i = y[,2]))
         }
       })
 
@@ -680,7 +682,7 @@ setMethod("f_lineshape", "NMRScaffold1D",
 #'                   only real and 'i' to output only imaginary.
 #' @param ... Additional arguments passed to inheriting methods.
 #' 
-#' @return A vector of spectral intensity data or a data frame with columns
+#' @return A vector of spectral intensity data or a tibble with columns
 #'         "resonance" (optional), "peak", "direct.shift", and "intensity".
 #' 
 #' @name values
@@ -699,8 +701,9 @@ setMethod("values", "NMRScaffold1D",
   if ( sum.baseline && (class(object) == 'NMRFit1D') ) {
     f <- f_baseline(object, components)
     baseline <- f(direct.shift)
+  } else {
+    baseline <- rep(0, length(direct.shift))
   }
-  else baseline <- rep(0, length(direct.shift))
 
   # Output depends on whether peaks are summed or not
   if ( sum.peaks ) {
@@ -716,14 +719,14 @@ setMethod("values", "NMRScaffold1D",
 
     # Defining function that generates necessary data frame
     f <- function(g) {
-      data.frame(direct.shift = direct.shift, 
-                 intensity = g[[1]](direct.shift) + baseline)
+      tibble(direct.shift = direct.shift, 
+             intensity = (g[[1]](direct.shift)) + baseline)
     }
-
+    print(d)
     # And apply it for every peak
-    group_by_if(d, function(x) {!is.list(x)}) %>% do( f(.$f) )
+    do(d,  f(.$f) )
   }
-  })
+})
 
 
 

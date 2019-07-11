@@ -39,7 +39,7 @@ frame.}
 only real and 'i' to output only imaginary.}
 }
 \value{
-A vector of spectral intensity data or a data frame with columns
+A vector of spectral intensity data or a tibble with columns
         "resonance" (optional), "peak", "direct.shift", and "intensity".
 }
 \description{

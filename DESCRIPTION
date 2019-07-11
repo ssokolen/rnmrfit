@@ -36,6 +36,5 @@ Collate:
     'fitting_1d.R'
     'jcamp.R'
     'misc.R'
-    'processing.R'
     'RcppExports.R'
     'options.R'

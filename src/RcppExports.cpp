@@ -27,21 +27,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // lineshape_1d
-std::vector < std::complex<double> > lineshape_1d(Rcpp::NumericVector x_val, Rcpp::NumericVector par);
-RcppExport SEXP _rnmrfit_lineshape_1d(SEXP x_valSEXP, SEXP parSEXP) {
+void lineshape_1d(Rcpp::NumericVector x_direct, Rcpp::NumericMatrix y, Rcpp::NumericVector par);
+RcppExport SEXP _rnmrfit_lineshape_1d(SEXP x_directSEXP, SEXP ySEXP, SEXP parSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x_val(x_valSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x_direct(x_directSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type y(ySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type par(parSEXP);
-    rcpp_result_gen = Rcpp::wrap(lineshape_1d(x_val, par));
-    return rcpp_result_gen;
+    lineshape_1d(x_direct, y, par);
+    return R_NilValue;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rnmrfit_fit_lineshape_1d", (DL_FUNC) &_rnmrfit_fit_lineshape_1d, 11},
-    {"_rnmrfit_lineshape_1d", (DL_FUNC) &_rnmrfit_lineshape_1d, 2},
+    {"_rnmrfit_lineshape_1d", (DL_FUNC) &_rnmrfit_lineshape_1d, 3},
     {NULL, NULL, 0}
 };
 

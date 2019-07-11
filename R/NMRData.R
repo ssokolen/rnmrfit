@@ -540,50 +540,30 @@ setMethod("filter_indirect", "NMRData",
 
 
 #==============================================================================>
-#  Data handling functions
+#  Processing
 #==============================================================================>
 
 
 
 #------------------------------------------------------------------------
-#' Read Bruker acqus parameters
+#' Correct spectrum phase
 #' 
-#' Reads the acqus parameters across all acquired dimensions. Data from each
-#' dimension is stored as a separate list with direct (acqus) and indirect
-#' (acqus2) sublists. Since the acqus files are in JCAMP format, the actual
-#' parsing is just a thin wrapper around read_jcamp(), process_jcamp(), and
-#' flatten_jcamp() that reads Bruker scan parameters and puts them in a flat
-#' list.
+#' This function applies phase correction to NMRData1D and NMRData2D objects.
+#' The nature of the phase correction vector depends on the object. The 0 order
+#' phase correction term is always taken as the phase correction at 0 ppm.
 #' 
-#' @param path Character string that points to a scan directory.
-#' @param ... Arguments passed into process_jcamp().
-#' 
-#' @return A list made up of nested lists with the processed acqus entries.
-#' 
+#' @param object An NMRData object.
+#' @param phase A vector of phase corrections, from zero-order and up. 1st order
+#'              correction for NMRData1D objects require a vector of length 2 (0
+#'              order term, then first order term) while NMRData2D objects
+#'              require a vector of length 3 (0 order term, first order in the
+#'              direct dimension, 1st order in the indirect dimension).
+#' @param degrees TRUE if the phase angles are in degrees, FALSE if in radians.
+#
+#' @return NMRData object with corrected phase.
+#'
+#' @name apply_phase
 #' @export
-read_acqus_dir <- function(path, ...) {
-
-  # Making sure that the path is a directory
-  if (! dir.exists(path)) {
-    msg <- '"path" must point to a scan directory containing acqus files.'
-    stop(msg)
-  }
-
-  # Generating list of acqus file
-  all.files <- list.files(path)
-  acqus.files <- all.files[grepl('acqu\\d*s', all.files)]
-
-  # Checking to make sure that at least some files were found
-  if (length(acqus.files) == 0) {
-    msg <- 'No acqus files found.'
-    stop(msg)
-  }
-
-  # Combining with initial path
-  acqus.paths <- file.path(path, acqus.files)
-
-  # Selecting direct and indirect
-  acqus.paths <- list(direct = acqus.paths$acqus, indirect = acqus.paths$acqu2s)
-  acqus.paths <- lapply(acqus.paths, read_jcamp, ...)
-  lapply(acqus.paths, flatten_jcamp)
-}
+setGeneric("apply_phase", 
+  function(object, ...) standardGeneric("apply_phase")
+)

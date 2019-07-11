@@ -1,6 +1,10 @@
 # Definition of a new set of complex classes that expand beyond the i notation
 
 
+#' @importFrom vctrs vec_arith
+NULL
+
+
 
 #==============================================================================>
 # 1D -- basically a copy of complex() to match the 2D version below
@@ -79,7 +83,6 @@ vec_type2.numeric.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
 
 #---------------------------------------
 # Cast definitions
-
 vec_cast.vctrs_cmplx1 <- function(x, to) UseMethod("vec_cast.vctrs_cmplx1")
 vec_cast.vctrs_cmplx1.default <- function(x, to) vec_default_cast(x, to)
 
@@ -92,13 +95,16 @@ vec_cast.vctrs_cmplx1.numeric <- function(x, to) cmplx1(r = x)
 vec_cast.vctrs_cmplx1.complex <- function(x, to) cmplx1(r = Re(x), i = Im(x))
 
 #------------------------------------------------------------------------------
-# Traditional Re()/Im()
+# Traditional Re()/Im()/Conj()
 
 #' @export
 Re.vctrs_cmplx1 <- function(z) z$r
 
 #' @export
 Im.vctrs_cmplx1 <- function(z) z$i
+
+#' @export
+Conj.vctrs_cmplx1 <- function(z) new_cmplx1(r = z$r, i = -z$i)
 
 #------------------------------------------------------------------------------
 # Summary
@@ -111,6 +117,54 @@ summary.vctrs_cmplx1 <- function(object, ...,
                                  digits = max(3, getOption("digits") - 3)) {
   summary(as_tibble(object))
 
+}
+
+#------------------------------------------------------------------------------
+# Arithmetic
+
+#---------------------------------------
+# Boilerplate
+
+#' @export
+vec_arith.vctrs_cmplx1 <- function(op, x, y, ...) {
+  UseMethod("vec_arith.vctrs_cmplx1", y)
+}
+
+#' @export
+vec_arith.vctrs_cmplx1.default <- function(op, x, y, ...) {
+  stop_incompatible_op(op, x, y)
+}
+
+#---------------------------------------
+# cmplx1
+
+#' @S3method vec_arith.vctrs_cmplx1 vctrs_cmplx1
+vec_arith.vctrs_cmplx1.vctrs_cmplx1 <- function(op, x, y, ...) {
+  switch(
+    op,
+    "+" = new_cmplx1(r = x$r + y$r, i = x$i + y$i), 
+    "-" = new_cmplx1(r = x$r - y$r, i = x$i - y$i), 
+    "*" = new_cmplx1(r = x$r*y$r - x$i*y$i, i = x$r*y$i + x$i*y$r),
+    "/" = (x *  Conj(y)) / (y * Conj(y))$r,
+    stop_incompatible_op(op, x, y)
+  )
+}
+
+#---------------------------------------
+# numeric
+
+#' @S3method vec_arith.vctrs_cmplx1 numeric
+vec_arith.vctrs_cmplx1.numeric <- function(op, x, y, ...) {
+  switch(
+    op,
+    "/" = new_cmplx1(r = x$r/y, i = x$i/y),
+    vec_arith(op, x, cmplx1(r = y))
+  )
+}
+
+#' @S3method vec_arith.numeric vctrs_cmplx1
+vec_arith.numeric.vctrs_cmplx1 <- function(op, x, y, ...) {
+  vec_arith(op, cmplx1(r = x), y)
 }
 
 

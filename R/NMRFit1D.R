@@ -1261,14 +1261,15 @@ setMethod("f_baseline", "NMRFit1D",
     if ( length(baseline) == 0 ) {
       function(x) {
         zeros <- rep(0, length(x))
-        f_out(complex(re = zeros, im = zeros))
+        f_out(cmplx1(r = zeros, i = zeros))
       }
     }
     # Otherwise, generating actual baseline function
     else {
       function(x) {
         basis <- splines::bs(x, degree = order, knots = knots, intercept = TRUE)
-        y <- as.vector(basis %*% matrix(baseline, ncol = 1))
+        y <- cmplx1(r = as.vector(basis %*% matrix(Re(baseline), ncol = 1)),
+                    i = as.vector(basis %*% matrix(Im(baseline), ncol = 1)))
         f_out(y)
       }
     }
@@ -1311,14 +1312,16 @@ plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,
   #---------------------------------------
   # Calculating all required values
 
-  # The original data
-  d <- x@nmrdata@processed
-  direct.shift <- d$direct.shift
-  y.data <- d$intensity
+  nmrdata <- x@nmrdata
 
   if ( apply.phase ) {
-    y.data <- phase_spectrum(y.data, x@phase, degrees = FALSE)
+    nmrdata <- apply_phase(nmrdata, x@phase, degrees = FALSE)
   }
+
+  # The original data
+  d <- nmrdata@processed
+  direct.shift <- d$direct.shift
+  y.data <- d$intensity
 
   # The overall fit
   sf <- get_parameter(x@nmrdata, 'sfo1', 'acqus')

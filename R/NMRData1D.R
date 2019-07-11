@@ -295,6 +295,56 @@ nmrdata_1d_from_jcamp <- function(path, blocks.number = 1, ntuples.number = 1) {
 
 
 #==============================================================================>
+#  Processing
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------
+# Phase
+
+#' @rdname apply_phase
+#' @export
+setMethod("apply_phase", "NMRData1D", 
+  function(object, phase, degrees = TRUE) {
+
+  # Summing up phase components
+  n.phase <- length(phase)
+  if ( n.phase == 0 ) return(spectrum)
+
+  # Changing phase angle units if required
+  if (degrees) phase <- phase*pi/180
+
+  n <- length(spectrum)
+  phase.total <- rep(phase[1], n)
+
+  processed <- processed(object)
+
+  if ( length(phase) == 1) {
+    phase.total <- phase
+  } else if ( length(phase) == 2 ) {
+    direct.shift <- processed$direct.shift
+    phase.total <- phase.total + phase[i]*direct.shift
+  } else {
+    err <- '"phase" must be a vector of length 1 or 2.'
+    stop(err)
+  }
+
+  im <- Im(processed$intensity)
+  re <- Re(processed$intensity)
+
+  intensity <- cmplx1(r = re * cos(phase.total) + im * sin(phase.total),
+                      i= im * cos(phase.total) - re * sin(phase.total))
+
+  processed$intensity <- intensity
+  object@processed <- processed
+  object
+})
+
+
+
+
+#==============================================================================>
 #  Formatting and printing
 #==============================================================================>
 
