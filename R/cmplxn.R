@@ -313,6 +313,19 @@ vec_arith.numeric.vctrs_cmplx1 <- function(op, x, y, ...) {
   vec_arith(op, cmplx1(r = x), y)
 }
 
+#------------------------------------------------------------------------------
+# Math
+
+#' @export
+#' @method vec_math vctrs_cmplx1
+vec_math.vctrs_cmplx1 <- function(.fn, .x, ...) {
+  switch(.fn,
+    sum = cmplx1(r = sum(.x$r), i = sum(.x$i)),
+    mean = sum(.x)/length(x),
+    vec_math_base(.fn, .x, ...)
+  )
+}
+
 
 
 #==============================================================================>

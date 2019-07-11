@@ -1359,9 +1359,17 @@ plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,
     # Tacking on direct.shift as a grouping column
     all.columns <- c(columns, 'direct.shift')
 
+    # Summarize currently does not support vctrs
+    f <- function(d) {
+      out <- d[1,]
+      out$intensity <- sum(d$intensity)
+      unpack(out, 'intensity')
+    }
+
     d <- y.fit.all %>%
       group_by_at(all.columns) %>%
-      summarize(intensity = sum(intensity)) %>%
+      do( f(.) ) %>%
+      pack('intensity') %>%
       ungroup()
 
     d$id <- apply(d[, columns], 1, paste, collapse = '-')
