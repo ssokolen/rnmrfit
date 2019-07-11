@@ -720,11 +720,17 @@ setMethod("values", "NMRScaffold1D",
     # Defining function that generates necessary data frame
     f <- function(g) {
       tibble(direct.shift = direct.shift, 
-             intensity = (g[[1]](direct.shift)) + baseline)
+             intensity = (g[[1]](direct.shift)) + baseline) %>%
+      unpack('intensity')
     }
-    print(d)
+
+    # Note that the unpack/pack functions are used to avoid bind_row errors
+    
     # And apply it for every peak
-    do(d,  f(.$f) )
+    d %>%
+      group_by_if(function(x) {!is.list(x)}) %>% 
+      do(f(.$f) ) %>% 
+      pack('intensity')
   }
 })
 

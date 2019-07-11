@@ -1,7 +1,7 @@
 # Definition of a new set of complex classes that expand beyond the i notation
 
 
-#' @importFrom vctrs vec_arith
+#' @import vctrs
 NULL
 
 
@@ -28,6 +28,7 @@ cmplx1 <- function(r = 0, i = 0) {
 }
 
 #' @export
+#' @method format vctrs_cmplx1
 format.vctrs_cmplx1 <- function(x, ...) {
   r <- field(x, "r")
   i <- field(x, "i")
@@ -41,12 +42,15 @@ format.vctrs_cmplx1 <- function(x, ...) {
 }
 
 #' @export
+#' @method vec_ptype_abbr vctrs_cmplx1
 vec_ptype_abbr.vctrs_cmplx1 <- function(x) "cmplx1"
 
 #' @export
+#' @method vec_ptype_full vctrs_cmplx1
 vec_ptype_full.vctrs_cmplx1 <- function(x) "complex1d"
 
 #' @export
+#' @method dim vctrs_cmplx1
 dim.vctrs_cmplx1 <- function(x) NULL
 
 #------------------------------------------------------------------------------
@@ -54,6 +58,8 @@ dim.vctrs_cmplx1 <- function(x) NULL
 
 #' @export
 `$.vctrs_cmplx1` <- function(x, name) field(x, name)
+
+#' @export
 `$<-.vctrs_cmplx1` <- function(x, name, value) {
   field(x, name) <- value
   x
@@ -64,55 +70,189 @@ dim.vctrs_cmplx1 <- function(x) NULL
 
 #---------------------------------------
 # Type definitions
-vec_type2.vctrs_cmplx1 <- function(x, y, ...) {
-  UseMethod("vec_type2.vctrs_cmplx1", y)
+
+#' @export
+#' @method vec_ptype2 vctrs_cmplx1
+vec_ptype2.vctrs_cmplx1 <- function(x, y, ...) {
+  UseMethod("vec_ptype2.vctrs_cmplx1", y)
 }
 
-vec_type2.vctrs_cmplx1.default <- function(x, y, ..., x_arg = "", y_arg = "") {
-  stop_incompatible_type(x, y, x_arg = x_arg, y_arg = y_arg)
+#' @export
+#' @method vec_ptype2.vctrs_cmplx1 default
+vec_ptype2.vctrs_cmplx1.default <- 
+  function(x, y, ..., x_arg = "x", y_arg = "y") {
+    vec_default_ptype2(x, y, x_arg = x_arg, y_arg = y_arg)
 }
 
-vec_type2.vctrs_cmplx1.vctrs_unspecified <- function(x, y, ...) x
-vec_type2.vctrs_cmplx1.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+#' @export
+#' @method vec_ptype2 complex
+vec_ptype2.complex <- function(x, y, ...) {
+  UseMethod("vec_ptype2.complex", y)
+}
 
-vec_type2.vctrs_cmplx1.complex <- function(x, y, ...) new_cmplx1()
-vec_type2.complex.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+#' @export
+#' @method vec_ptype2.complex default
+vec_ptype2.complex.default <- 
+  function(x, y, ..., x_arg = "x", y_arg = "y") {
+    vec_default_ptype2(x, y, x_arg = x_arg, y_arg = y_arg)
+}
 
-vec_type2.vctrs_cmplx1.numeric <- function(x, y, ...) new_cmplx1()
-vec_type2.numeric.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+
+#' @export
+#' @method vec_ptype2.vctrs_cmplx1 vctrs_unspecified
+vec_ptype2.vctrs_cmplx1.vctrs_unspecified <- function(x, y, ...) x
+
+#' @export
+#' @method vec_ptype2.vctrs_cmplx1 vctrs_cmplx1
+vec_ptype2.vctrs_cmplx1.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+
+
+#' @export
+#' @method vec_ptype2.vctrs_cmplx1 complex
+vec_ptype2.vctrs_cmplx1.complex <- function(x, y, ...) new_cmplx1()
+
+#' @export
+#' @method vec_ptype2.complex vctrs_cmplx1
+vec_ptype2.complex.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+
+
+#' @export
+#' @method vec_ptype2.vctrs_cmplx1 double
+vec_ptype2.vctrs_cmplx1.double <- function(x, y, ...) new_cmplx1()
+
+#' @export
+#' @method vec_ptype2.double vctrs_cmplx1
+vec_ptype2.double.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+
+
+#' @export
+#' @method vec_ptype2.vctrs_cmplx1 data.frame
+vec_ptype2.vctrs_cmplx1.data.frame<- function(x, y, ...) tibble()
+
+#' @export
+#' @method vec_ptype2.data.frame vctrs_cmplx1
+vec_ptype2.data.frame.vctrs_cmplx1 <- function(x, y, ...) tibble()
 
 #---------------------------------------
 # Cast definitions
-vec_cast.vctrs_cmplx1 <- function(x, to) UseMethod("vec_cast.vctrs_cmplx1")
-vec_cast.vctrs_cmplx1.default <- function(x, to) vec_default_cast(x, to)
 
-vec_cast.vctrs_cmplx1.vctrs_cmplx1 <- function(x, to) x
-vec_cast.numeric.vctrs_cmplx1 <- function(x, to) Re(x)
-vec_cast.complex.vctrs_cmplx1 <- function(x, to) {
+#' @export
+#' @export vec_cast.vctrs_cmplx1
+#' @method vec_cast vctrs_cmplx1
+vec_cast.vctrs_cmplx1 <- function(x, to, ...) {
+  UseMethod("vec_cast.vctrs_cmplx1")
+}
+
+#' @export
+#' @method vec_cast.vctrs_cmplx1 default
+vec_cast.vctrs_cmplx1.default <- function(x, to, ...) {
+  vec_default_cast(x, to)
+}
+
+
+#' @export
+#' @method vec_cast.vctrs_cmplx1 vctrs_cmplx1
+vec_cast.vctrs_cmplx1.vctrs_cmplx1 <- function(x, to, ...) {
+  x
+}
+
+#' @export
+#' @method vec_cast.double vctrs_cmplx1
+vec_cast.double.vctrs_cmplx1 <- function(x, to, ...) {
+  Re(x)
+}
+
+#' @export
+#' @method vec_cast.complex vctrs_cmplx1
+vec_cast.complex.vctrs_cmplx1 <- function(x, to, ...) {
   complex(real = Re(x), imag = Im(x))
 }
-vec_cast.vctrs_cmplx1.numeric <- function(x, to) cmplx1(r = x)
-vec_cast.vctrs_cmplx1.complex <- function(x, to) cmplx1(r = Re(x), i = Im(x))
+
+#' @export
+#' @method vec_cast.data.frame vctrs_cmplx1
+vec_cast.data.frame.vctrs_cmplx1 <- function(x, to, ...) {
+  tibble(r = x$r, i = x$i)
+}
+
+#' @export
+#' @method vec_cast.vctrs_cmplx1 double
+vec_cast.vctrs_cmplx1.double <- function(x, to, ...) {
+  cmplx1(r = x)
+}
+
+#' @export
+#' @method vec_cast.vctrs_cmplx1 complex
+vec_cast.vctrs_cmplx1.complex <- function(x, to, ...) {
+  cmplx1(r = Re(x), i = Im(x))
+}
+
+#' @export
+#' @method vec_cast.vctrs_cmplx1 data.frame
+vec_cast.vctrs_cmplx1.data.frame <- function(x, to, ...) {
+  cmplx1(r = x$r, i = x$i)
+}
+
+#---------------------------------------
+# as_cmplx1 shortcut
+
+#' @export
+as_cmplx1 <- function(x) {
+  vec_cast(x, new_cmplx1())
+}
+
+#---------------------------------------
+#' Pack cmplx1 or cmplx2 column
+#' 
+#' This function undoes unpack() 
+#'
+#' @param x data.frame-like object.
+#' @param column.name character specifying cmplx1 column in x.
+#'
+#' @return Modified x with new "r" and "i" columns.
+#'
+#' export
+unpack <- function(x, column.name) {
+
+  # x must have colnames
+  err <- '"x" does not have colnames defined.'
+  if ( identical(colnames(x), NULL) ) stop(err)
+
+  # Check to make sure column exists and has vctrs_cmplx1 class
+  err <- sprintf('"x" does not have a "%s" column', column.name)
+  if (! column.name %in% colnames(x) ) stop(err) 
+
+  err <- sprintf('"%s" column must be of type vctrs_cmplx1.', column.name)
+  if (! 'vctrs_cmplx1' %in% class(x[[column.name]]) ) stop(err)
+
+  index <- which(colnames(x) == column.name)
+  column <- x[[column.name]]
+  add_column(x[ , -index], r = column$r, i = column$i, .after = index)
+}
 
 #------------------------------------------------------------------------------
 # Traditional Re()/Im()/Conj()
 
 #' @export
+#' @method Re vctrs_cmplx1
 Re.vctrs_cmplx1 <- function(z) z$r
 
 #' @export
+#' @method Im vctrs_cmplx1
 Im.vctrs_cmplx1 <- function(z) z$i
 
 #' @export
+#' @method Conj vctrs_cmplx1
 Conj.vctrs_cmplx1 <- function(z) new_cmplx1(r = z$r, i = -z$i)
 
 #------------------------------------------------------------------------------
 # Summary
 
 #' @export
+#' @method as_tibble vctrs_cmplx1
 as_tibble.vctrs_cmplx1 <- function(x, ...) as_tibble(unclass(x))
 
 #' @export
+#' @method summary vctrs_cmplx1
 summary.vctrs_cmplx1 <- function(object, ..., 
                                  digits = max(3, getOption("digits") - 3)) {
   summary(as_tibble(object))
@@ -126,11 +266,14 @@ summary.vctrs_cmplx1 <- function(object, ...,
 # Boilerplate
 
 #' @export
+#' @export vec_arith.vctrs_cmplx1
+#' @method vec_arith vctrs_cmplx1
 vec_arith.vctrs_cmplx1 <- function(op, x, y, ...) {
   UseMethod("vec_arith.vctrs_cmplx1", y)
 }
 
 #' @export
+#' @method vec_arith.vctrs_cmplx1 default
 vec_arith.vctrs_cmplx1.default <- function(op, x, y, ...) {
   stop_incompatible_op(op, x, y)
 }
@@ -138,7 +281,8 @@ vec_arith.vctrs_cmplx1.default <- function(op, x, y, ...) {
 #---------------------------------------
 # cmplx1
 
-#' @S3method vec_arith.vctrs_cmplx1 vctrs_cmplx1
+#' @export
+#' @method vec_arith.vctrs_cmplx1 vctrs_cmplx1
 vec_arith.vctrs_cmplx1.vctrs_cmplx1 <- function(op, x, y, ...) {
   switch(
     op,
@@ -151,9 +295,10 @@ vec_arith.vctrs_cmplx1.vctrs_cmplx1 <- function(op, x, y, ...) {
 }
 
 #---------------------------------------
-# numeric
+# double
 
-#' @S3method vec_arith.vctrs_cmplx1 numeric
+#' @export
+#' @method vec_arith.vctrs_cmplx1 numeric
 vec_arith.vctrs_cmplx1.numeric <- function(op, x, y, ...) {
   switch(
     op,
@@ -162,7 +307,8 @@ vec_arith.vctrs_cmplx1.numeric <- function(op, x, y, ...) {
   )
 }
 
-#' @S3method vec_arith.numeric vctrs_cmplx1
+#' @export
+#' @method vec_arith.numeric vctrs_cmplx1
 vec_arith.numeric.vctrs_cmplx1 <- function(op, x, y, ...) {
   vec_arith(op, cmplx1(r = x), y)
 }
@@ -215,7 +361,7 @@ vec_ptype_abbr.vctrs_cmplx2 <- function(x) "cmplx2"
 vec_ptype_full.vctrs_cmplx2 <- function(x) "complex2d"
 
 #' @export
-vec_type2.vctrs_cmplx2.vctrs_unspecified <- function(x, y, ...) x
+vec_ptype2.vctrs_cmplx2.vctrs_unspecified <- function(x, y, ...) x
 
 #------------------------------------------------------------------------------
 # New subsetting functions
@@ -232,22 +378,24 @@ vec_type2.vctrs_cmplx2.vctrs_unspecified <- function(x, y, ...) x
 
 #---------------------------------------
 # Type definitions
-vec_type2.vctrs_cmplx2 <- function(x, y, ...) {
-  UseMethod("vec_type2.vctrs_cmplx2", y)
+vec_ptype2.vctrs_cmplx2 <- function(x, y, ...) {
+  UseMethod("vec_ptype2.vctrs_cmplx2", y)
 }
 
-vec_type2.vctrs_cmplx2.default <- function(x, y, ..., x_arg = "", y_arg = "") {
+vec_ptype2.vctrs_cmplx2.default <- function(x, y, ..., x_arg = "", y_arg = "") {
   stop_incompatible_type(x, y, x_arg = x_arg, y_arg = y_arg)
 }
 
-vec_type2.vctrs_cmplx2.vctrs_unspecified <- function(x, y, ...) x
-vec_type2.vctrs_cmplx2.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
 
-vec_type2.vctrs_cmplx2.complex <- function(x, y, ...) new_cmplx2()
-vec_type2.complex.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
 
-vec_type2.vctrs_cmplx2.numeric <- function(x, y, ...) new_cmplx2()
-vec_type2.numeric.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
+vec_ptype2.vctrs_cmplx2.vctrs_unspecified <- function(x, y, ...) x
+vec_ptype2.vctrs_cmplx2.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
+
+vec_ptype2.vctrs_cmplx2.complex <- function(x, y, ...) new_cmplx2()
+vec_ptype2.complex.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
+
+vec_ptype2.vctrs_cmplx2.double <- function(x, y, ...) new_cmplx2()
+vec_ptype2.double.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
 
 #---------------------------------------
 # Cast definitions
@@ -256,11 +404,11 @@ vec_cast.vctrs_cmplx2 <- function(x, to) UseMethod("vec_cast.vctrs_cmplx2")
 vec_cast.vctrs_cmplx2.default <- function(x, to) vec_default_cast(x, to)
 
 vec_cast.vctrs_cmplx2.vctrs_cmplx2 <- function(x, to) x
-vec_cast.numeric.vctrs_cmplx2 <- function(x, to) Re(x)
+vec_cast.double.vctrs_cmplx2 <- function(x, to) Re(x)
 vec_cast.complex.vctrs_cmplx2 <- function(x, to) {
   complex(real = Re(x), imag = Im(x))
 }
-vec_cast.vctrs_cmplx2.numeric <- function(x, to) cmplx2(rr = x)
+vec_cast.vctrs_cmplx2.double <- function(x, to) cmplx2(rr = x)
 vec_cast.vctrs_cmplx2.complex <- function(x, to) cmplx2(rr = Re(x), ii = Im(x))
 
 #------------------------------------------------------------------------------
@@ -280,3 +428,91 @@ as_tibble.vctrs_cmplx2 <- as_tibble.vctrs_cmplx1
 
 #' @export
 summary.vctrs_cmplx2 <- summary.vctrs_cmplx1
+
+
+
+#==============================================================================>
+# Hack function to get around bind_rows() errors
+#==============================================================================>
+
+
+
+#---------------------------------------
+#' Unpack/pack cmplx1 or cmplx2 column
+#' 
+#' Despite the conveniences offered by defining complex numbers as vctrs
+#' objects, in some cases, it can still be more convenient to treat
+#' real/imaginary values as separate values of a tibble data frame. One example
+#' is when using the \code{group_by()} function from dplyr, as
+#' \code{bind_rows()} has trouble with vctrs objects. \code{unpack()} and
+#' \code{pack()} function provide a quick method to unpack/pack real/imginary
+#' values into and out of separate columns.
+#' 
+#' @param x data.frame-like object containing cmplx1 or cmplx2 data.
+#' @param column.name character specifying cmplx1 or cmplx2 column in x.
+#' 
+#' @return Modified tidyverse tibble. \code{unpack()} generates new "r" and "i"
+#'         columns for cmplx1 data and "rr", "ri", "ir", "ii" columns for cmplx2
+#'         data. \code{pack()} attempts to find the above columns and generates
+#'         a new cmplx1 or cmplx2 column with the name specified by column.name.
+#' 
+#' @name unpack
+#' @export
+unpack <- function(x, column.name) {
+
+  # x must have colnames
+  err <- '"x" does not have colnames defined.'
+  if ( identical(colnames(x), NULL) ) stop(err)
+
+  # Check to make sure column exists and has vctrs_cmplx1 class
+  err <- sprintf('"x" does not have a "%s" column', column.name)
+  if (! column.name %in% colnames(x) ) stop(err) 
+
+  err <- sprintf('"%s" column must be of type vctrs_cmplx1.', column.name)
+  if (! 'vctrs_cmplx1' %in% class(x[[column.name]]) ) stop(err)
+
+  index <- which(colnames(x) == column.name)
+
+  wrn <- 'Multiple columns with "%s" name found, selecting the first.'
+  if ( length(index) > 1 ) warning(wrn)
+  index <- index[1]
+
+  column <- x[[column.name]]
+  new.columns <- as_tibble(column)
+
+  if ( index == ncol(x) ) {
+    unpacked <- cbind(x[, -ncol(x)], new.columns)
+  } else if ( index == 1 ) {
+    unpacked <- cbind(new.columns, x[, -1])
+  } else {
+    unpacked <- cbind(x[ , 1:(index-1)], new.columns, x[, index:ncol(x)])
+  }
+
+  new.index <- index:(index + ncol(new.columns) - 1)
+  colnames(unpacked)[new.index] <- colnames(new.columns) 
+  unpacked
+}
+
+
+
+#' @rdname unpack
+#' @export
+pack <- function(x, column.name) {
+
+  x <- as_tibble(x)
+
+  # Looking for appropriate columns
+  cmplx1.names <- c('r', 'i')
+  if ( all( cmplx1.names %in% colnames(x) ) ) {
+    index <- which( colnames(x) %in% cmplx1.names )
+    x[[index[1]]] <- as_cmplx1(x[, index])
+    x <- x[, -index[-1]]
+    colnames(x)[index[1]] <- column.name
+  } else {
+    err <- 'cmpplx1 or cmplx2 columns not found.'
+    stop(err)
+  }
+
+  x
+}
+
