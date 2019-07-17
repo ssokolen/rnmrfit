@@ -566,17 +566,26 @@ setMethod("initialize_heights", "NMRScaffold1D",
 #' data frame of functions), where each function outputs spectral intensity
 #' data given a vector input of chemical shifts.
 #' 
-#' @param object An NMRScaffold1D object.
+#' @param object An NMRScaffold1D or NMRScaffold2d object.
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf = ..., but an override can be
-#'           provided here.
+#'           to ppm. A single value can be used for 1D and homonuclear 2D
+#'           experiments or two values for the direct and indirect dimensions,
+#'           in that order. this can be  In most cases, it is recommended to set
+#'           a single default value using, for example, nmroptions$direct$sf =
+#'           ..., but an override can be provided here.
 #' @param sum.peaks TRUE to add all individual peaks together and output a
 #'                  single function, FALSE to output a data frame of functions
 #'                  that correspond to individual peaks.
 #' @param include.id TRUE to include id outer column if outputting data frame.
-#' @param components 'r/i' to output both real and imaginary data, 'r' to output
-#'                   only real and 'i' to output only imaginary.
+#' @param components Any combination of 'r' or 'i' for 1D experiments, and 'rr',
+#'                   'ri', 'ir', or 'ii' for 2D experiments in a single string,
+#'                   separated by spaces (or any other characters) to specify
+#'                   the required real/imaginary components. For example
+#'                   'rr/ii'. The total number of components will determine the
+#'                   final data type of the output, with 1 component
+#'                   corresponding to real values, 2 components to cmplx1d
+#'                   objects (similar to the complex type), and 3 or 4
+#'                   components to cmplx2d hypercomplex objects.
 #' @param ... Additional arguments passed to inheriting methods.
 #' 
 #' @return A function or tbl_df data frame of functions where each function
@@ -601,14 +610,19 @@ setMethod("f_lineshape", "NMRScaffold1D",
     if ( is.null(sf) ) stop(err)
 
     # Defining which components to return
-    return.r <- grepl('r', tolower(components))
-    return.i <- grepl('i', tolower(components))
+    components <- rev(sort(strsplit(a, '[^ri]+', perl = TRUE)[[1]]))
 
-    err <- '"components" must have at least one of either "r" or "i"'
+    # Checking 1D components
+    err <- paste('"component" argument must consist of one-character codes',
+                 'and possibly a separator, e.g., "r/i" or "r"')
+    if ( any(! components %in% c('r', 'i')) ) stop(err)
+
+    return.r <- "r" in components
+    return.i <- "i" in components
+
     if ( return.r && return.i ) f_out <- function(y) {y}
     else if ( return.r ) f_out <- function(y) {Re(y)}
     else if ( return.i ) f_out <- function(y) {Im(y)}
-    else stop(err)
 
     columns <- c('position', 'width', 'height', 'fraction.gauss')
     peaks <- peaks(object)
