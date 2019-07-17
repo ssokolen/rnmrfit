@@ -5,10 +5,9 @@
 \title{Generate an NMRResonance2D object based on simplified peak list}
 \usage{
 nmrresonance_2d(direct.peaks, indirect.peaks,
-  direct.sf = nmroptions$direct$sf,
-  indirect.sf = nmroptions$indirect$sf, id = NULL, width = 1,
-  fraction.gauss = 0, position.leeway = 0, area.leeway = 0,
-  width.leeway = 0)
+  sf = c(nmroptions$direct$sf, nmroptions$indirect$sf), id = NULL,
+  width = 1, fraction.gauss = 0, position.leeway = 0,
+  area.leeway = 0, width.leeway = 0)
 }
 \arguments{
 \item{direct.peaks}{An NMRResonance1D object, numeric vector of singlet
@@ -21,17 +20,12 @@ chemical shifts, or a character string specifying
 multiplets of the form "3 d 1.2". See ?parse_peaks_1d
 for more information.}
 
-\item{direct.sf}{Sweep frequency (MHz) in the direct dimension -- needed to
-convert coupling constants from Hz to ppm. In most cases, it
-is recommended to set a single default value using
-nmroptions$direct$sf  = ..., but an override can be
-provided here.}
-
-\item{indirect.sf}{Sweep frequency (MHz) in the indirect dimension -- needed
-to convert coupling constants from Hz to ppm. In most
-cases, it is recommended to set a single default value
-using nmroptions$indirect$sf  = ..., but an override
-can be provided here.}
+\item{sf}{Sweep frequency (MHz) in the direct dimension -- needed to convert
+coupling constants from Hz to ppm. A single value can be used for
+homonuclear experiments or two values for the direct and indirect
+dimensions, in that order. In most cases, it is recommended to set
+a single default value using, for example, nmroptions$direct$sf  =
+..., but an override can be provided here.}
 
 \item{id}{A string specifying resonance name. If left empty, a name is
 automatically generated from the peaks argument.}

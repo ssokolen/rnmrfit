@@ -151,8 +151,10 @@ setGeneric("combine_getter",
 #' @export
 setMethod("combine_getter", "NMRScaffold2D", 
   function(object, getter, ...) {
-    direct <- data.frame(dimension = "direct", getter(object@direct))
-    indirect <- data.frame(dimension = "indirect", getter(object@indirect))
+    direct <- data.frame(dimension = "direct", 
+                         getter(object@direct, ...))
+    indirect <- data.frame(dimension = "indirect", 
+                           getter(object@indirect, ...))
     rbind(direct, indirect)
 })
 
@@ -499,3 +501,105 @@ setMethod("set_peak_type", "NMRScaffold2D",
   validObject(object)
   object
 })
+
+
+
+#========================================================================>
+#  Lineshape and area calculations
+#========================================================================>
+
+
+
+#' @rdname f_lineshape
+#' @export
+setMethod("f_lineshape", "NMRScaffold2D",
+  function(object, sf = c(nmroptions$direct$sf, nmroptions$indirect$sf),
+           sum.peaks = TRUE, include.id = FALSE, components = 'rr/ii') {
+
+    # Checking to make sure that sweep frequency is defined
+    err <- paste('"sf" must be provided as input or set using',
+                 'nmroptions$direct$sf and nmroptions$indirect$sf')
+    if ( is.null(sf) ) stop(err)
+
+    if ( length(sf) == 1 ) sf <- c(sf, sf)
+
+    # Defining which components to return
+    components <- rev(sort(strsplit(components, '[^ri]+', perl = TRUE)[[1]]))
+
+    # Checking 2D components
+    err <- paste('"component" argument must consist of two-character codes',
+                 'and possibly a separator, e.g., "rr/ii" or "rr ri ir ii"')
+    if ( any(! components %in% c('rr', 'ri', 'ir', 'ii')) ) stop(err)
+
+    f_out <- function(y) {
+      d <- as_tibble(y)[, components]
+      if ( length(components) == 1 ) {
+        d[[components]]
+      } else if ( length(components == 2) ) { 
+        colnames(d) <- c('r', 'i')
+        as_cmplx1(d)
+      } else if ( return.i ) {
+        as_cmplx2(d)
+      }
+    }
+
+    columns <- c('position', 'width', 'height', 'fraction.gauss')
+
+    # 2D Resonances must include their ids
+    if ( class(object) == 'NMRResonance2D' ) include.id <- TRUE
+
+    peaks <- peaks(object, include.id = include.id)
+    parameters <- as.matrix(peaks[, columns])
+
+    # Converting peak width to ppm
+    logic <- peaks$dimension == 'direct'
+    parameters[logic, 2] <- parameters[logic, 2]/sf[1]
+    parameters[!logic, 2] <- parameters[!logic, 2]/sf[2]
+
+    # Defining function generator based on arbitrary subset of parameters
+    f_gen <- function(p) {
+      force(p)
+      function(x1, x2) {
+        # Determining unique values
+        x.direct <- sort(unique(x1))
+        xi.direct <- as.integer(factor(x1), levels = x.direct) - 1
+
+        x.indirect <- sort(unique(x2))
+        xi.indirect <- as.integer(factor(x2), levels = x.indirect) - 1
+
+        p <- as.vector(t(parameters))
+        y <- matrix(0, nrow = length(x1), ncol = 4)
+
+        i.res <- as.integer(factor(peaks$resonance)) - 1
+        print(i.res)
+        i.dim <- as.integer(factor(peaks$dimension, 
+                                   levels = c('direct', 'indirect'))) - 1
+
+        .Call('_rnmrfit_lineshape_2d', PACKAGE = 'rnmrfit', 
+              x.direct, x.indirect, xi.direct, xi.indirect, y, p, i.res, i.dim)
+        f_out(cmplx2(rr = y[,1], ri = y[,2], ir = y[,3], ii = y[,4]))
+      }
+    }
+
+    # If peaks are to be summed, just feed all parameters into the Rcpp function
+    if ( sum.peaks ) {
+      p <- as.vector(t(parameters))
+      out <- f_gen(p)
+    } 
+    # Otherwise, generate a tbl_df data frame
+    else {
+      out <- as_tibble(peaks[, which(! colnames(peaks) %in% columns)])
+      parameters <- split(parameters, 1:nrow(parameters))
+      
+      # Generating a list of functions, each with their parameters enclosed
+      functions <- lapply(parameters, function (p) {
+        p <- as.vector(t(p))
+        f_gen(p)
+      })
+
+      # Adding functions as a column
+      out$f <- functions
+    }
+
+    out
+  })

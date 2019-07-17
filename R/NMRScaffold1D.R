@@ -610,58 +610,52 @@ setMethod("f_lineshape", "NMRScaffold1D",
     if ( is.null(sf) ) stop(err)
 
     # Defining which components to return
-    components <- rev(sort(strsplit(a, '[^ri]+', perl = TRUE)[[1]]))
+    components <- rev(sort(strsplit(components, '[^ri]+', perl = TRUE)[[1]]))
 
     # Checking 1D components
     err <- paste('"component" argument must consist of one-character codes',
                  'and possibly a separator, e.g., "r/i" or "r"')
     if ( any(! components %in% c('r', 'i')) ) stop(err)
 
-    return.r <- "r" in components
-    return.i <- "i" in components
+    return.r <- "r" %in% components
+    return.i <- "i" %in% components
 
     if ( return.r && return.i ) f_out <- function(y) {y}
     else if ( return.r ) f_out <- function(y) {Re(y)}
     else if ( return.i ) f_out <- function(y) {Im(y)}
 
     columns <- c('position', 'width', 'height', 'fraction.gauss')
-    peaks <- peaks(object)
+    peaks <- peaks(object, include.id = include.id)
     parameters <- as.matrix(peaks[, columns])
 
     # Converting peak width to ppm
     parameters[, 2] <- parameters[, 2]/sf
 
-    # If peaks are to be summed, just feed all parameters into the Rcpp function
-    if ( sum.peaks ) {
-      out <- function(x) {
-        p <- as.vector(t(parameters))
+    # Defining function generator based on arbitrary subset of parameters
+    f_gen <- function(p) {
+      force(p)
+      function(x) {
         y <- matrix(0, nrow = length(x), ncol = 2)
         .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, y, p)
         f_out(cmplx1(r = y[,1], i = y[,2]))
       }
+    }
+
+
+    # If peaks are to be summed, just feed all parameters into the Rcpp function
+    if ( sum.peaks ) {
+      p <- as.vector(t(parameters))
+      out <- f_gen(p)
     } 
     # Otherwise, generate a tbl_df data frame
     else {
       out <- as_tibble(peaks[, which(! colnames(peaks) %in% columns)])
-      if ( include.id && (nrow(out) > 0) ) {
-        if ( 'resonance' %in% colnames(out) ) {
-          out <- cbind(species = object@id, out)
-        }
-        else {
-          out <- cbind(resonance = object@id, out)
-        }
-      }
-
       parameters <- split(parameters, 1:nrow(parameters))
       
       # Generating a list of functions, each with their parameters enclosed
       functions <- lapply(parameters, function (p) {
-        function(x) {
-          p <- as.vector(p)
-          y <- matrix(0, nrow = length(x), ncol = 2)
-          .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, y, p)
-          f_out(cmplx1(r = y[,1], i = y[,2]))
-        }
+        p <- as.vector(t(p))
+        f_gen(p)
       })
 
       # Adding functions as a column
@@ -669,7 +663,7 @@ setMethod("f_lineshape", "NMRScaffold1D",
     }
 
     out
-  })
+})
 
 
 
@@ -722,7 +716,7 @@ setMethod("values", "NMRScaffold1D",
   # Output depends on whether peaks are summed or not
   if ( sum.peaks ) {
     # Get function
-    f <- f_lineshape(object, sf, sum.peaks, components)
+    f <- f_lineshape(object, sf, sum.peaks, include.id, components)
 
     # And apply it to specified chemical shifts
     f(direct.shift) + baseline
@@ -814,4 +808,4 @@ setMethod("areas", "NMRScaffold1D",
   # Sum if necessary
   if ( sum.peaks ) sum(areas$area)
   else areas
-  })
+})

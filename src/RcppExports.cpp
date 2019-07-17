@@ -27,14 +27,31 @@ BEGIN_RCPP
 END_RCPP
 }
 // lineshape_1d
-void lineshape_1d(Rcpp::NumericVector x_direct, Rcpp::NumericMatrix y, Rcpp::NumericVector par);
+void lineshape_1d(NumericVector x_direct, NumericMatrix y, NumericVector par);
 RcppExport SEXP _rnmrfit_lineshape_1d(SEXP x_directSEXP, SEXP ySEXP, SEXP parSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x_direct(x_directSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type y(ySEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type par(parSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x_direct(x_directSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type par(parSEXP);
     lineshape_1d(x_direct, y, par);
+    return R_NilValue;
+END_RCPP
+}
+// lineshape_2d
+void lineshape_2d(NumericVector x_direct, NumericVector x_indirect, IntegerVector xi_direct, IntegerVector xi_indirect, NumericMatrix y, NumericVector par, IntegerVector i_res, IntegerVector i_dim);
+RcppExport SEXP _rnmrfit_lineshape_2d(SEXP x_directSEXP, SEXP x_indirectSEXP, SEXP xi_directSEXP, SEXP xi_indirectSEXP, SEXP ySEXP, SEXP parSEXP, SEXP i_resSEXP, SEXP i_dimSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x_direct(x_directSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x_indirect(x_indirectSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type xi_direct(xi_directSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type xi_indirect(xi_indirectSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type par(parSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type i_res(i_resSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type i_dim(i_dimSEXP);
+    lineshape_2d(x_direct, x_indirect, xi_direct, xi_indirect, y, par, i_res, i_dim);
     return R_NilValue;
 END_RCPP
 }
@@ -42,6 +59,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_rnmrfit_fit_lineshape_1d", (DL_FUNC) &_rnmrfit_fit_lineshape_1d, 11},
     {"_rnmrfit_lineshape_1d", (DL_FUNC) &_rnmrfit_lineshape_1d, 3},
+    {"_rnmrfit_lineshape_2d", (DL_FUNC) &_rnmrfit_lineshape_2d, 8},
     {NULL, NULL, 0}
 };
 

@@ -15,3 +15,7 @@ lineshape_1d <- function(x_direct, y, par) {
     invisible(.Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x_direct, y, par))
 }
 
+lineshape_2d <- function(x_direct, x_indirect, xi_direct, xi_indirect, y, par, i_res, i_dim) {
+    invisible(.Call('_rnmrfit_lineshape_2d', PACKAGE = 'rnmrfit', x_direct, x_indirect, xi_direct, xi_indirect, y, par, i_res, i_dim))
+}
+

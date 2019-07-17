@@ -146,7 +146,8 @@ nmrmixture_1d <- function(species, ...) {
 #' @rdname peaks
 #' @export
 setMethod("peaks", "NMRMixture1D", 
-  function(object) {
+  function(object, include.id = FALSE) {
+    # include.id is currently ignored since mixtures and fits don't have ids
     peaks.list <- lapply(object@species, peaks, include.id = TRUE)
     do.call(rbind, peaks.list)
   })
