@@ -18,7 +18,7 @@ peaks(object, ...)
 
 \S4method{peaks}{NMRSpecies1D}(object, include.id = FALSE)
 
-\S4method{peaks}{NMRMixture1D}(object)
+\S4method{peaks}{NMRMixture1D}(object, include.id = FALSE)
 }
 \arguments{
 \item{object}{An NMRScaffold1D object.}

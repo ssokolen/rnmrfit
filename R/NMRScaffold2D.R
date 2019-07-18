@@ -571,7 +571,6 @@ setMethod("f_lineshape", "NMRScaffold2D",
         y <- matrix(0, nrow = length(x1), ncol = 4)
 
         i.res <- as.integer(factor(peaks$resonance)) - 1
-        print(i.res)
         i.dim <- as.integer(factor(peaks$dimension, 
                                    levels = c('direct', 'indirect'))) - 1
 
@@ -603,3 +602,115 @@ setMethod("f_lineshape", "NMRScaffold2D",
 
     out
   })
+
+
+
+#' @rdname values
+#' @export
+setMethod("values", "NMRScaffold2D",
+  function(object, direct.shift, indirect.shift,
+           sf = c(nmroptions$direct$sf, nmroptions$indirect$sf), 
+           sum.peaks = TRUE, sum.baseline = FALSE, include.id = FALSE, 
+           components = 'rr/ii') {
+
+  err <- '"direct.shift" and "indirect.shift" vectors must be same length'
+  if ( length(direct.shift) != length(indirect.shift) ) stop(err)
+
+  # Generating baseline if necessary
+  if ( sum.baseline && (class(object) == 'NMRFit2D') ) {
+    f <- f_baseline(object, components)
+    baseline <- f(direct.shift, indirect.shift)
+  } else {
+    baseline <- rep(0, length(direct.shift))
+  }
+
+  # Output depends on whether peaks are summed or not
+  if ( sum.peaks ) {
+    # Get function
+    f <- f_lineshape(object, sf, sum.peaks, include.id, components)
+
+    # And apply it to specified chemical shifts
+    f(direct.shift, indirect.shift) + baseline
+  } 
+  else {
+    # Get data frame of functions
+    d <- f_lineshape(object, sf, sum.peaks, include.id, components)
+
+    # Defining function that generates necessary data frame
+    f <- function(g) {
+      tibble(direct.shift = direct.shift,
+             indirect.shift = indirect.shift,
+             intensity = (g[[1]](direct.shift)) + baseline) %>%
+      unpack('intensity')
+    }
+
+    # Note that the unpack/pack functions are used to avoid bind_row errors
+    
+    # And apply them to every peak
+    d %>%
+      group_by_if(function(x) {!is.list(x)}) %>% 
+      do(f(.$f) ) %>% 
+      pack('intensity')
+  }
+})
+
+
+
+
+#' @rdname areas 
+#' @export
+setMethod("areas", "NMRScaffold2D", 
+          selectMethod("areas", signature = "NMRScaffold1D"))
+
+
+
+#------------------------------------------------------------------------
+#' Calculate peak volume
+#' 
+#' Calculate total peak valumes based on peak parameters. Note that the 2D
+#' representation consists of multiple "peaks", with at least one in the direct
+#' and indirect dimensions. As such, volumes are not calculated per peak, but
+#' per resonance.
+#' 
+#' @param object An NMRScaffold2D object.
+#' @param sum.peaks TRUE to add all individual resonances together and output a
+#'                  single volume, FALSE to output a data frame of peak area
+#'                  values.
+#' @param include.id TRUE to include id as outer column if outputting data
+#'                   frame.
+#' @param ... Additional arguments passed to inheriting methods.
+#' 
+#' @return A single overall volume or a data frame of volumes with resaonces
+#'         identifier and volume columns.
+#' 
+#' @name volumes
+#' @export
+setGeneric("volumes", 
+  function(object, ...) standardGeneric("volumes")
+)
+
+#' @rdname volumes
+#' @export
+setMethod("volumes", "NMRScaffold2D",
+  function(object, sum.peaks = TRUE, include.id = FALSE) {
+
+  # Id has to be included at the resonance level
+  if ( class(object) == 'NMRResonance2D' ) include.id <- TRUE
+
+  # First, calculate all the individual areas
+  areas <- areas(object, sum.peaks = FALSE, include.id = include.id)
+
+  # Volumes are then products of indirect and direct dimension areas
+  all.but.height.ids <- colnames(select(areas, -peak, -area))
+  all.but.dimension.ids <- colnames(select(areas, -peak, -dimension, -area))
+
+  volumes <- areas %>%
+    group_by_at(all.but.height.ids) %>%
+    summarize(area = sum(area)) %>%
+    group_by_at(all.but.dimension.ids) %>%
+    summarize(volume = prod(area))
+
+  # Sum if necessary
+  if ( sum.peaks ) sum(volumes$volume)
+  else volumes
+})

@@ -577,15 +577,16 @@ setMethod("initialize_heights", "NMRScaffold1D",
 #'                  single function, FALSE to output a data frame of functions
 #'                  that correspond to individual peaks.
 #' @param include.id TRUE to include id outer column if outputting data frame.
-#' @param components Any combination of 'r' or 'i' for 1D experiments, and 'rr',
-#'                   'ri', 'ir', or 'ii' for 2D experiments in a single string,
-#'                   separated by spaces (or any other characters) to specify
-#'                   the required real/imaginary components. For example
-#'                   'rr/ii'. The total number of components will determine the
-#'                   final data type of the output, with 1 component
-#'                   corresponding to real values, 2 components to cmplx1d
-#'                   objects (similar to the complex type), and 3 or 4
-#'                   components to cmplx2d hypercomplex objects.
+#' @param components A string specifying the real/imaginary components to
+#'                   output, e.g. 'r/i' or 'rr/ri/ir/ii'. Use the symbols 'r',
+#'                   'i' for 1D experiments and 'rr', 'ri', 'ir', 'ii' for 2D
+#'                   experiments. The symbols can be separated by spaces or
+#'                   practically any other characters, so 'r i' is interpreted
+#'                   the same as 'r/i'. The total number of components will
+#'                   determine the final data type of the output, with 1
+#'                   component corresponding to real values, 2 components to
+#'                   cmplx1d objects (similar to the normal complex type), and 3
+#'                   or 4 components to cmplx2d hypercomplex objects.
 #' @param ... Additional arguments passed to inheriting methods.
 #' 
 #' @return A function or tbl_df data frame of functions where each function
@@ -672,26 +673,36 @@ setMethod("f_lineshape", "NMRScaffold1D",
 #' 
 #' Calculated peak intensity values over a set of chemical shifts.
 #' 
-#' @param object An NMRScaffold1D object.
+#' @param object An NMRScaffold1D or NMRScaffold2D object.
 #' @param direct.shift Vector of chemical shift data in ppm.
+#' @param indirect.shift Vector of chemical shift data in ppm.
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf = ..., but an override can be
-#'           provided here.
+#'           to ppm. A single value can be used for 1D and homonuclear 2D
+#'           experiments or two values for the direct and indirect dimensions,
+#'           in that order. this can be  In most cases, it is recommended to set
+#'           a single default value using, for example, nmroptions$direct$sf =
+#'           ..., but an override can be provided here.
 #' @param sum.peaks TRUE to add all individual peaks together and output a
 #'                  single set of values, FALSE to output a data frame of values
 #'                  that correspond to individual peaks.
 #' @param sum.baseline TRUE to add baseline to every peak, if one is defined.
-#'                     FALSE to exclude baseline. that correspond to individual
-#'                     peaks.
+#'                     FALSE to exclude baseline.
 #' @param include.id TRUE to include id as outer column if outputting data
 #'                   frame.
-#' @param components 'r/i' to output both real and imaginary data, 'r' to output
-#'                   only real and 'i' to output only imaginary.
+#' @param components A string specifying the real/imaginary components to
+#'                   output, e.g. 'r/i' or 'rr/ri/ir/ii'. Use the symbols 'r',
+#'                   'i' for 1D experiments and 'rr', 'ri', 'ir', 'ii' for 2D
+#'                   experiments. The symbols can be separated by spaces or
+#'                   practically any other characters, so 'r i' is interpreted
+#'                   the same as 'r/i'. The total number of components will
+#'                   determine the final data type of the output, with 1
+#'                   component corresponding to real values, 2 components to
+#'                   cmplx1d objects (similar to the normal complex type), and 3
+#'                   or 4 components to cmplx2d hypercomplex objects.
 #' @param ... Additional arguments passed to inheriting methods.
 #' 
-#' @return A vector of spectral intensity data or a tibble with columns
-#'         "resonance" (optional), "peak", "direct.shift", and "intensity".
+#' @return A vector of spectral intensity data or a tibble with peak
+#'         identifiers.
 #' 
 #' @name values
 #' @export
@@ -705,7 +716,7 @@ setMethod("values", "NMRScaffold1D",
   function(object, direct.shift, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
            sum.baseline = FALSE, include.id = FALSE, components = 'r/i') {
 
-  # Generating baseline if necessaru
+  # Generating baseline if necessary
   if ( sum.baseline && (class(object) == 'NMRFit1D') ) {
     f <- f_baseline(object, components)
     baseline <- f(direct.shift)
@@ -734,7 +745,7 @@ setMethod("values", "NMRScaffold1D",
 
     # Note that the unpack/pack functions are used to avoid bind_row errors
     
-    # And apply it for every peak
+    # And apply them to every peak
     d %>%
       group_by_if(function(x) {!is.list(x)}) %>% 
       do(f(.$f) ) %>% 
@@ -749,11 +760,7 @@ setMethod("values", "NMRScaffold1D",
 #' 
 #' Calculate total peak areas based on peak parameters.
 #' 
-#' @param object An NMRScaffold1D object.
-#' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf, but an override can be
-#'           provided here.
+#' @param object An NMRScaffold1D or NMRScaffold2D object.
 #' @param sum.peaks TRUE to add all individual peaks together and output a
 #'                  single area, FALSE to output a data frame of peak area
 #'                  values.
@@ -761,8 +768,8 @@ setMethod("values", "NMRScaffold1D",
 #'                   frame.
 #' @param ... Additional arguments passed to inheriting methods.
 #' 
-#' @return A single overall area or a data frame of areas with columns
-#'         "resonance" (optional), "peak", and "area".
+#' @return A single overall area or a data frame of areas with peak identifier
+#'         and area columns.
 #' 
 #' @name areas
 #' @export
@@ -773,8 +780,7 @@ setGeneric("areas",
 #' @rdname areas 
 #' @export
 setMethod("areas", "NMRScaffold1D",
-  function(object, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
-           include.id = FALSE, components = 'r/i') {
+  function(object, sum.peaks = TRUE, include.id = FALSE) {
 
   # Defining area function
   f <- function(position, width, height, fraction.gauss) {
