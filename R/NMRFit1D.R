@@ -1338,7 +1338,7 @@ plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,
   y.residual <- y.data - y.fit - y.baseline
 
   # All individual fits
-  y.fit.all <- values(x, direct.shift, sf = sf, 
+  y.fit.all <- values(x, direct.shift, sf = sf,
                       sum.peaks = FALSE, sum.baseline = FALSE)
 
   # Generating grouped fits based on sum.level. The output is a list of

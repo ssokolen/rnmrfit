@@ -3,7 +3,7 @@
 \docType{methods}
 \name{show,NMRScaffold1D-method}
 \alias{show,NMRScaffold1D-method}
-\title{Display any NMRScaffold1D object}
+\title{Display NMRScaffold1D object}
 \usage{
 \S4method{show}{NMRScaffold1D}(object)
 }

@@ -27,6 +27,7 @@ cmplx1 <- function(r = 0, i = 0) {
   new_cmplx1(r, i)
 }
 
+#' @method format vctrs_cmplx1
 #' @export
 format.vctrs_cmplx1 <- function(x, ...) {
   r <- field(x, "r")
@@ -40,12 +41,15 @@ format.vctrs_cmplx1 <- function(x, ...) {
   out
 }
 
+#' @method vec_ptype_abbr vctrs_cmplx1
 #' @export
 vec_ptype_abbr.vctrs_cmplx1 <- function(x) "cmplx1"
 
+#' @method vec_ptype_full vctrs_cmplx1
 #' @export
 vec_ptype_full.vctrs_cmplx1 <- function(x) "complex1d"
 
+#' @method dim vctrs_cmplx1
 #' @export
 dim.vctrs_cmplx1 <- function(x) NULL
 
@@ -54,6 +58,8 @@ dim.vctrs_cmplx1 <- function(x) NULL
 
 #' @export
 `$.vctrs_cmplx1` <- function(x, name) field(x, name)
+
+#' @export
 `$<-.vctrs_cmplx1` <- function(x, name, value) {
   field(x, name) <- value
   x
@@ -64,22 +70,50 @@ dim.vctrs_cmplx1 <- function(x) NULL
 
 #---------------------------------------
 # Type definitions
-vec_type2.vctrs_cmplx1 <- function(x, y, ...) {
-  UseMethod("vec_type2.vctrs_cmplx1", y)
+
+#' @method vec_ptype2 vctrs_cmplx1
+#' @export
+#' @export vec_ptype2.vctrs_cmplx1
+vec_ptype2.vctrs_cmplx1 <- function(x, y, ...) {
+  UseMethod("vec_ptype2.vctrs_cmplx1", y)
 }
 
-vec_type2.vctrs_cmplx1.default <- function(x, y, ..., x_arg = "", y_arg = "") {
+#' @method vec_ptype2.vctrs_cmplx1 default
+#' @export
+vec_ptype2.vctrs_cmplx1.default <- function(x, y, ..., x_arg = "", y_arg = "") {
   stop_incompatible_type(x, y, x_arg = x_arg, y_arg = y_arg)
 }
 
-vec_type2.vctrs_cmplx1.vctrs_unspecified <- function(x, y, ...) x
-vec_type2.vctrs_cmplx1.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+#' @method vec_ptype2.vctrs_cmplx1 vctrs_unspecified
+#' @export
+vec_ptype2.vctrs_cmplx1.vctrs_unspecified <- function(x, y, ...) x
 
-vec_type2.vctrs_cmplx1.complex <- function(x, y, ...) new_cmplx1()
-vec_type2.complex.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+#' @method vec_ptype2.vctrs_cmplx1 vctrs_cmplx1
+#' @export
+vec_ptype2.vctrs_cmplx1.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
 
-vec_type2.vctrs_cmplx1.numeric <- function(x, y, ...) new_cmplx1()
-vec_type2.numeric.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+#' @method vec_ptype2.vctrs_cmplx1 complex
+#' @export
+vec_ptype2.vctrs_cmplx1.complex <- function(x, y, ...) new_cmplx1()
+
+#' @method vec_ptype2 complex
+#' @export
+#' @export vec_ptype2.complex
+vec_ptype2.complex <- function(x, y, ...) {
+  UseMethod("vec_ptype2.complex", y)
+}
+
+#' @method vec_ptype2.complex vctrs_cmplx1
+#' @export
+vec_ptype2.complex.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
+
+#' @method vec_ptype2.vctrs_cmplx1 double
+#' @export
+vec_ptype2.vctrs_cmplx1.double <- function(x, y, ...) new_cmplx1()
+
+#' @method vec_ptype2.double vctrs_cmplx1
+#' @export
+vec_ptype2.double.vctrs_cmplx1 <- function(x, y, ...) new_cmplx1()
 
 #---------------------------------------
 # Cast definitions
@@ -135,6 +169,16 @@ vec_arith.vctrs_cmplx1.default <- function(op, x, y, ...) {
   stop_incompatible_op(op, x, y)
 }
 
+#' @export
+vec_arith.complex <- function(op, x, y, ...) {
+  UseMethod("vec_arith.complex", y)
+}
+
+#' @export
+vec_arith.complex.default <- function(op, x, y, ...) {
+  stop_incompatible_op(op, x, y)
+}
+
 #---------------------------------------
 # cmplx1
 
@@ -165,6 +209,19 @@ vec_arith.vctrs_cmplx1.numeric <- function(op, x, y, ...) {
 #' @S3method vec_arith.numeric vctrs_cmplx1
 vec_arith.numeric.vctrs_cmplx1 <- function(op, x, y, ...) {
   vec_arith(op, cmplx1(r = x), y)
+}
+
+#---------------------------------------
+# complex 
+
+#' @S3method vec_arith.vctrs_cmplx1 complex
+vec_arith.vctrs_cmplx1.complex <- function(op, x, y, ...) {
+   vec_arith(op, x, vec_cast(y, new_cmplx1())) 
+}
+
+#' @S3method vec_arith.complex vctrs_cmplx1
+vec_arith.complex.vctrs_cmplx1 <- function(op, x, y, ...) {
+  vec_arith(op, vec_cast(x, complex()), y)
 }
 
 

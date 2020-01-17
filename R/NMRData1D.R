@@ -310,7 +310,7 @@ setMethod("apply_phase", "NMRData1D",
 
   # Summing up phase components
   n.phase <- length(phase)
-  if ( n.phase == 0 ) return(spectrum)
+  if ( n.phase == 0 ) return(object)
 
   # Changing phase angle units if required
   if (degrees) phase <- phase*pi/180

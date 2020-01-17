@@ -7,7 +7,7 @@
 \title{Definition of an NMR resonance.}
 \description{
 Essentially, this class is used to define coupling relationships to group
-individual peaks into resonances. A resonances is a series of peaks that are
+individual peaks into resonances. A resonance is a series of peaks that are
 constrained by a set of relations between their position, width, and,
 fraction.gauss parameters as well as overall areas. A 2D resonance is simply
 a collection of 1D resonances in the direct and indirect dimension with
@@ -16,7 +16,7 @@ separate set of coupling constraints.
 \section{Slots}{
 
 \describe{
-\item{\code{direct}}{An NMRResonance1D object.}
+\item{\code{dimensions}}{An NMRResonance1D object.}
 
 \item{\code{indirect}}{An NMRResonance1D object.}
 }}

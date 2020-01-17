@@ -35,7 +35,7 @@ NMRScaffold1D <- setClass("NMRScaffold1D",
 
 
 #------------------------------------------------------------------------------
-#' Display any NMRScaffold1D object
+#' Display NMRScaffold1D object
 #'
 #' Display a quick summary of resonance parameters.
 #'
@@ -718,13 +718,14 @@ setMethod("values", "NMRScaffold1D",
     d <- f_lineshape(object, sf, sum.peaks, include.id, components)
 
     # Defining function that generates necessary data frame
-    f <- function(g) {
-      tibble(direct.shift = direct.shift, 
-             intensity = (g[[1]](direct.shift)) + baseline)
+    f <- function(d) {
+      cbind(select(d, -f),
+            direct.shift = direct.shift, 
+            intensity = (d$f[[1]](direct.shift)) + baseline)
     }
-    print(d)
+
     # And apply it for every peak
-    do(d,  f(.$f) )
+    do(d,  f(.) )
   }
 })
 
