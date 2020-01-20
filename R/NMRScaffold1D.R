@@ -1,7 +1,7 @@
 # Definition of a super-class for 1D resonance data.
 
-#' @import Rcpp
 #' @useDynLib rnmrfit
+#' @importFrom Rcpp sourceCpp
 NULL
 
 

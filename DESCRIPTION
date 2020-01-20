@@ -18,7 +18,7 @@ Imports: Rcpp, pillar
 LinkingTo: Rcpp, nloptr
 License: Apache (>= 2.0)
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Collate: 
     'cmplxn.R'
     'NMRData.R'

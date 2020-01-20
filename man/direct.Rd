@@ -10,8 +10,6 @@ indirect(object)
 }
 \arguments{
 \item{object}{An NMRScaffold2D object.}
-
-\item{object}{An NMRScaffold2D object.}
 }
 \description{
 Generic convenience method to extract all direct dimension components.

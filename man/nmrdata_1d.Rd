@@ -6,8 +6,7 @@
 \alias{nmrdata_1d_from_jcamp}
 \title{Constructors for generating an NMRData1D object}
 \usage{
-nmrdata_1d(path, procs.number = NA, blocks.number = 1,
-  ntuples.number = 1)
+nmrdata_1d(path, procs.number = NA, blocks.number = 1, ntuples.number = 1)
 
 nmrdata_1d_from_pdata(path, procs.number = NA)
 

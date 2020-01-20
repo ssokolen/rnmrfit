@@ -13,8 +13,8 @@ using namespace Rcpp;
 //------------------------------------------------------------------------------
 
 
-
-// [[export]]
+//' @export
+// [[Rcpp::export]]
 void lineshape_1d(NumericVector x_direct, NumericMatrix y, NumericVector par) {
 
   using namespace std;
@@ -84,8 +84,8 @@ void lineshape_1d(NumericVector x_direct, NumericMatrix y, NumericVector par) {
 //------------------------------------------------------------------------------
 
 
-
-// [[export]]
+//' @export
+// [[Rcpp::export]]
 void lineshape_2d(NumericVector x_direct, NumericVector x_indirect,
                   IntegerVector xi_direct, IntegerVector xi_indirect,
                   NumericMatrix y, NumericVector par, IntegerVector i_res,

@@ -11,7 +11,13 @@ fit_lineshape_1d <- function(x_val, y_val, par, lb, ub, basis_val, eq, ineq, n_p
     .Call('_rnmrfit_fit_lineshape_1d', PACKAGE = 'rnmrfit', x_val, y_val, par, lb, ub, basis_val, eq, ineq, n_peaks, n_baseline, n_phase)
 }
 
+#' @export
 lineshape_1d <- function(x_direct, y, par) {
     invisible(.Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x_direct, y, par))
+}
+
+#' @export
+lineshape_2d <- function(x_direct, x_indirect, xi_direct, xi_indirect, y, par, i_res, i_dim) {
+    invisible(.Call('_rnmrfit_lineshape_2d', PACKAGE = 'rnmrfit', x_direct, x_indirect, xi_direct, xi_indirect, y, par, i_res, i_dim))
 }
 
