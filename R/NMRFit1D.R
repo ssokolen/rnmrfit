@@ -1359,6 +1359,8 @@ plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,
     # Tacking on direct.shift as a grouping column
     all.columns <- c(columns, 'direct.shift')
 
+    # Converting cmplx1 to complex() for dplyr support
+    y.fit.all$intensity <- vec_cast(y.fit.all$intensity, complex())
     d <- y.fit.all %>%
       group_by_at(all.columns) %>%
       summarize(intensity = sum(intensity)) %>%
