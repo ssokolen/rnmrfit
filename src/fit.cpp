@@ -396,7 +396,7 @@ void lorentz(double p, double wl, double h,
   for(int i = 0; i < x.size(); i++ ) {
 
     // Pre-calculating common values
-    z = (x.at(i)-p)/wl;
+    z = (p - x.at(i))/wl;
     z2 = z*z;
     z2p1 = z2 + 1;
 
@@ -461,7 +461,7 @@ void gauss(double p, double wg, double h,
   for(int i = 0; i < x.size(); i++ ) {
 
     // Main terms
-    z = (x.at(i)-p)/(sqrt(2.0)*wg);
+    z = (p - x.at(i))/(sqrt(2.0)*wg);
     
     // Calculating an intermediate f with no h term
     fo = Faddeeva::w( complex<double> (z, 0) );
@@ -476,7 +476,7 @@ void gauss(double p, double wg, double h,
                complex<double> ( 0, 2/sqrt(M_PI) ) );
 
       // Derivatives of z for chain rule
-      dzdp = complex<double> (-1/(sqrt(2.0)*wg), 0);
+      dzdp = complex<double> (1/(sqrt(2.0)*wg), 0);
       dzdwg = complex<double> (-z/wg, 0);
 
       // Position gradient
@@ -536,7 +536,7 @@ void voigt(double p, double wl, double h, double f,
   for(int i = 0; i < x.size(); i++ ) {
 
     // Pre-calculating common values
-    z = ( complex<double> ( x.at(i) - p , wl ) ) / 
+    z = ( complex<double> ( p - x.at(i) , wl ) ) / 
         ( complex<double> ( (sqrt(2.0) * wg), 0 ) );
 
     // Calculating an intermediate f with no h term
@@ -552,7 +552,7 @@ void voigt(double p, double wl, double h, double f,
                complex<double> ( 0, 2/sqrt(M_PI) ) );  
 
       // Derivatives of z for chain rule
-      dzdp = complex<double> ( -1/( sqrt(2.0)*wg ), 0 );
+      dzdp = complex<double> ( 1/( sqrt(2.0)*wg ), 0 );
       dzdwl = complex<double> ( 0, 1/( sqrt(2.0)*wg ) );
       dzdf = -z * wg / (wl * f*f);
 
