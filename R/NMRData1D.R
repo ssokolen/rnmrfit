@@ -225,13 +225,13 @@ nmrdata_1d_from_jcamp <- function(path, blocks.number = 1, ntuples.number = 1) {
   real.index <- which(str_detect(variables, 'spectrum.*real'))
   imag.index <- which(str_detect(variables, 'spectrum.*imag'))
 
-  # If both real and imaginary data isn't there, abort
-  err <- 'Import from JCAMP file currently limited to real/imaginary spectra'
-  if ( length(c(real.index, imag.index)) < 2 ) stop(err)
-
   # Double check that the first entry is frequency
   err <- 'Import from JCAMP file currently limited to frequency abscissa'
   if (! str_detect(variables[1], 'freq') ) stop(err)
+
+  # If both real and imaginary data isn't there, abort
+  err <- 'Import from JCAMP file currently limited to real/imaginary spectra'
+  if ( length(c(real.index, imag.index)) < 2 ) stop(err)
 
   # Proceed to extract data
   real.data <- pages[[real.index - 1]]

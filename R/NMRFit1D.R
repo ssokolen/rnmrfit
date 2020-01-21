@@ -1052,7 +1052,7 @@ setGeneric("phase<-",
 
 #' @rdname phase-set
 #' @export
-setReplaceMethod("phase", "NMRResonance1D",
+setReplaceMethod("phase", "NMRFit1D",
   function(object, value) {
     object@phase <- value
     validObject(object)

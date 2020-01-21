@@ -697,7 +697,7 @@ setMethod("values", "NMRScaffold1D",
   function(object, direct.shift, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
            sum.baseline = FALSE, include.id = FALSE, components = 'r/i') {
 
-  # Generating baseline if necessaru
+  # Generating baseline if necessary
   if ( sum.baseline && (class(object) == 'NMRFit1D') ) {
     f <- f_baseline(object, components)
     baseline <- f(direct.shift)
@@ -719,13 +719,17 @@ setMethod("values", "NMRScaffold1D",
 
     # Defining function that generates necessary data frame
     f <- function(d) {
-      cbind(select(d, -f),
-            direct.shift = direct.shift, 
-            intensity = (d$f[[1]](direct.shift)) + baseline)
+      intensity <- d$f[[1]](direct.shift) + baseline
+      data.frame(direct.shift = direct.shift, 
+                 intensity = vec_cast(intensity, complex())) 
     }
 
     # And apply it for every peak
-    do(d,  f(.) )
+    descriptors <- colnames(d)[1:(ncol(d)-1)]
+    d %>% 
+      group_by_at(descriptors) %>% 
+      do( f(.) ) %>%
+      ungroup()
   }
 })
 

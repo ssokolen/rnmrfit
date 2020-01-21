@@ -105,11 +105,11 @@ validNMRResonance1D <- function(object) {
       err <- c(err, new.err)
     }
 
-    logic1 <- identical(bounds$lower$resonance, peaks$resonance)
-    logic2 <- identical(bounds$lower$peak, peaks$peak)
-    if (! (logic1 && logic2) ) {
+    logic <- identical(as.numeric(bounds$lower$peak), 
+                       as.numeric(peaks$peak))
+    if (! logic ) {
       valid <- FALSE
-      new.err <- '"bounds$lower" resonance and peak columns must match "peaks"'
+      new.err <- '"bounds$lower" peak column must match "peaks"'
       err <- c(err, new.err)
     }
   }
@@ -126,11 +126,11 @@ validNMRResonance1D <- function(object) {
       err <- c(err, new.err)
     }
 
-    logic1 <- identical(bounds$upper$resonance, peaks$resonance)
-    logic2 <- identical(bounds$upper$peak, peaks$peak)
-    if (! (logic1 && logic2) ) {
+    logic <- identical(as.numeric(bounds$upper$peak), 
+                       as.numeric(peaks$peak))
+    if (! logic ) {
       valid <- FALSE
-      new.err <- '"bounds$upper" resonance and peak columns must match "peaks"'
+      new.err <- '"bounds$upper" peak column must match "peaks"'
       err <- c(err, new.err)
     }
   }
