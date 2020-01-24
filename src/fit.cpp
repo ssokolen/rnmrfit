@@ -413,7 +413,7 @@ void lorentz(double p, double wl, double h,
              ( complex<double> (h/(z2p1*z2p1), 0) );
 
       // Derivatives of z for chain rule
-      dzdp = complex<double> (-1/wl, 0);
+      dzdp = complex<double> (1/wl, 0);
       dzdwl = complex<double> (-z/wl, 0);
 
       // Position gradient

@@ -457,8 +457,10 @@ setMethod("fit", "NMRFit1D",
     phase <- phase(object)
     n.phase <- length(phase)
     if ( n.phase == 2 ) {
+      print(x.range)
+      print(x.span)
       phase[1] <- phase[1] + phase[2]*x.range[1]
-      phase[2] <- phase[2]/x.span
+      phase[2] <- (phase[2] - phase[1])*x.span
     }
 
     # Adding simple bounds that are expanded to constraints for 1st order
@@ -696,11 +698,17 @@ setMethod("fit", "NMRFit1D",
     index <- (n.peaks*4 + n.baseline*2 + 1):(n.peaks*4 + n.baseline*2 + n.phase)
     if ( n.phase > 0 ) {
       phase <- par$par[index]
+
+      print('Phase!')
+      print(phase)
+      print(x.range)
       
       # 1st order phase coefficients must be adapted back to the global scale
       if ( n.phase == 2 ) {
-        phase[2] <- phase[2]*x.span
-        phase[1] <- phase[1] - phase[2]*x.range[1]
+        phase.left <- phase[1]
+        phase.right <- phase[1] + phase[2]
+        phase[2] <- (phase.right - phase.left)/x.span
+        phase[1] <- phase.left - phase[2]*x.range[1]
       }
 
       object@phase <- phase

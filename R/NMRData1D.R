@@ -324,7 +324,7 @@ setMethod("apply_phase", "NMRData1D",
     phase.total <- phase
   } else if ( length(phase) == 2 ) {
     direct.shift <- processed$direct.shift
-    phase.total <- phase.total + phase[i]*direct.shift
+    phase.total <- phase.total + phase[2]*direct.shift
   } else {
     err <- '"phase" must be a vector of length 1 or 2.'
     stop(err)
