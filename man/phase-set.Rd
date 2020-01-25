@@ -2,12 +2,12 @@
 % Please edit documentation in R/NMRFit1D.R
 \name{phase-set}
 \alias{phase-set}
-\alias{phase<-,NMRResonance1D-method}
+\alias{phase<-,NMRFit1D-method}
 \title{Set object phase}
 \usage{
 phase(object) <- value
 
-\S4method{phase}{NMRResonance1D}(object) <- value
+\S4method{phase}{NMRFit1D}(object) <- value
 }
 \arguments{
 \item{object}{An NMRFit1D object.}

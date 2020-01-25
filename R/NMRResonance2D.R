@@ -275,6 +275,54 @@ setMethod("split_dimensions", "NMRResonance2D",
 
 
 
+#------------------------------------------------------------------------------
+# Direct and indirect components
+
+
+
+#' @rdname direct
+#' @export
+setMethod("direct", "NMRResonance2D", 
+  function(object) object@direct
+)
+
+
+
+#' @rdname direct-set
+#' @export
+setReplaceMethod("direct", "NMRResonance2D",
+  function(object, value) {
+    object@direct <- value
+    validObject(object)
+    object 
+  })
+
+
+
+#' @rdname indirect
+#' @export
+setMethod("indirect", "NMRResonance2D", 
+  function(object) object@indirect
+)
+
+
+
+#' @rdname indirect-set
+#' @export
+setReplaceMethod("indirect", "NMRResonance2D",
+  function(object, value) {
+    object@indirect <- value
+    validObject(object)
+    object 
+  })
+
+
+
+#------------------------------------------------------------------------------
+# Id
+
+
+
 #' @rdname id
 #' @export
 setMethod("id", "NMRResonance2D", 

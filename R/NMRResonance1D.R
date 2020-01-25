@@ -469,6 +469,12 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
 
       # Checking to make sure that sweep frequency is defined
       err <- '"sf" must be provided as input or set using nmroptions$direct$sf'
+
+      # Error message is different if the 1D code is actually called by 2D
+      if ( grepl('nmrresonance_2d', deparse(sys.calls()[[sys.nframe()-1]])) ) {
+        err <- paste(err, '(and nmroptions$indirect$sf for 2D fitting)')
+      }
+
       if ( is.null(sf) ) stop(err)
 
       # Converting coupling constant from Hz to ppm
