@@ -268,6 +268,32 @@ setMethod("split_dimensions", "NMRResonance2D",
 
 
 
+#==============================================================================>
+# Basic setter and getter functions
+#==============================================================================>
+
+
+
+#' @rdname id
+#' @export
+setMethod("id", "NMRResonance2D", 
+  function(object) object@direct@id
+)
+
+
+
+#' @rdname id-set
+#' @export
+setReplaceMethod("id", "NMRResonance2D",
+  function(object, value) {
+    id <- as.character(value)
+    object@direct@id <- id
+    object@indirect@id <- id
+    validObject(object)
+    object 
+  })
+
+
 
 #==============================================================================>
 # Basic setter and getter functions
