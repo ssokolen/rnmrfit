@@ -76,7 +76,7 @@ setGeneric("direct<-",
 #' 
 #' @param object An NMRScaffold2D object.
 #' 
-#' @name direct 
+#' @name indirect 
 setGeneric("indirect", 
   function(object) standardGeneric("indirect")
 )

@@ -13,9 +13,9 @@ NMRResonance1D objects. See ?nmrresonance_1d for more
 details about this conversion. If list elements are named,
 these names will be use to replace resonance ids.}
 
-\item{areas}{A vector of areas corresponding to the expected areas of the
-resonances. Set to NULL by default, signifying no fixed
-constraings.}
+\item{areas}{A vector of areas corresponding to the expected area ratios of
+the resonances. Set to NULL by default, signifying no fixed
+constraints.}
 
 \item{id}{A string specifying species name. If left empty, a name is
 automatically generated from the resonance names.}
