@@ -177,7 +177,9 @@ read_processed_1d <- function(path, procs.list, number = NA) {
 		stop(msg)
 	}
 
-  intensity  <- cmplx1(r = real.data, i = imag.data)
+  # Adding a sign change to the imaginary domain to account for flip when
+  # compared to raw fft of signal -- not sure why this is necessary...
+  intensity  <- cmplx1(r = real.data, i = -imag.data)
 
   # Formatting the x-axis
   direct.shift <- seq(ofs, ofs - sw.p/sf, length.out = si)

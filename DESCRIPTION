@@ -13,7 +13,8 @@ Depends:
     RcppFaddeeva (>= 0.1.0),
     splines,
     tidyverse,
-    vctrs
+    vctrs,
+    zeallot
 Imports: Rcpp, pillar
 LinkingTo: Rcpp, nloptr
 License: Apache (>= 2.0)

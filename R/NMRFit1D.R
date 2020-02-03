@@ -457,8 +457,6 @@ setMethod("fit", "NMRFit1D",
     phase <- phase(object)
     n.phase <- length(phase)
     if ( n.phase == 2 ) {
-      print(x.range)
-      print(x.span)
       phase[1] <- phase[1] + phase[2]*x.range[1]
       phase[2] <- (phase[2] - phase[1])*x.span
     }
@@ -1320,15 +1318,16 @@ plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,
   #---------------------------------------
   # Calculating all required values
 
-  nmrdata <- x@nmrdata
+  nmrdata <- x@nmrdata 
 
   if ( apply.phase ) {
     nmrdata <- apply_phase(nmrdata, x@phase, degrees = FALSE)
   }
 
   # The original data
-  d <- nmrdata@processed
-  direct.shift <- d$direct.shift
+  d <- nmrdata@processed %>%
+    arrange(direct.shift)
+  direct.shift <- d$direct.shift 
   y.data <- d$intensity
 
   # The overall fit
