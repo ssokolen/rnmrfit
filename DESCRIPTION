@@ -33,6 +33,8 @@ Collate:
     'NMRFit1D.R'
     'NMRResonance2D.R'
     'NMRSpecies2D.R'
+    'NMRMixture2D.R'
+    'NMRFit2D.R'
     'bruker.R'
     'data.R'
     'fitting_1d.R'

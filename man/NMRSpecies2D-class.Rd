@@ -6,8 +6,8 @@
 \alias{NMRSpecies2D}
 \title{Definition of an NMR species.}
 \description{
-Essentially, this class is used to collect and define volume relations between
-multiple resonances as part of a single species.
+Essentially, this class is used to collect and define volume relations
+between multiple resonances as part of a single species.
 }
 \section{Slots}{
 
@@ -17,9 +17,9 @@ multiple resonances as part of a single species.
 \item{\code{connections}}{A data.frame relating the volumes of the resonances.}
 
 \item{\code{connections.leeway}}{A value specifying how tightly enforced the
-connection constraints on resonance volumes should be.
-E.g. a value of = 0 specifies that the volume ratios
-are exact, whereas 0.1 specifies that the
+connection constraints on resonance volumes should
+be. E.g. a value of = 0 specifies that the volume
+ratios are exact, whereas 0.1 specifies that the
 volumes of the resonances may differ by +/- 10
 percent from the specified ratios.}
 }}

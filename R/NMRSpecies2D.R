@@ -11,15 +11,15 @@
 #------------------------------------------------------------------------------
 #' Definition of an NMR species.
 #' 
-#' Essentially, this class is used to collect and define volume relations between
-#' multiple resonances as part of a single species.
+#' Essentially, this class is used to collect and define volume relations
+#' between multiple resonances as part of a single species.
 #' 
 #' @slot resonances A list of NMRResonance2D objects.
 #' @slot connections A data.frame relating the volumes of the resonances.
 #' @slot connections.leeway A value specifying how tightly enforced the
-#'                          connection constraints on resonance volumes should be.
-#'                          E.g. a value of = 0 specifies that the volume ratios
-#'                          are exact, whereas 0.1 specifies that the
+#'                          connection constraints on resonance volumes should
+#'                          be. E.g. a value of = 0 specifies that the volume
+#'                          ratios are exact, whereas 0.1 specifies that the
 #'                          volumes of the resonances may differ by +/- 10
 #'                          percent from the specified ratios.
 #' 
@@ -168,7 +168,7 @@ nmrspecies_2d <- function(resonances, volumes = NULL, id = NULL,
     else if ( class(resonance) == 'NMRResonance2D' ) {
       resonances.list <- c(resonances.list, resonance)
     }
-    # Otherwise, feed it into the nmrresonance_1d constructor
+    # Unlike 1D, other inputs can't be converted
     else {
       err <- '"resonances" must be a list of NMRResonance2D objects.'
       stop(err)
@@ -227,6 +227,41 @@ nmrspecies_2d <- function(resonances, volumes = NULL, id = NULL,
 #==============================================================================>
 # Basic setter and getter functions
 #==============================================================================>
+
+
+
+#------------------------------------------------------------------------------
+# Direct and indirect components
+
+
+
+#' @rdname direct
+#' @export
+setMethod("direct", "NMRSpecies2D", 
+  function(object) {
+    direct.list <- lapply(object@resonances, direct)
+    connections <-object@connections %>%
+      mutate(area.ratio = sqrt(volume.ratio)) %>%
+      select(-volume.ratio)
+    out <- nmrspecies_1d(direct.list, id = id(object))
+    out@connections <- connections
+    out
+  })
+
+
+
+#' @rdname indirect
+#' @export
+setMethod("indirect", "NMRSpecies2D", 
+  function(object) {
+    indirect.list <- lapply(object@resonances, indirect)
+    connections <-object@connections %>%
+      mutate(area.ratio = sqrt(volume.ratio)) %>%
+      select(-volume.ratio)
+    out <- nmrspecies_1d(indirect.list, id = id(object))
+    out@connections <- connections
+    out
+  })
 
 
 

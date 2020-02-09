@@ -17,6 +17,8 @@ id(object) <- value
 
 \S4method{id}{NMRResonance2D}(object) <- value
 
+\S4method{id}{NMRResonance2D}(object) <- value
+
 \S4method{id}{NMRSpecies2D}(object) <- value
 }
 \arguments{

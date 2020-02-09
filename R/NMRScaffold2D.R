@@ -115,7 +115,7 @@ setMethod("show", "NMRScaffold2D",
 
     direct <- direct(object)
     indirect <- indirect(object)
-    id <- direct@id
+    id <- ifelse( 'id' %in% slotNames(object), sprintf('(%s)', id(object)), '')
 
     cat('\n\n')
     msg <- sprintf('\nAn object of %s class (%s)\n\n', class(object), id)

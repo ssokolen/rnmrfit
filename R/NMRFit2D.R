@@ -3,7 +3,7 @@
 
 
 #==============================================================================>
-#  NMRFit1D
+#  NMRFit2D
 #==============================================================================>
 
 
@@ -11,16 +11,16 @@
 #------------------------------------------------------------------------------
 #' Definition of an NMR fit.
 #' 
-#' This class is used to extend an NMRMixture1D object with NMRData1D while
+#' This class is used to extend an NMRMixture2D object with NMRData2D while
 #' also defining baseline and phase correction terms. There is just one primary
 #' method associated with this class: fit(). fit() takes input data and peak
 #' definitions, applies a nonlinear least squares fit, and generates best-fit
 #' peak parameters, overwriting the initial values. Since the fit process is
-#' destructive, the nmrfit_1d() function used to initialize a fit object has an
+#' destructive, the nmrfit_2d() function used to initialize a fit object has an
 #' option to delay the fit, allowing pre-fit and post-fit objects to be saved
 #' as different variables.
 #' 
-#' @slot nmrdata An NMRData1D object used to fit the peaks.
+#' @slot nmrdata An NMRData2D object used to fit the peaks.
 #' @slot knots A vector of chemical shifts corresponding to the internal knots
 #'             of the baseline term (two boundary knots are always included).
 #' @slot baseline A vectors of complex numeric values representing the baseline.
@@ -45,12 +45,12 @@
 #'              bound, representing the overall minimum/maximum baseline/phase
 #'              value at any point in the spectrum.
 #' 
-#' @name NMRFit1D-class
+#' @name NMRFit2D-class
 #' @export
-NMRFit1D <- setClass("NMRFit1D",
-  contains = 'NMRMixture1D',
+NMRFit2D <- setClass("NMRFit2D",
+  contains = 'NMRMixture2D',
   slots = c(
-    nmrdata = 'NMRData1D',
+    nmrdata = 'NMRData2D',
     knots = 'numeric',
     baseline = 'complex',
     phase = 'numeric',
@@ -75,9 +75,9 @@ NMRFit1D <- setClass("NMRFit1D",
 
 
 #------------------------------------------------------------------------------
-#' NMRFit1D validity test
+#' NMRFit2D validity test
 #'
-validNMRFit1D <- function(object) {
+validNMRFit2D <- function(object) {
 
   nmrdata <- object@nmrdata
   knots <- object@knots
@@ -90,10 +90,10 @@ validNMRFit1D <- function(object) {
 
   #---------------------------------------
   # Checking nmrdata
-  if ( (class(nmrdata) != 'NMRData1D') || (! validObject(nmrdata))  ) {
+  if ( (class(nmrdata) != 'NMRData2D') || (! validObject(nmrdata))  ) {
 
       valid <- FALSE
-      new.err <- '"nmrdata" must be a valid NMRData1D object.'
+      new.err <- '"nmrdata" must be a valid NMRData2D object.'
       err <- c(err, new.err)
 
   }
@@ -186,7 +186,7 @@ validNMRFit1D <- function(object) {
 }
 
 # Add the extended validity testing
-setValidity("NMRFit1D", validNMRFit1D)
+setValidity("NMRFit2D", validNMRFit2D)
 
 
 
@@ -197,11 +197,11 @@ setValidity("NMRFit1D", validNMRFit1D)
 
 
 #------------------------------------------------------------------------------
-#' Generate an NMRFit1D object
+#' Generate an NMRFit2D object
 #' 
-#' Generates an NMRFit1D object based on a list of NMRSpecies1D objects or
-#' other objects that can be converted to NMRSpecies1D objects. See
-#' ?nmrresonance_1d and ?nmrspecies_1d for more details about this conversion.
+#' Generates an NMRFit2D object based on a list of NMRSpecies2D objects or
+#' other objects that can be converted to NMRSpecies2D objects. See
+#' ?nmrresonance_2d and ?nmrspecies_2d for more details about this conversion.
 #' Apart from providing peak definitions (via species argument) and data (via
 #' nmrdata argument), the main fit decisions are related to baseline and phase
 #' correction, as well as how to deal with peaks that are defined outside the
@@ -215,12 +215,12 @@ setValidity("NMRFit1D", validNMRFit1D)
 #' data range: either 'none' to give no notice, 'message' to issue a message,
 #' 'warning' to issue a warning, or 'stop' to issue an error.
 #' 
-#' @param species A list of NMRSpecies1D objects or other objects that can be
-#'                converted to NMRSpecies1D objects. See ?nmrresonance_1d and
-#'                ?nmrspecies_1d for more details about this conversion. If list
+#' @param species A list of NMRSpecies2D objects or other objects that can be
+#'                converted to NMRSpecies2D objects. See ?nmrresonance_2d and
+#'                ?nmrspecies_2d for more details about this conversion. If list
 #'                elements are named, these names will be use to replace
 #'                species ids.
-#' @param nmrdata An NMRData1D object used to fit the supplied peaks.
+#' @param nmrdata An NMRData2D object used to fit the supplied peaks.
 #'                automatically generated from the resonance names.
 #' @param baseline.order An integer specifying the order of the baseline spline
 #'                       function. Note the the internal B-spline implementation
@@ -234,15 +234,15 @@ setValidity("NMRFit1D", validNMRFit1D)
 #'                    polynomial. Only 0 and 1st order terms are typically used
 #'                    in practice, but a higher order correction is possible.
 #' @param delay.fit FALSE to immediately run least squares optimization after
-#'                  the NMRFit1D object is initialized, TRUE to skip the
+#'                  the NMRFit2D object is initialized, TRUE to skip the
 #'                  optimization, enabling more customization. The fit can be
 #'                  run manually using fit().
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 #'           to ppm. In most cases, it is recommended to set a single default
 #'           value using nmroptions$direct$sf, but an override can be
 #'           provided here.
-#' @param init An initialization, function that takes an NMRFit1D object and
-#'             returns a modified NMRFit1D object. Use the "identity" function
+#' @param init An initialization, function that takes an NMRFit2D object and
+#'             returns a modified NMRFit2D object. Use the "identity" function
 #'             to override the default initialization in the
 #'             nmroptions$fit$init. Note that all arguments provided to the
 #'             fit() function are also passed on the init() function.
@@ -259,13 +259,13 @@ setValidity("NMRFit1D", validNMRFit1D)
 #'                               to ignore, 'message' to issue a message,
 #'                               'warning' to issue a warning, or 'stop' to
 #'                               issue an error.
-#' @param ... Options passed to nmrspecies_1d if conversion has to be performed.
-#'            See ?nmrspecies_1d for more details.
+#' @param ... Options passed to nmrspecies_2d if conversion has to be performed.
+#'            See ?nmrspecies_2d for more details.
 #' 
-#' @return An NMRFit1D object.
+#' @return An NMRFit2D object.
 #' 
 #' @export
-nmrfit_1d <- function(
+nmrfit_2d <- function(
   species, nmrdata, baseline.order = nmroptions$direct$baseline$order,
   n.knots = nmroptions$direct$baseline$n.knots, 
   phase.order = nmroptions$direct$phase$order, 
@@ -278,13 +278,13 @@ nmrfit_1d <- function(
   # Generating list of species 
 
   # Generate an NMRMixture object that will be used as a template for the fit
-  mixture <- nmrmixture_1d(species, ...)
+  mixture <- nmrmixture_2d(species, ...)
 
   #---------------------------------------
   # Checking nmrdata
 
-  if ( (class(nmrdata) != 'NMRData1D') || (! validObject(nmrdata)) ) {
-    err <- '"nmrdata" must be a valid NMRData1D object.'
+  if ( (class(nmrdata) != 'NMRData2D') || (! validObject(nmrdata)) ) {
+    err <- '"nmrdata" must be a valid NMRData2D object.'
     stop(err)
   }
 
@@ -316,7 +316,7 @@ nmrfit_1d <- function(
 
   #---------------------------------------
   # Resulting fit object
-  out <- new('NMRFit1D', mixture, nmrdata = nmrdata,
+  out <- new('NMRFit2D', mixture, nmrdata = nmrdata,
                          knots = knots, baseline = baseline, phase = phase,
                          bounds = bounds)
 
@@ -331,269 +331,14 @@ nmrfit_1d <- function(
 
 
 #==============================================================================>
-#  Parsing constraints
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' Parse constraints for fitting
-#' 
-#' This is an internal function used to parse equality and inequality
-#' constraints into a form that can be used for lower level fit code.
-#' Essentially, each constraint is defined as a vector with a variable number
-#' of elements codified as follows: 1) Code of either 0 (position), 1 (width),
-#' 2 (height), 3 (fraction.gauss), 4 (area); 2) The equality or inequality
-#' target value; 3+) Integers corresponding to peak indexes in the overall
-#' parameter vector. Positive vs negative values are treated differently
-#' depending on the code. For positions, parameters with negative indexes are
-#' subtracted while for width and area, all parameters with negative indexes
-#' are added up before dividing the positive ones.
-#' 
-#' @param object An NMRMixture1D object.
-#' @param x.span The ppm range of the fit used to scale position differences.
-#' @param offset An integer offset to the indexes used to handle direct/indirect
-#'               dimensions for 2D fitting.
-#' 
-#' @name parse_constraints
-setGeneric("parse_constraints", 
-  function(object, ...) {
-    standardGeneric("parse_constraints")
-})
-
-#' @rdname parse_constraints
-#' @export
-setMethod("parse_constraints", "NMRMixture1D",
-  function(object, x.span = 1, offset = 0) {
-
-    #---------------------------------------
-    # Defining separate functions for dealing with the 5 different constraints.
-    
-    # Differences in peak position
-    f_position <- function(leeway, difference, indexes) {
-      if ( leeway == 0 ) {
-        list(c(0, difference, indexes))
-      } else {
-        list(c(0, difference*(1+leeway), indexes),
-             c(0, -difference*(1-leeway), -indexes))
-      }
-    }
-
-    # height currently ignored
-
-    # Ratios of peak width (fixed at equal)
-    f_width <- function(leeway, indexes) {
-      if ( leeway == 0 ) {
-        list(c(1, 1, indexes))
-      } else {
-        list(c(1, (1+leeway), indexes),
-             c(1, 1/(1-leeway), -indexes))
-      }
-    }
-
-    # Differences of fraction.gauss (fixed at equal)
-    f_fraction <- function(leeway, indexes) {
-      if ( leeway == 0 ) {
-        list(c(3, 0, indexes))
-      } else {
-        list(c(3, leeway, indexes),
-             c(3, leeway, -indexes))
-      }
-    }
-
-    # Ratios of area
-    f_area <- function(leeway, ratio, indexes) {
-      if ( leeway == 0 ) {
-        list(c(4, ratio, indexes))
-      } else {
-        # All ratios are converted to be greater than 1 to allow for
-        # standardized lower and upper bounds
-        if ( ratio < 1 ) {
-          ratio <- 1/ratio
-          indexes <- -indexes
-        }
-
-        list(c(4, ratio*(1+leeway),  indexes),
-             c(4, 1/(ratio*(1-leeway)), -indexes))
-      }
-    }
-
-    #---------------------------------------
-    # Applying the constraints
-
-    eq.constraints <- list()
-    ineq.constraints <- list()
-
-    peaks <- peaks(object)
-
-    # To ensure that individual leeway values are considered, looping through
-    # each species/resonance one at a time
-    for ( specie in object@species ) {
-
-      # At the species level, constraints are based on overall area sums
-      leeway <- abs(specie@connections.leeway)
-
-      # First dealing with conenctions between resonances
-      connections <- specie@connections
-      
-      if ( nrow(connections) > 0 ) {
-        
-        for ( i in 1:nrow(connections) ) {
-          resonance.1 <- connections$resonance.1[i]
-          resonance.2 <- connections$resonance.2[i]
-          ratio <- connections$area.ratio[i]
-
-          logic <-(specie@id == peaks$species)
-          logic.1 <- logic & (resonance.1 == peaks$resonance)
-          logic.2 <- logic & (resonance.2 == peaks$resonance)
-          indexes <- c(which(logic.2) + offset, -which(logic.1) - offset)
-
-          if ( leeway == 0 ) {
-            eq.constraints <- c(eq.constraints, 
-                                f_area(leeway, ratio, indexes))
-          } else {
-            ineq.constraints <- c(ineq.constraints, 
-                                f_area(leeway, ratio, indexes))
-          }
-        }
-      }
-
-      # Then looping through each specific resonance within each species
-      for ( resonance in specie@resonances ) {
-
-        # At the species level, constraints are based on overall area sums
-        id <- resonance@id
-        position.leeway <- abs(resonance@couplings.leeway$position)
-        width.leeway <- abs(resonance@couplings.leeway$width)
-        fraction.leeway <- abs(resonance@couplings.leeway$fraction.gauss)
-        area.leeway <- abs(resonance@couplings.leeway$area)
-
-        # Only continue if there are couplings defined
-        couplings <- resonance@couplings
-
-        if ( nrow(couplings) > 0 ) {
-          
-          for ( i in 1:nrow(couplings) ) {
-            peak.1 <- couplings$peak.1[i]
-            peak.2 <- couplings$peak.2[i]
-            diff <- couplings$position.difference[i]/x.span
-            ratio <- couplings$area.ratio[i]
-
-            logic <- (specie@id == peaks$species) & 
-                       (resonance@id == peaks$resonance)
-            logic.1 <- logic & (peak.1 == peaks$peak)
-            logic.2 <- logic & (peak.2 == peaks$peak)
-            indexes <- c(which(logic.2) + offset, -which(logic.1) - offset)
-
-            # Each coupling constraint includes position, width, and area
-
-            # First, the position
-            leeway <- position.leeway
-            if ( leeway == 0 ) {
-              eq.constraints <- c(eq.constraints, 
-                                  f_position(leeway, diff, indexes))
-            } else {
-              ineq.constraints <- c(ineq.constraints, 
-                                  f_position(leeway, diff, indexes))
-            }
-
-            # Then, the width (same by default)
-            leeway <- width.leeway
-            if ( leeway == 0 ) {
-              eq.constraints <- c(eq.constraints, 
-                                  f_width(leeway, indexes))
-            } else {
-              ineq.constraints <- c(ineq.constraints, 
-                                  f_width(leeway, indexes))
-            }
-
-            # Then, the fraction Gauss (same by default)
-            leeway <- fraction.leeway
-            if ( leeway == 0 ) {
-              eq.constraints <- c(eq.constraints, 
-                                  f_fraction(leeway, indexes))
-            } else {
-              ineq.constraints <- c(ineq.constraints, 
-                                  f_fraction(leeway, indexes))
-            }
-
-            # Finally, the area
-            leeway <- area.leeway
-            if ( leeway == 0 ) {
-              eq.constraints <- c(eq.constraints, 
-                                  f_area(leeway, ratio, indexes))
-            } else {
-              ineq.constraints <- c(ineq.constraints, 
-                                  f_area(leeway, ratio, indexes))
-            }
-          }
-        }
-      }
-    }
-
-    # Returning list of constraints
-    list(eq.constraints, ineq.constraints)
-})
-
-
-
-#==============================================================================>
 #  The main fit function (wrapping Rcpp code)
 #==============================================================================>
 
 
 
-#------------------------------------------------------------------------------
-#' Fit NMR data to peaks.
-#' 
-#' Given an NMRFit1D object, this function performs a least squares fit on the
-#' data and updates the peak parameters. One of the most important things to
-#' consider is that any peak found outside the data range of the NMRData1D
-#' objects is automatically dropped from the resulting object. Exactly how this
-#' happens can be modified using the exclusion.level and exclusion.notification
-#' arguments. The exclusion.level parameter determines which part of the
-#' overall species to exclude if any of its peaks fall outside the data range:
-#' either 'species' for whole species, 'resonance' for just a subset of the
-#' species and 'peak' to ignore resonance/species blocks and exclude by
-#' specific peak alone. The exclusion.notification parameter determines how to
-#' report when peaks are found to be outside the data range: either 'none' to
-#' give no notice, 'message' to issue a message, 'warning' to issue a warning,
-#' or 'stop' to issue an error.
-#' 
-#' @param object An NMRFit1D object.
-#' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf = ..., but an override can be
-#'           provided here.
-#' @param init An initialization function that takes NMRFit1D object and returns
-#'             a modified NMRFit1D object. Use the "identity" function to
-#'             override the default initialization in the
-#'             nmroptions$fit$init. Note that all arguments provided to the
-#'             fit() function are also passed on the init() function.
-#' @param opts A list of NLOPT fit options to override the default options in
-#'             the nmroptionsd$fit$opts.
-#' @param exclusion.level A string specifying what to do when peaks are found to
-#'                        fall outside of the data range: either 'species' to
-#'                        exclude the whole species to which the offending peak
-#'                        belongs, 'resonance' to exclude the resonance to which
-#'                        the offending peak belongs, or 'peak' to exclude just
-#'                        the peak itself.
-#' @param exclusion.notification A function specifying how to report when peaks
-#'                               are found to be outside the data range: 'none'
-#'                               to ignore, 'message' to issue a message,
-#'                               'warning' to issue a warning, or 'stop' to
-#'                               issue an error.
-#' 
-#' @name fit
-#' @export
-setGeneric("fit", 
-  function(object, ...) {
-    standardGeneric("fit")
-})
-
 #' @rdname fit
 #' @export
-setMethod("fit", "NMRFit1D",
+setMethod("fit", "NMRFit2D",
   function(object, sf = nmroptions$direct$sf, init = nmroptions$fit$init, 
            opts = nmroptions$fit$opts, 
            exclusion.level = nmroptions$exclusion$level,
@@ -682,12 +427,174 @@ setMethod("fit", "NMRFit1D",
 
     #---------------------------------------
     # Generating constraint lists
+    # Each element in the list is an encoded constraint in the form of a vector.
+    # The elements are decoded as follows:
+    # 1: Code of either 0, 1, 2, 3, 4. 0 means position, 1 width, 2 height, 
+    #    3 fraction.gauss, 4 area
+    # 2: The equality or inequality target value. 
+    # 3+: Integers corresponding to peak indexes in the overall parameter 
+    #     vector. Positive vs negative values are treated differently depending
+    #     on code. For positions, parameters with negative indexes are  
+    #     subtracted while for width and area, all parameters with negative
+    #     indexes are added up before dividing the positive ones.
+    eq.constraints <- list()
+    ineq.constraints <- list()
 
-    # Comparing constraint code)
-    constraints <- parse_constraints(object, x.span)
+    # Redefining peaks from modified object
+    peaks <- peaks(object)
 
-    eq.constraints <- constraints[[1]]
-    ineq.constraints <- constraints[[2]]
+    # To ensure that individual leeway values are considered, looping through
+    # each species/resonance one at a time
+    for (specie in object@species) {
+
+      # At the species level, constraints are based on overall area sums
+      leeway <- abs(specie@connections.leeway)
+
+      # First dealing with conenctions between resonances
+      connections <- specie@connections
+      if ( nrow(connections) > 0 ) {
+        
+        for ( i in 1:nrow(connections) ) {
+          resonance.1 <- connections$resonance.1[i]
+          resonance.2 <- connections$resonance.2[i]
+          ratio <- connections$area.ratio[i]
+
+          logic <-(specie@id == peaks$species)
+          logic.1 <- logic & (resonance.1 == peaks$resonance)
+          logic.2 <- logic & (resonance.2 == peaks$resonance)
+
+          if ( leeway == 0 ) {
+            new.constraint <- c(4, ratio, which(logic.2), -which(logic.1))
+            eq.constraints <- c(eq.constraints, list(new.constraint))
+          }
+          else {
+            # The upper bounds
+            new.constraint <- c(4, ratio*(1+leeway), 
+                                which(logic.2), -which(logic.1))
+            ineq.constraints <- c(ineq.constraints, list(new.constraint))
+
+            # The lower bound
+            new.constraint <- c(4, 1/(ratio*(1-leeway)), 
+                                -which(logic.2), which(logic.1))
+            ineq.constraints <- c(ineq.constraints, list(new.constraint))
+          }
+        }
+      }
+
+      # Then looping through each specific resonance within each species
+      for (resonance in specie@resonances) {
+
+        # At the species level, constraints are based on overall area sums
+        id <- resonance@id
+        position.leeway <- abs(resonance@couplings.leeway$position)
+        width.leeway <- abs(resonance@couplings.leeway$width)
+        fraction.leeway <- abs(resonance@couplings.leeway$fraction.gauss)
+        area.leeway <- abs(resonance@couplings.leeway$area)
+
+        # Only continue if there are couplings defined
+        couplings <- resonance@couplings
+        if ( nrow(couplings) > 0 ) {
+          
+          for ( i in 1:nrow(couplings) ) {
+            peak.1 <- couplings$peak.1[i]
+            peak.2 <- couplings$peak.2[i]
+            diff <- couplings$position.difference[i]/x.span
+            ratio <- couplings$area.ratio[i]
+
+            logic <- (specie@id == peaks$species) & 
+                       (resonance@id == peaks$resonance)
+            logic.1 <- logic & (peak.1 == peaks$peak)
+            logic.2 <- logic & (peak.2 == peaks$peak)
+
+            # Each coupling constraint includes position, width, and area
+
+            # First, the position
+            leeway <- position.leeway
+            if ( leeway == 0 ) {
+              new.constraint <- c(0, diff, which(logic.2), -which(logic.1))
+              eq.constraints <- c(eq.constraints, list(new.constraint))
+            }
+            else {
+              # The upper bounds
+              new.constraint <- c(0, diff*(1+leeway), 
+                                  which(logic.2), -which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+
+              # The lower bound
+              new.constraint <- c(0, -diff*(1-leeway), 
+                                  -which(logic.2), which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+            }
+
+            # Then, the width (same by default)
+            leeway <- width.leeway
+            if ( leeway == 0 ) {
+              new.constraint <- c(1, 1, which(logic.2), -which(logic.1))
+              eq.constraints <- c(eq.constraints, list(new.constraint))
+            }
+            else {
+              # The upper bounds
+              new.constraint <- c(1, (1+leeway), 
+                                  which(logic.2), -which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+
+              # The lower bound
+              new.constraint <- c(1, 1/(1-leeway), 
+                                  -which(logic.2), which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+            }
+
+            # Then, the fraction Gauss (same by default)
+            leeway <- fraction.leeway
+            if ( leeway == 0 ) {
+              new.constraint <- c(3, 0, which(logic.2), -which(logic.1))
+              eq.constraints <- c(eq.constraints, list(new.constraint))
+            }
+            else {
+              # The upper bounds
+              new.constraint <- c(3, leeway, 
+                                  which(logic.2), -which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+
+              # The lower bound
+              new.constraint <- c(3, leeway, 
+                                  -which(logic.2), which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+            }
+
+            # Finally, the area
+            leeway <- area.leeway
+            if ( leeway == 0 ) {
+              new.constraint <- c(4, ratio, which(logic.2), -which(logic.1))
+              eq.constraints <- c(eq.constraints, list(new.constraint))
+            }
+            else {
+              # Inequality constraints around percentages can be problematic
+              # since 10% of a 2x peak area difference doesn't directly map
+              # to a 10% difference around the inverse 0.5x. As such, all
+              # ratio are treated as being greater than 1, with indexes
+              # flipped to accommodate.
+              if ( ratio < 1 ) {
+                ratio <- 1/ratio
+                temp.logic <- logic.1
+                logic.1 <- logic.2
+                logic.2 <- temp.logic
+              }
+
+              # The upper bounds
+              new.constraint <- c(4, ratio*(1+leeway), 
+                                  which(logic.2), -which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+
+              # The lower bound
+              new.constraint <- c(4, 1/(ratio*(1-leeway)), 
+                                  -which(logic.2), which(logic.1))
+              ineq.constraints <- c(ineq.constraints, list(new.constraint))
+            }
+          }
+        }
+      }
+    }
 
     #---------------------------------------
     # Performing the fit
@@ -701,8 +608,15 @@ setMethod("fit", "NMRFit1D",
       basis <- matrix(0, nrow = length(x), ncol = 1)
     }
 
+    print(head(x))
+    print(head(y))
+    print(par)
+    print(head(basis))
+    print(eq.constraints)
+    print(ineq.constraints)
+
     start.time <- proc.time()
-    fit_lineshape_1d(x, y, par$par, par$lb, par$ub, basis, 
+    fit_lineshape_2d(x, y, par$par, par$lb, par$ub, basis, 
                      eq.constraints, ineq.constraints,
                      n.peaks, n.baseline, n.phase)
     object@time <- as.numeric(proc.time() - start.time)[3]
@@ -735,6 +649,10 @@ setMethod("fit", "NMRFit1D",
     if ( n.phase > 0 ) {
       phase <- par$par[index]
 
+      print('Phase!')
+      print(phase)
+      print(x.range)
+      
       # 1st order phase coefficients must be adapted back to the global scale
       if ( n.phase == 2 ) {
         phase.left <- phase[1]
@@ -759,12 +677,12 @@ setMethod("fit", "NMRFit1D",
 
 
 #------------------------------------------------------------------------------
-#' Display NMRFit1D object
+#' Display NMRFit2D object
 #'
 #' Display a quick summary of resonance parameters.
 #'
 #' @export
-setMethod("show", "NMRFit1D", 
+setMethod("show", "NMRFit2D", 
   function(object) {
 
     # Generating compiled data frames
@@ -775,7 +693,7 @@ setMethod("show", "NMRFit1D",
     bounds <- bounds(object)
     couplings <- couplings(object)
 
-    cat('An object of NMRFit1D class\n\n')
+    cat('An object of NMRFit2D class\n\n')
 
     # Peaks
     cat('Peaks:\n\n')
@@ -879,10 +797,10 @@ setMethod("show", "NMRFit1D",
 
 #' @rdname bounds
 #' @export
-setMethod("bounds", "NMRFit1D", 
+setMethod("bounds", "NMRFit2D", 
   function(object) {
-    # Extracting peak bounds from species using the NMRMixture1D signature
-    bounds <- selectMethod("bounds", signature="NMRMixture1D")(object)
+    # Extracting peak bounds from species using the NMRMixture2D signature
+    bounds <- selectMethod("bounds", signature="NMRMixture2D")(object)
 
     # Baseline and phase
     lower.baseline <- object@bounds$lower$baseline
@@ -909,49 +827,17 @@ setMethod("bounds", "NMRFit1D",
 #------------------------------------------------------------------------------
 # Baseline
 
-#---------------------------------------
-#' Get object baseline 
-#' 
-#' Generic convenience method to access the baseline definition of an
-#' NMRFit1D object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @name baseline
-#' @export
-setGeneric("baseline", 
-  function(object, ...) standardGeneric("baseline")
-)
 
 #' @rdname baseline
 #' @export
-setMethod("baseline", "NMRFit1D", 
+setMethod("baseline", "NMRFit2D", 
   function(object) object@baseline
 )
 
-#---------------------------------------
-#' Set object baseline
-#' 
-#' Generic convenience method to set the baseline definition of an NMRFit1D
-#' object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param value A vector of spectra intensity values used to construct the
-#'              baseline b-spline. The order of the baseline spline function is
-#'              calculated automatically based on the length of the "knots" slot
-#'              and the length of the baseline vector, where order =
-#'              legnth(baseline) - length(knots).
-#' 
-#' @name baseline-set
-#' @export
-setGeneric("baseline<-", 
-  function(object, value) standardGeneric("baseline<-")
-)
 
 #' @rdname baseline-set
 #' @export
-setReplaceMethod("baseline", "NMRFit1D",
+setReplaceMethod("baseline", "NMRFit2D",
   function(object, value) {
 
     if ( class(value) == 'numeric' ) {
@@ -971,48 +857,17 @@ setReplaceMethod("baseline", "NMRFit1D",
 #------------------------------------------------------------------------------
 # Knots
 
-#---------------------------------------
-#' Get object baseline knots 
-#' 
-#' Generic convenience method to access the baseline knots definition of an
-#' NMRFit1D object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @name knots
-#' @export
-setGeneric("knots", 
-  function(object, ...) standardGeneric("knots")
-)
+
 
 #' @rdname knots
 #' @export
-setMethod("knots", "NMRFit1D", 
+setMethod("knots", "NMRFit2D", 
   function(object) object@knots
 )
 
-#---------------------------------------
-#' Set object baseline knots
-#' 
-#' Generic convenience method to set the baseline knots definition of an
-#' NMRFit1D object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param value A vector of chemical shifts used to designate the internal
-#'              baseline b-spline knots. Note that the number of internal knots
-#'              impacts the length of the baseline and if the length of knots is
-#'              changed, current baseline values may not feasible with the new
-#'              knots.
-#' 
-#' @name knots-set
-#' @export
-setGeneric("knots<-", 
-  function(object, value) standardGeneric("knots<-"))
-
 #' @rdname knots-set
 #' @export
-setReplaceMethod("knots", "NMRFit1D",
+setReplaceMethod("knots", "NMRFit2D",
   function(object, value) {
 
     # If the knot length changes, baseline parameters have to change
@@ -1052,47 +907,16 @@ setReplaceMethod("knots", "NMRFit1D",
 #------------------------------------------------------------------------------
 # Phase
 
-#---------------------------------------
-#' Get object phase 
-#' 
-#' Generic convenience method to access the phase definition of an
-#' NMRFit1D object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @name phase
-#' @export
-setGeneric("phase", 
-  function(object, ...) standardGeneric("phase")
-)
-
 #' @rdname phase
 #' @export
-setMethod("phase", "NMRFit1D", 
+setMethod("phase", "NMRFit2D", 
   function(object) object@phase
 )
 
-#---------------------------------------
-#' Set object phase
-#' 
-#' Generic convenience method to set the phase definition of an NMRFit1D
-#' object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param value A vector of phase polynomial values in increasing order (in
-#'              radians). So c(pi/4, pi/8) represents a 0 order phase correction
-#'              of 45 degrees and a 1st order correction of 22.5 degrees
-#'              (referenced to 0 ppm).
-#' 
-#' @name phase-set
-#' @export
-setGeneric("phase<-", 
-  function(object, value) standardGeneric("phase<-"))
 
 #' @rdname phase-set
 #' @export
-setReplaceMethod("phase", "NMRFit1D",
+setReplaceMethod("phase", "NMRFit2D",
   function(object, value) {
     object@phase <- value
     validObject(object)
@@ -1109,7 +933,7 @@ setReplaceMethod("phase", "NMRFit1D",
 #------------------------------------------------------------------------------
 #' @rdname set_general_bounds
 #' @export
-setMethod("set_general_bounds", "NMRFit1D",
+setMethod("set_general_bounds", "NMRFit2D",
   function(object, ..., nmrdata = NULL, widen = FALSE,
            baseline = NULL, phase = NULL) {
   
@@ -1202,7 +1026,7 @@ setMethod("set_general_bounds", "NMRFit1D",
 #------------------------------------------------------------------------------
 #' @rdname set_offset_bounds
 #' @export
-setMethod("set_offset_bounds", "NMRFit1D",
+setMethod("set_offset_bounds", "NMRFit2D",
   function(object, ...) {
     object@species <- lapply(object@species, set_offset_bounds, ...)
     object
@@ -1213,7 +1037,7 @@ setMethod("set_offset_bounds", "NMRFit1D",
 #------------------------------------------------------------------------------
 #' @rdname set_conservative_bounds
 #' @export
-setMethod("set_conservative_bounds", "NMRFit1D",
+setMethod("set_conservative_bounds", "NMRFit2D",
   function(object,  ..., nmrdata = NULL, widen = FALSE,
            baseline = TRUE, phase = TRUE) {
   
@@ -1243,7 +1067,7 @@ setMethod("set_conservative_bounds", "NMRFit1D",
 #------------------------------------------------------------------------------
 #' @rdname set_peak_type
 #' @export
-setMethod("set_peak_type", "NMRFit1D",
+setMethod("set_peak_type", "NMRFit2D",
   function(object, ...) {
     object@species <- lapply(object@species, set_peak_type, ...)
     object
@@ -1257,30 +1081,11 @@ setMethod("set_peak_type", "NMRFit1D",
 
 
 
-#------------------------------------------------------------------------
-#' Generate baseline function
-#' 
-#' This is primarily an internal method that outputs a function that outputs
-#' spectral intensity data of the fit baseline given a vector input of chemical
-#' shifts.
-#' 
-#' @param object An NMRFit1D object.
-#' @param components 'r/i' to output both real and imaginary data, 'r' to output
-#'                   only real and 'i' to output only imaginary.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @return A function that outputs spectral intensity data of the fit baseline
-#'         given a vector input of chemical shifts.
-#' 
-#' @name f_baseline
-#' @export
-setGeneric("f_baseline", 
-  function(object, components = 'r/i', ...) standardGeneric("f_baseline")
-)
+
 
 #' @rdname f_baseline
 #' @export
-setMethod("f_baseline", "NMRFit1D",
+setMethod("f_baseline", "NMRFit2D",
   function(object, components = 'r/i') {
 
     # Defining which components to return
@@ -1324,7 +1129,7 @@ setMethod("f_baseline", "NMRFit1D",
 
 
 #------------------------------------------------------------------------------
-#' Plot NMRFit1D object
+#' Plot NMRFit2D object
 #' 
 #' Generates an interactive plot object using the plotly package.
 #' 
@@ -1333,7 +1138,7 @@ setMethod("f_baseline", "NMRFit1D",
 #' baseline is plotted in blue, the residual in red. The fit can be plotted as
 #' a composite of all the peaks, or individually.
 #' 
-#' @param x An NMRFit1D object.
+#' @param x An NMRFit2D object.
 #' @param components One of either 'r', 'i', or 'r/i' to include real, imaginary
 #'                   or both components. If both components are selected, they
 #'                   are displayed in separate subplots.
@@ -1346,7 +1151,7 @@ setMethod("f_baseline", "NMRFit1D",
 #' @return A ggplot2 plot.
 #' 
 #' @export
-plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,  
+plot.NMRFit2D <- function(x, components = 'r', apply.phase = TRUE,  
                           sum.level = 'species', sum.baseline = TRUE) { 
 
   #---------------------------------------
