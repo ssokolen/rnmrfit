@@ -4,20 +4,14 @@
 \alias{nmrfit_2d}
 \title{Generate an NMRFit2D object}
 \usage{
-nmrfit_2d(
-  species,
-  nmrdata,
+nmrfit_2d(species, nmrdata,
   baseline.order = nmroptions$direct$baseline$order,
   n.knots = nmroptions$direct$baseline$n.knots,
-  phase.order = nmroptions$direct$phase$order,
-  delay.fit = FALSE,
-  sf = nmroptions$direct$sf,
-  init = nmroptions$fit$init,
+  phase.order = nmroptions$direct$phase$order, delay.fit = FALSE,
+  sf = nmroptions$direct$sf, init = nmroptions$fit$init,
   opts = nmroptions$fit$opts,
   exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification,
-  ...
-)
+  exclusion.notification = nmroptions$exclusion$notification, ...)
 }
 \arguments{
 \item{species}{A list of NMRSpecies2D objects or other objects that can be

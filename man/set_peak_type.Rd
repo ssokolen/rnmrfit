@@ -2,6 +2,7 @@
 % Please edit documentation in R/NMRScaffold1D.R, R/NMRResonance1D.R,
 %   R/NMRSpecies1D.R, R/NMRMixture1D.R, R/NMRFit1D.R, R/NMRResonance2D.R,
 %   R/NMRSpecies2D.R, R/NMRMixture2D.R, R/NMRFit2D.R
+\docType{methods}
 \name{set_peak_type}
 \alias{set_peak_type}
 \alias{set_peak_type,NMRResonance1D-method}

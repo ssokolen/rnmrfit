@@ -4,7 +4,8 @@
 \alias{process_jcamp_tag}
 \title{Process JCAMP tag}
 \usage{
-process_jcamp_tag(jcamp.tag, f_case = tolower, tag.space = ".", tag.map = NA)
+process_jcamp_tag(jcamp.tag, f_case = tolower, tag.space = ".",
+  tag.map = NA)
 }
 \arguments{
 \item{jcamp.tag}{Single character string corresponding to list names

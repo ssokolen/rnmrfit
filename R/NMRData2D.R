@@ -316,21 +316,31 @@ plot.NMRData2D <- function(x, components = 'rr') {
 
   d <- x@processed
 
+  # Ensuring correct pivoting order
   m <- d %>%
     pivot_wider(id_cols = 'direct.shift', 
-                names_from = 'indirect.shift', values_from = 'intensity') %>%
-    select(-direct.shift)
-
-  direct.shift <- unique(d$direct.shift)
-  indirect.shift <- unique(d$indirect.shift)
+                names_from = 'indirect.shift', values_from = 'intensity')
 
   err <- "NMR2D plots currently only support evenly sampled data."
   if ( any(is.na(m)) ) stop(err)
 
-  # Defining generic plot function
-  f_init <- function(m, name, scene) {
+  direct.shift <- unique(d$direct.shift)
+  indirect.shift <- unique(d$indirect.shift)
+  
+  n.col <- length(direct.shift)
+  n.row <- length(indirect.shift)
 
-    p <- plot_ly(x = indirect.shift, y = direct.shift,  z = as.matrix(m), 
+  # And then pivot back
+  d <- m %>%
+    pivot_longer(-direct.shift, names_to = 'indirect.shift', 
+                 values_to = 'intensity')
+
+
+  # Defining generic plot function
+  f_init <- function(z, name, scene) {
+
+    p <- plot_ly(x = indirect.shift, y = direct.shift,  
+                 z = matrix(z, ncol = n.col), 
                  name = I(name), legendgroup = 1, scene = scene) %>% 
       add_surface()
 
@@ -347,14 +357,7 @@ plot.NMRData2D <- function(x, components = 'rr') {
   ii <- grepl('ii', components)
 
   # Plotting 
-  if ( rr ) plots$rr <- f_init(sapply(m, field, 'rr'), 
-                               'Real', 'scene1')
-  if ( ri ) plots$ri <- f_init(sapply(m, field, 'ri'), 
-                               'Real/Imaginary', 'scene2')
-  if ( ir ) plots$ir <- f_init(sapply(m, field, 'ir'), 
-                               'Imaginary/Real', 'scene3')
-  if ( ii ) plots$ii <- f_init(sapply(m, field, 'ii'), 
-                               'Imaginary', 'scene4')
+  if ( rr ) plots$rr <- f_init(d$intensity$r, 'Real', 'scene1')
 
   if ( length(plots) == 0 )  return(NULL)
   else p <- subplot(plots, shareX = TRUE, shareY = TRUE, 

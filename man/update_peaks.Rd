@@ -2,6 +2,7 @@
 % Please edit documentation in R/NMRScaffold1D.R, R/NMRResonance1D.R,
 %   R/NMRSpecies1D.R, R/NMRMixture1D.R, R/NMRResonance2D.R, R/NMRSpecies2D.R,
 %   R/NMRMixture2D.R
+\docType{methods}
 \name{update_peaks}
 \alias{update_peaks}
 \alias{update_peaks,NMRResonance1D-method}
@@ -14,47 +15,29 @@
 \usage{
 update_peaks(object, ...)
 
-\S4method{update_peaks}{NMRResonance1D}(
-  object,
-  peaks,
+\S4method{update_peaks}{NMRResonance1D}(object, peaks,
   exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
-)
+  exclusion.notification = nmroptions$exclusion$notification)
 
-\S4method{update_peaks}{NMRSpecies1D}(
-  object,
-  peaks,
+\S4method{update_peaks}{NMRSpecies1D}(object, peaks,
   exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
-)
+  exclusion.notification = nmroptions$exclusion$notification)
 
-\S4method{update_peaks}{NMRMixture1D}(
-  object,
-  peaks,
+\S4method{update_peaks}{NMRMixture1D}(object, peaks,
   exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
-)
+  exclusion.notification = nmroptions$exclusion$notification)
 
-\S4method{update_peaks}{NMRResonance2D}(
-  object,
-  peaks,
+\S4method{update_peaks}{NMRResonance2D}(object, peaks,
   exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
-)
+  exclusion.notification = nmroptions$exclusion$notification)
 
-\S4method{update_peaks}{NMRSpecies2D}(
-  object,
-  peaks,
+\S4method{update_peaks}{NMRSpecies2D}(object, peaks,
   exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
-)
+  exclusion.notification = nmroptions$exclusion$notification)
 
-\S4method{update_peaks}{NMRMixture2D}(
-  object,
-  peaks,
+\S4method{update_peaks}{NMRMixture2D}(object, peaks,
   exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
-)
+  exclusion.notification = nmroptions$exclusion$notification)
 }
 \arguments{
 \item{object}{An NMRScaffold1D object.}

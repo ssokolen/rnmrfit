@@ -4,13 +4,8 @@
 \alias{plot.NMRFit1D}
 \title{Plot NMRFit1D object}
 \usage{
-plot.NMRFit1D(
-  x,
-  components = "r",
-  apply.phase = TRUE,
-  sum.level = "species",
-  sum.baseline = TRUE
-)
+plot.NMRFit1D(x, components = "r", apply.phase = TRUE,
+  sum.level = "species", sum.baseline = TRUE)
 }
 \arguments{
 \item{x}{An NMRFit1D object.}

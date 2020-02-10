@@ -4,18 +4,11 @@
 \alias{nmrresonance_2d}
 \title{Generate an NMRResonance2D object based on simplified peak list}
 \usage{
-nmrresonance_2d(
-  direct.peaks,
-  indirect.peaks,
+nmrresonance_2d(direct.peaks, indirect.peaks,
   direct.sf = nmroptions$direct$sf,
-  indirect.sf = nmroptions$indirect$sf,
-  id = NULL,
-  width = 1,
-  fraction.gauss = 0,
-  position.leeway = 0,
-  area.leeway = 0,
-  width.leeway = 0
-)
+  indirect.sf = nmroptions$indirect$sf, id = NULL, width = 1,
+  fraction.gauss = 0, position.leeway = 0, area.leeway = 0,
+  width.leeway = 0)
 }
 \arguments{
 \item{direct.peaks}{An NMRResonance1D object, numeric vector of singlet

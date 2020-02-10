@@ -4,13 +4,8 @@
 \alias{nmrspecies_2d}
 \title{Generate an NMRSpecies2D object}
 \usage{
-nmrspecies_2d(
-  resonances,
-  volumes = NULL,
-  id = NULL,
-  connections.leeway = 0,
-  ...
-)
+nmrspecies_2d(resonances, volumes = NULL, id = NULL,
+  connections.leeway = 0, ...)
 }
 \arguments{
 \item{resonances}{A list of NMRResonance2D objects.}

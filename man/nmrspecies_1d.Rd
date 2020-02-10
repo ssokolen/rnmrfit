@@ -4,7 +4,8 @@
 \alias{nmrspecies_1d}
 \title{Generate an NMRSpecies1D object}
 \usage{
-nmrspecies_1d(resonances, areas = NULL, id = NULL, connections.leeway = 0, ...)
+nmrspecies_1d(resonances, areas = NULL, id = NULL,
+  connections.leeway = 0, ...)
 }
 \arguments{
 \item{resonances}{A list of NMRResonance1D objects or a list of

@@ -240,11 +240,15 @@ nmrspecies_2d <- function(resonances, volumes = NULL, id = NULL,
 setMethod("direct", "NMRSpecies2D", 
   function(object) {
     direct.list <- lapply(object@resonances, direct)
-    connections <-object@connections %>%
-      mutate(area.ratio = sqrt(volume.ratio)) %>%
-      select(-volume.ratio)
     out <- nmrspecies_1d(direct.list, id = id(object))
-    out@connections <- connections
+    
+    if ( nrow(object@connections) > 0 ) {
+      connections <- object@connections %>%
+        mutate(area.ratio = sqrt(volume.ratio)) %>%
+        select(-volume.ratio)
+      out@connections <- connections
+    }
+
     out
   })
 
@@ -255,11 +259,15 @@ setMethod("direct", "NMRSpecies2D",
 setMethod("indirect", "NMRSpecies2D", 
   function(object) {
     indirect.list <- lapply(object@resonances, indirect)
-    connections <-object@connections %>%
-      mutate(area.ratio = sqrt(volume.ratio)) %>%
-      select(-volume.ratio)
     out <- nmrspecies_1d(indirect.list, id = id(object))
-    out@connections <- connections
+
+    if ( nrow(object@connections) > 0 ) {
+      connections <-object@connections %>%
+        mutate(area.ratio = sqrt(volume.ratio)) %>%
+        select(-volume.ratio)
+      out@connections <- connections
+    }
+
     out
   })
 

@@ -4,17 +4,9 @@
 \alias{nmrresonance_1d}
 \title{Generate an NMRResonance1D object based on simplified peak list}
 \usage{
-nmrresonance_1d(
-  peaks,
-  sf = nmroptions$direct$sf,
-  id = NULL,
-  width = 1,
-  fraction.gauss = 0,
-  position.leeway = 0,
-  width.leeway = 0,
-  fraction.gauss.leeway = 0,
-  area.leeway = 0
-)
+nmrresonance_1d(peaks, sf = nmroptions$direct$sf, id = NULL,
+  width = 1, fraction.gauss = 0, position.leeway = 0,
+  width.leeway = 0, fraction.gauss.leeway = 0, area.leeway = 0)
 }
 \arguments{
 \item{peaks}{A numeric vector of singlet chemical shifts or a character
