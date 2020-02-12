@@ -9,10 +9,9 @@ plot.NMRData2D(x, components = "rr")
 \arguments{
 \item{x}{An NMRData2D object.}
 
-\item{components}{Some combination of 'rr', 'ii', 'ir', and 'ri' in a single
-string such as 'rr/ii' to include various real and
-imaginary components. If more than one component is
-selected, they are displayed in separate subplots.}
+\item{components}{One of 'rr', 'ii', 'ir', or 'ri' to specify various real
+and imaginary components. 3D plot subplots are not
+currently supported.}
 }
 \value{
 A plot_ly plot.

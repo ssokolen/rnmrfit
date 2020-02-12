@@ -314,33 +314,11 @@ setMethod("direct", "NMRResonance2D",
 
 
 
-#' @rdname direct-set
-#' @export
-setReplaceMethod("direct", "NMRResonance2D",
-  function(object, value) {
-    object@direct <- value
-    validObject(object)
-    object 
-  })
-
-
-
 #' @rdname indirect
 #' @export
 setMethod("indirect", "NMRResonance2D", 
   function(object) object@indirect
 )
-
-
-
-#' @rdname indirect-set
-#' @export
-setReplaceMethod("indirect", "NMRResonance2D",
-  function(object, value) {
-    object@indirect <- value
-    validObject(object)
-    object 
-  })
 
 
 

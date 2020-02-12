@@ -10,7 +10,7 @@
 #' 
 #' @rdname NMRData2D
 #' @export
-NMRData1D <- setClass("NMRData2D", contains = "NMRData")
+NMRData2D <- setClass("NMRData2D", contains = "NMRData")
 
 # Validity testing consists of simply checking the processed data.frame columns
 validNMRData2D <- function(object) {
@@ -46,7 +46,7 @@ setValidity("NMRData2D", validNMRData2D)
 
 
 #------------------------------------------------------------------------------
-#' Constructors for generating an NMRData1D object
+#' Constructors for generating an NMRData2D object
 #' 
 #' \code{nmrdata_2d()} can be used as a generic constructor method that will
 #' eventually handle different types of input (currently limited to Bruker
@@ -57,7 +57,7 @@ setValidity("NMRData2D", validNMRData2D)
 #' @param procs.number Specifies pdata directory to load. Defaults to the lowest
 #'                     available number.
 #' 
-#' @return An NMRData1D object.
+#' @return An NMRData2D object.
 #' 
 #' @export
 nmrdata_2d <- function(path, procs.number = NA) {
@@ -227,7 +227,7 @@ format.NMRData2D <- function(x, ...) {
   indirect.range <- range(d$indirect.shift)
   indirect.range <- sprintf("%.2f ppm to %.2f ppm indirect", 
                             indirect.range[1], indirect.range[2])
-  sprintf('NMRData1D object (%s), %s, %s\n', 
+  sprintf('NMRData2D object (%s), %s, %s\n', 
           components, direct.range, indirect.range)
 }
 
@@ -247,7 +247,13 @@ summary.NMRData2D <- function(object, ...) {
                     as_tibble(d$intensity)))
 }
 
-
+#' @export
+range.NMRData2D <- function(object, ...) {
+  d <- object@processed
+  list(direct.shift = range(d$direct.shift),
+       indirect.shift = range(d$indirect.shift),
+       intensity = range(Re(d$intensity)))
+}
 
 #' @export
 is_vector_s3.NMRData2D <- function(x) FALSE
@@ -260,9 +266,108 @@ obj_sum.NMRData2D <- function(x) format(x)
 
 
 
+
+#==============================================================================>
+# Access to direct and indirect components
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------------
+# Direct
+
+#---------------------------------------
+#' Get 1D projection of direct dimension
+#' 
+#' Warning: this is currently a convenience method to facilitate internal data
+#' manipulation, so the conversion may drop important data. When applied to a
+#' an NMRScaffold2D object, the indirect components are simply dropped, and
+#' when applied to an NMRData2D object, the indirect components are summed
+#' together to give a 1D projection. No normalization is performed so non-
+#' uniform sampling may result in distorted results.
+#' 
+#' @param object An NMRData2D or NMRScaffold2D object.
+#' 
+#' @name direct
+setGeneric("direct", 
+  function(object) standardGeneric("direct")
+)
+
+#' @rdname direct
+#' @export
+setMethod("direct", "NMRData2D",
+  function(object) {
+
+  # Handling processed data
+  d <- object@processed %>%
+    mutate(r = intensity$rr,  i = intensity$ir) %>%
+    select(-intensity) %>%
+    group_by(direct.shift) %>%
+    summarize(r = sum(r), i = sum(i)) %>%
+    ungroup()
+
+  d <- tibble(direct.shift = d$direct.shift, 
+              intensity = cmplx1(r = d$r, i = d$i))
+
+  # Parameters
+  procs = object@procs$direct
+  acqus = object@acqus$direct
+
+  new("NMRData1D", processed = d, procs = procs, acqus = acqus)
+})
+
+
+
+#------------------------------------------------------------------------------
+# Indirect
+
+#---------------------------------------
+#' Get 1D projection of indirect dimension
+#' 
+#' Warning: this is currently a convenience method to facilitate internal data
+#' manipulation, so the conversion may drop important data. When applied to a
+#' an NMRScaffold2D object, the direct components are simply dropped, and
+#' when applied to an NMRData2D object, the direct components are summed
+#' together to give a 1D projection. No normalization is performed so non-
+#' uniform sampling may result in distorted results.
+#' 
+#' @param object An NMRData2D or NMRScaffold2D object.
+#' 
+#' @name indirect
+setGeneric("indirect", 
+  function(object) standardGeneric("indirect")
+)
+
+#' @rdname indirect
+#' @export
+setMethod("indirect", "NMRData2D",
+  function(object) {
+
+  # Handling processed data
+  d <- object@processed %>%
+    mutate(r = intensity$rr,  i = intensity$ri) %>%
+    select(-intensity) %>%
+    group_by(indirect.shift) %>%
+    summarize(r = sum(r), i = sum(i)) %>%
+    ungroup()
+
+  d <- tibble(direct.shift = d$indirect.shift, 
+              intensity = cmplx1(r = d$r, i = d$i))
+
+  # Parameters
+  procs = object@procs$indirect
+  acqus = object@acqus$indirect
+
+  new("NMRData1D", processed = d, procs = procs, acqus = acqus)
+})
+
+
+
 #==============================================================================>
 #  Plotting
 #==============================================================================>
+
+
 
 #------------------------------------------------------------------------------
 #' Plot NMRData2D object
@@ -270,15 +375,19 @@ obj_sum.NMRData2D <- function(x) format(x)
 #' Convenience function that generates a plot of the spectral data.
 #' 
 #' @param x An NMRData2D object.
-#' @param components Some combination of 'rr', 'ii', 'ir', and 'ri' in a single
-#'                   string such as 'rr/ii' to include various real and
-#'                   imaginary components. If more than one component is
-#'                   selected, they are displayed in separate subplots.
+#' @param components One of 'rr', 'ii', 'ir', or 'ri' to specify various real
+#'                   and imaginary components. 3D plot subplots are not
+#'                   currently supported.
 #' 
 #' @return A plot_ly plot.
 #' 
 #' @export
 plot.NMRData2D <- function(x, components = 'rr') {
+
+  components <- tolower(components)
+  valid.components <- c('rr', 'ri', 'ir', 'ii')
+  err <- '"components" must be one of "rr", "ri", "ir", or "ii".'
+  if (! components %in% valid.components ) stop(err)
 
   legend.opts <- list(orientation = 'h', xanchor = "center", x = 0.5)
 
@@ -289,11 +398,12 @@ plot.NMRData2D <- function(x, components = 'rr') {
   )
 
   xaxis <- list(
-    title = "Indirect chemical shift (ppm)",
-    titlefont = f
+    title = "Direct chemical shift (ppm)",
+    titlefont = f,
+    autorange = "reversed"
   )
   yaxis <- list(
-    title = "Direct chemical shift (ppm)",
+    title = "Indirect chemical shift (ppm)",
     titlefont = f,
     autorange = "reversed"
   )
@@ -303,11 +413,12 @@ plot.NMRData2D <- function(x, components = 'rr') {
   )
 
   scene <- list(
+    legend = legend.opts,
     xaxis = xaxis,
     yaxis = yaxis,
     zaxis = zaxis,
     camera=list(
-      eye = list(x=0.5, y=0.5, z=0.5)
+      eye = list(x=0, y=2, z=1.25)
     )
   )
 
@@ -319,7 +430,7 @@ plot.NMRData2D <- function(x, components = 'rr') {
   y.data <- d$intensity
 
   # Defining generic plot function
-  f_init <- function(x, y, z, color, name, scene) {
+  f_init <- function(x, y, z, color, name) {
 
     # Drawing separate lines for each indirect dimension
     groups <- unique(y)
@@ -327,7 +438,7 @@ plot.NMRData2D <- function(x, components = 'rr') {
 
     index <- y == groups[1]
     p <- plot_ly(x = x[index], y = y[index], z = z[index],
-                 name = I(name), color = I(color), scene = scene,
+                 name = I(name), color = I(color),
                  type = 'scatter3d', mode = 'lines', legendgroup = name)
 
 
@@ -336,12 +447,13 @@ plot.NMRData2D <- function(x, components = 'rr') {
       index <- y == value
       p <- p %>%
         add_trace(x = x[index], y = y[index], z = z[index],
-                  name = I(name), color = I(color), scene = scene,
+                  name = I(name), color = I(color),
                   type = 'scatter3d', mode = 'lines', legendgroup = name,
                   showlegend = FALSE)
     }
 
-    p
+    p %>%
+      layout(scene = scene)
   }
 
   # Initializing the plot list
@@ -354,25 +466,15 @@ plot.NMRData2D <- function(x, components = 'rr') {
   ii <- grepl('ii', components)
 
   # Plotting 
-  if ( rr ) plots$rr <- f_init(direct.shift, indirect.shift, y.data$rr, 
-                               'black', 'Real', 'scene1')
-  if ( ri ) plots$ri <- f_init(direct.shift, indirect.shift, y.data$ri, 
-                               'grey', 'Imaginary/Real', 'scene2')
-  if ( ir ) plots$ir <- f_init(direct.shift, indirect.shift, y.data$ir, 
-                               'grey', 'Real/Imaginary', 'scene3')
-  if ( ii ) plots$ii <- f_init(direct.shift, indirect.shift, y.data$ii, 
-                               'grey', 'Imaginary', 'scene4')
+  x <- direct.shift
+  y <- indirect.shift
+  p <- NULL
+  if ( rr ) p <- f_init(x, y, y.data$rr, 'black', 'Real')
+  if ( ri ) p <- f_init(x, y, y.data$ri, 'black', 'Imaginary/Real')
+  if ( ir ) p <- f_init(x, y, y.data$ir, 'black', 'Real/Imaginary')
+  if ( ii ) p <- f_init(x, y, y.data$ii, 'black', 'Imaginary')
 
-  if ( length(plots) == 0 )  return(NULL)
-  else p <- subplot(plots, shareX = TRUE, shareY = TRUE, 
-                    nrows = min(length(plots), 2))
-
-# Tacking on scene settings
-  args <- list(p)
-  scenes <- c('scene1', 'scene2', 'scene3', 'scene4')
-  for ( i in 1:length(plots) ) args[[scenes[i]]] <- scene
-
-  do.call(layout, args) 
+  p
 }
 
 setMethod("plot", "NMRData2D", plot.NMRData2D)

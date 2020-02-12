@@ -376,7 +376,12 @@ summary.NMRData1D <- function(object, ...) {
                     as_tibble(d$intensity)))
 }
 
-
+#' @export
+range.NMRData1D <- function(object, ...) {
+  d <- object@processed
+  list(direct.shift = range(d$direct.shift),
+       intensity = range(Re(d$intensity)))
+}
 
 #' @export
 is_vector_s3.NMRData1D <- function(x) FALSE

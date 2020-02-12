@@ -23,6 +23,6 @@ p <- tibble(direct.shift = p$x1, indirect.shift = p$x2,
 d <- new("NMRData2D")
 d@processed <- p
 
-plot(d)
+direct <- direct(d)
 
 #print(s)
