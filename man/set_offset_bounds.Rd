@@ -2,7 +2,6 @@
 % Please edit documentation in R/NMRScaffold1D.R, R/NMRResonance1D.R,
 %   R/NMRSpecies1D.R, R/NMRMixture1D.R, R/NMRFit1D.R, R/NMRResonance2D.R,
 %   R/NMRSpecies2D.R, R/NMRMixture2D.R, R/NMRFit2D.R
-\docType{methods}
 \name{set_offset_bounds}
 \alias{set_offset_bounds}
 \alias{set_offset_bounds,NMRResonance1D-method}
@@ -17,8 +16,14 @@
 \usage{
 set_offset_bounds(object, ...)
 
-\S4method{set_offset_bounds}{NMRResonance1D}(object, position = NULL,
-  height = NULL, width = NULL, relative = FALSE, widen = FALSE)
+\S4method{set_offset_bounds}{NMRResonance1D}(
+  object,
+  position = NULL,
+  height = NULL,
+  width = NULL,
+  relative = FALSE,
+  widen = FALSE
+)
 
 \S4method{set_offset_bounds}{NMRSpecies1D}(object, ...)
 
@@ -26,9 +31,15 @@ set_offset_bounds(object, ...)
 
 \S4method{set_offset_bounds}{NMRFit1D}(object, ...)
 
-\S4method{set_offset_bounds}{NMRResonance2D}(object, dimension = "both",
-  position = NULL, height = NULL, width = NULL, relative = FALSE,
-  widen = FALSE)
+\S4method{set_offset_bounds}{NMRResonance2D}(
+  object,
+  dimension = "both",
+  position = NULL,
+  height = NULL,
+  width = NULL,
+  relative = FALSE,
+  widen = FALSE
+)
 
 \S4method{set_offset_bounds}{NMRSpecies2D}(object, ...)
 

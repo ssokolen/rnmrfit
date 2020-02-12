@@ -2,7 +2,6 @@
 % Please edit documentation in R/NMRScaffold1D.R, R/NMRResonance1D.R,
 %   R/NMRSpecies1D.R, R/NMRMixture1D.R, R/NMRResonance2D.R, R/NMRSpecies2D.R,
 %   R/NMRMixture2D.R
-\docType{methods}
 \name{peaks}
 \alias{peaks}
 \alias{peaks,NMRResonance1D-method}

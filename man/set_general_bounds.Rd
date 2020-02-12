@@ -2,7 +2,6 @@
 % Please edit documentation in R/NMRScaffold1D.R, R/NMRResonance1D.R,
 %   R/NMRSpecies1D.R, R/NMRMixture1D.R, R/NMRFit1D.R, R/NMRResonance2D.R,
 %   R/NMRSpecies2D.R, R/NMRMixture2D.R, R/NMRFit2D.R
-\docType{methods}
 \name{set_general_bounds}
 \alias{set_general_bounds}
 \alias{set_general_bounds,NMRResonance1D-method}
@@ -17,27 +16,52 @@
 \usage{
 set_general_bounds(object, ...)
 
-\S4method{set_general_bounds}{NMRResonance1D}(object, position = NULL,
-  height = NULL, width = NULL, fraction.gauss = NULL,
-  nmrdata = NULL, widen = FALSE)
+\S4method{set_general_bounds}{NMRResonance1D}(
+  object,
+  position = NULL,
+  height = NULL,
+  width = NULL,
+  fraction.gauss = NULL,
+  nmrdata = NULL,
+  widen = FALSE
+)
 
 \S4method{set_general_bounds}{NMRSpecies1D}(object, ...)
 
 \S4method{set_general_bounds}{NMRMixture1D}(object, ...)
 
-\S4method{set_general_bounds}{NMRFit1D}(object, ..., nmrdata = NULL,
-  widen = FALSE, baseline = NULL, phase = NULL)
+\S4method{set_general_bounds}{NMRFit1D}(
+  object,
+  ...,
+  nmrdata = NULL,
+  widen = FALSE,
+  baseline = NULL,
+  phase = NULL
+)
 
-\S4method{set_general_bounds}{NMRResonance2D}(object, dimension = "both",
-  position = NULL, height = NULL, width = NULL,
-  fraction.gauss = NULL, nmrdata = NULL, widen = FALSE)
+\S4method{set_general_bounds}{NMRResonance2D}(
+  object,
+  dimension = "both",
+  position = NULL,
+  height = NULL,
+  width = NULL,
+  fraction.gauss = NULL,
+  nmrdata = NULL,
+  widen = FALSE
+)
 
 \S4method{set_general_bounds}{NMRSpecies2D}(object, ...)
 
 \S4method{set_general_bounds}{NMRMixture2D}(object, ...)
 
-\S4method{set_general_bounds}{NMRFit2D}(object, ..., nmrdata = NULL,
-  widen = FALSE, baseline = NULL, phase = NULL)
+\S4method{set_general_bounds}{NMRFit2D}(
+  object,
+  ...,
+  nmrdata = NULL,
+  widen = FALSE,
+  baseline = NULL,
+  phase = NULL
+)
 }
 \arguments{
 \item{object}{An NMRScaffold1D object.}

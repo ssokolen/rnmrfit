@@ -165,14 +165,15 @@ setMethod("f_lineshape", "NMRScaffold2D",
     if ( any(! components %in% c('rr', 'ri', 'ir', 'ii')) ) stop(err)
 
     f_out <- function(y) {
+      print(head(y))
       d <- as_tibble(y)[, components]
       if ( length(components) == 1 ) {
         d[[components]]
-      } else if ( length(components == 2) ) { 
+      } else if ( length(components) == 2 ) { 
         colnames(d) <- c('r', 'i')
         cmplx1(r = d$r, i = d$i)
-      } else if ( return.i ) {
-        cmplx2(rr = d$rr, ri = d$ri, ir = d$ir, ii = d$i )
+      } else {
+        cmplx2(rr = d$rr, ri = d$ri, ir = d$ir, ii = d$ii )
       }
     }
 

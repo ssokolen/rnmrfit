@@ -312,37 +312,34 @@ plot.NMRData2D <- function(x, components = 'rr') {
   )
 
   #---------------------------------------
-  # For most evenly sampled data, just generate a data matrix
 
   d <- x@processed
-
-  # Ensuring correct pivoting order
-  m <- d %>%
-    pivot_wider(id_cols = 'direct.shift', 
-                names_from = 'indirect.shift', values_from = 'intensity')
-
-  err <- "NMR2D plots currently only support evenly sampled data."
-  if ( any(is.na(m)) ) stop(err)
-
-  direct.shift <- unique(d$direct.shift)
-  indirect.shift <- unique(d$indirect.shift)
-  
-  n.col <- length(direct.shift)
-  n.row <- length(indirect.shift)
-
-  # And then pivot back
-  d <- m %>%
-    pivot_longer(-direct.shift, names_to = 'indirect.shift', 
-                 values_to = 'intensity')
-
+  direct.shift <- d$direct.shift
+  indirect.shift <- d$indirect.shift
+  y.data <- d$intensity
 
   # Defining generic plot function
-  f_init <- function(z, name, scene) {
+  f_init <- function(x, y, z, color, name, scene) {
 
-    p <- plot_ly(x = indirect.shift, y = direct.shift,  
-                 z = matrix(z, ncol = n.col), 
-                 name = I(name), legendgroup = 1, scene = scene) %>% 
-      add_surface()
+    # Drawing separate lines for each indirect dimension
+    groups <- unique(y)
+    n <- length(groups)
+
+    index <- y == groups[1]
+    p <- plot_ly(x = x[index], y = y[index], z = z[index],
+                 name = I(name), color = I(color), scene = scene,
+                 type = 'scatter3d', mode = 'lines', legendgroup = name)
+
+
+    # Looping over the rest
+    for ( value in groups[-1] ) {
+      index <- y == value
+      p <- p %>%
+        add_trace(x = x[index], y = y[index], z = z[index],
+                  name = I(name), color = I(color), scene = scene,
+                  type = 'scatter3d', mode = 'lines', legendgroup = name,
+                  showlegend = FALSE)
+    }
 
     p
   }
@@ -357,15 +354,22 @@ plot.NMRData2D <- function(x, components = 'rr') {
   ii <- grepl('ii', components)
 
   # Plotting 
-  if ( rr ) plots$rr <- f_init(d$intensity$r, 'Real', 'scene1')
+  if ( rr ) plots$rr <- f_init(direct.shift, indirect.shift, y.data$rr, 
+                               'black', 'Real', 'scene1')
+  if ( ri ) plots$ri <- f_init(direct.shift, indirect.shift, y.data$ri, 
+                               'grey', 'Imaginary/Real', 'scene2')
+  if ( ir ) plots$ir <- f_init(direct.shift, indirect.shift, y.data$ir, 
+                               'grey', 'Real/Imaginary', 'scene3')
+  if ( ii ) plots$ii <- f_init(direct.shift, indirect.shift, y.data$ii, 
+                               'grey', 'Imaginary', 'scene4')
 
   if ( length(plots) == 0 )  return(NULL)
   else p <- subplot(plots, shareX = TRUE, shareY = TRUE, 
                     nrows = min(length(plots), 2))
 
-  # Tacking on scene settings
+# Tacking on scene settings
   args <- list(p)
-  scenes <- c('scene', 'scene2', 'scene3', 'scene4')
+  scenes <- c('scene1', 'scene2', 'scene3', 'scene4')
   for ( i in 1:length(plots) ) args[[scenes[i]]] <- scene
 
   do.call(layout, args) 

@@ -160,11 +160,21 @@ void lineshape_2d(NumericVector x_direct, NumericVector x_indirect,
   // For 2D peaks, the y value is the sum of products between direct and
   // indirect dimensions for matching resonances
   for (int i = 0; i < n_points; i++) {
-    for (int j = 0; j < n_res; j++) {
-      y(i, 0) = real(data_direct[0].peak_fit.at(j).at(xi_direct.at(i))) *
-                real(data_direct[1].peak_fit.at(j).at(xi_indirect.at(i)));
+  
+    y(i, 0) = 0;
+    y(i, 1) = 0;
+    y(i, 2) = 0;
+    y(i, 3) = 0;
 
-      // y_val.at(i) = peak_fit.at(i);
+    for (int j = 0; j < n_res; j++) {
+      y(i, 0) += real(data_direct[0].peak_fit.at(j).at(xi_direct.at(i))) *
+                 real(data_direct[1].peak_fit.at(j).at(xi_indirect.at(i)));
+      y(i, 1) += real(data_direct[0].peak_fit.at(j).at(xi_direct.at(i))) *
+                 imag(data_direct[1].peak_fit.at(j).at(xi_indirect.at(i)));
+      y(i, 2) += imag(data_direct[0].peak_fit.at(j).at(xi_direct.at(i))) *
+                 real(data_direct[1].peak_fit.at(j).at(xi_indirect.at(i)));
+      y(i, 3) += imag(data_direct[0].peak_fit.at(j).at(xi_direct.at(i))) *
+                 imag(data_direct[1].peak_fit.at(j).at(xi_indirect.at(i)));
     }
   }
 

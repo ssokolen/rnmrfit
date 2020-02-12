@@ -427,6 +427,7 @@ plot.NMRData1D <- function(x, components = 'r') {
   )
 
   #---------------------------------------
+
   d <- x@processed
   direct.shift <- d$direct.shift
   y.data <- d$intensity

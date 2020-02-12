@@ -363,51 +363,195 @@ vec_type2.vctrs_cmplx2.vctrs_unspecified <- function(x, y, ...) x
 
 #---------------------------------------
 # Type definitions
-vec_type2.vctrs_cmplx2 <- function(x, y, ...) {
-  UseMethod("vec_type2.vctrs_cmplx2", y)
+
+#' @method vec_ptype2 vctrs_cmplx2
+#' @export
+#' @export vec_ptype2.vctrs_cmplx2
+vec_ptype2.vctrs_cmplx2 <- function(x, y, ...) {
+  UseMethod("vec_ptype2.vctrs_cmplx2", y)
 }
 
-vec_type2.vctrs_cmplx2.default <- function(x, y, ..., x_arg = "", y_arg = "") {
+#' @method vec_ptype2.vctrs_cmplx2 default
+#' @export
+vec_ptype2.vctrs_cmplx2.default <- function(x, y, ..., x_arg = "", y_arg = "") {
   stop_incompatible_type(x, y, x_arg = x_arg, y_arg = y_arg)
 }
 
-vec_type2.vctrs_cmplx2.vctrs_unspecified <- function(x, y, ...) x
-vec_type2.vctrs_cmplx2.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
+#' @method vec_ptype2.complex default
+#' @export
+vec_ptype2.complex.default <- function(x, y, ..., x_arg = "", y_arg = "") {
+  stop_incompatible_type(x, y, x_arg = x_arg, y_arg = y_arg)
+}
 
-vec_type2.vctrs_cmplx2.complex <- function(x, y, ...) new_cmplx2()
-vec_type2.complex.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
+#' @method vec_ptype2.vctrs_cmplx2 vctrs_unspecified
+#' @export
+vec_ptype2.vctrs_cmplx2.vctrs_unspecified <- function(x, y, ...) x
 
-vec_type2.vctrs_cmplx2.numeric <- function(x, y, ...) new_cmplx2()
-vec_type2.numeric.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
+#' @method vec_ptype2.vctrs_cmplx2 vctrs_cmplx2
+#' @export
+vec_ptype2.vctrs_cmplx2.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
+
+#' @method vec_ptype2.vctrs_cmplx2 complex
+#' @export
+vec_ptype2.vctrs_cmplx2.complex <- function(x, y, ...) new_cmplx2()
+
+#' @method vec_ptype2.complex vctrs_cmplx2
+#' @export
+vec_ptype2.complex.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
+
+#' @method vec_ptype2.vctrs_cmplx2 double
+#' @export
+vec_ptype2.vctrs_cmplx2.double <- function(x, y, ...) new_cmplx2()
+
+#' @method vec_ptype2.double vctrs_cmplx2
+#' @export
+vec_ptype2.double.vctrs_cmplx2 <- function(x, y, ...) new_cmplx2()
 
 #---------------------------------------
 # Cast definitions
 
-vec_cast.vctrs_cmplx2 <- function(x, to) UseMethod("vec_cast.vctrs_cmplx2")
-vec_cast.vctrs_cmplx2.default <- function(x, to) vec_default_cast(x, to)
+#' @method vec_cast vctrs_cmplx2
+#' @export
+#' @export vec_cast.vctrs_cmplx2
+vec_cast.vctrs_cmplx2 <- function(x, to, ...) UseMethod("vec_cast.vctrs_cmplx2")
 
-vec_cast.vctrs_cmplx2.vctrs_cmplx2 <- function(x, to) x
-vec_cast.numeric.vctrs_cmplx2 <- function(x, to) Re(x)
-vec_cast.complex.vctrs_cmplx2 <- function(x, to) {
+#' @method vec_cast.vctrs_cmplx2 default
+#' @export
+vec_cast.vctrs_cmplx2.default <- function(x, to, ...) vec_default_cast(x, to)
+
+#' @method vec_cast.vctrs_cmplx2 vctrs_cmplx2
+#' @export
+vec_cast.vctrs_cmplx2.vctrs_cmplx2 <- function(x, to, ...) x
+
+#' @method vec_cast.vctrs_cmplx2 complex
+#' @export
+vec_cast.vctrs_cmplx2.complex <- function(x, to, ...) {
+  cmplx2(rr = Re(x), ii = Im(x))
+}
+
+#' @method vec_cast.complex vctrs_cmplx2
+#' @export
+vec_cast.complex.vctrs_cmplx2 <- function(x, to, ...) {
   complex(real = Re(x), imag = Im(x))
 }
-vec_cast.vctrs_cmplx2.numeric <- function(x, to) cmplx2(rr = x)
-vec_cast.vctrs_cmplx2.complex <- function(x, to) cmplx2(rr = Re(x), ii = Im(x))
+
+#' @method vec_cast.vctrs_cmplx2 double 
+#' @export
+vec_cast.vctrs_cmplx2.double <- function(x, to, ...) cmplx2(rr = x)
+
+#' @method vec_cast.double vctrs_cmplx2
+#' @export
+vec_cast.double.vctrs_cmplx2 <- function(x, to, ...) Re(x)
+
 
 #------------------------------------------------------------------------------
-# Traditional Re()/Im()
+# Traditional Re()/Im()/Conj()
 
+#' @method Re vctrs_cmplx2
 #' @export
 Re.vctrs_cmplx2 <- function(z) z$rr
 
+#' @method Im vctrs_cmplx2
 #' @export
 Im.vctrs_cmplx2 <- function(z) z$ii
 
 #------------------------------------------------------------------------------
 # Summary
 
+#' @method as_tibble vctrs_cmplx2
 #' @export
-as_tibble.vctrs_cmplx2 <- as_tibble.vctrs_cmplx1
+as_tibble.vctrs_cmplx2 <- function(x, ...) as_tibble(unclass(x))
 
+#' @method summary vctrs_cmplx2
 #' @export
-summary.vctrs_cmplx2 <- summary.vctrs_cmplx1
+summary.vctrs_cmplx2 <- function(object, ..., 
+                                 digits = max(3, getOption("digits") - 3)) {
+  summary(as_tibble(object))
+
+}
+
+#------------------------------------------------------------------------------
+# Arithmetic
+
+#---------------------------------------
+# Boilerplate
+
+#' @method vec_arith vctrs_cmplx2
+#' @export
+#' @export vec_arith.vctrs_cmplx2
+vec_arith.vctrs_cmplx2 <- function(op, x, y, ...) {
+  UseMethod("vec_arith.vctrs_cmplx2", y)
+}
+
+#' @method vec_arith.vctrs_cmplx2 default
+#' @export
+vec_arith.vctrs_cmplx2.default <- function(op, x, y, ...) {
+  stop_incompatible_op(op, x, y)
+}
+
+#---------------------------------------
+# cmplx2
+
+#' @method vec_arith.vctrs_cmplx2 vctrs_cmplx2
+#' @export
+vec_arith.vctrs_cmplx2.vctrs_cmplx2 <- function(op, x, y, ...) {
+  switch(
+    op,
+    "+" = new_cmplx2(rr = x$rr + y$rr, ri = x$ri + y$ri,
+                     ir = x$ir + y$ir, ii = x$ii + y$ii), 
+    "-" = new_cmplx2(rr = x$rr - y$rr, ri = x$ri - y$ri,
+                     ir = x$ir - y$ir, ii = x$ii - y$ii),
+    stop_incompatible_op(op, x, y)
+  )
+}
+
+#---------------------------------------
+# complex 
+
+#' @method vec_arith.vctrs_cmplx2 complex
+#' @export
+vec_arith.vctrs_cmplx2.complex <- function(op, x, y, ...) {
+   vec_arith(op, x, vec_cast(y, new_cmplx2())) 
+}
+
+#' @method vec_arith.complex vctrs_cmplx2
+#' @export
+vec_arith.complex.vctrs_cmplx2 <- function(op, x, y, ...) {
+  vec_arith(op, vec_cast(x, new_cmplx2()), y)
+}
+
+#---------------------------------------
+# double
+
+#' @method vec_arith.vctrs_cmplx2 double
+#' @export
+vec_arith.vctrs_cmplx2.double <- function(op, x, y, ...) {
+  switch(
+    op,
+    "/" = new_cmplx2(rr = x$rr/y, ri = x$ri/y, ir = x$ir/y, ii = x$ii/y),
+    vec_arith(op, x, cmplx2(rr = y))
+  )
+}
+
+#' @method vec_arith.double vctrs_cmplx2
+#' @export
+vec_arith.double.vctrs_cmplx2 <- function(op, x, y, ...) {
+  vec_arith(op, cmplx2(rr = x), y)
+}
+
+
+
+#------------------------------------------------------------------------------
+# Math
+
+#' @method vec_math vctrs_cmplx2
+#' @export
+vec_math.vctrs_cmplx2 <- function(.fn, .x, ...) {
+  switch(.fn,
+    sum = cmplx2(rr = sum(.x$rr), ri = sum(.x$ri), 
+                 ir = sum(.x$ir), ii = sum(.x$ii)),
+    mean = cmplx2(rr = sum(.x$rr), ri = sum(.x$ri), 
+                  ir = sum(.x$ir), ii = sum(.x$ii))/as.numeric(length(.x)),
+    vec_math_base(.fn, .x, ...)
+  )
+}
