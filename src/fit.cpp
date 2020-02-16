@@ -630,10 +630,13 @@ double f_obj_1d(unsigned n, const double *par, double *grad, void *data) {
   // Loop over peaks
   for (int i = 0; i < n_peaks; i++) {
 
+
     double p = par[i*4];
     double w = par[i*4+1];
     double h = par[i*4+2];
     double f = par[i*4+3];
+
+    Rcpp::Rcout << i << ", " << n_peaks << ", " << f << std::endl;
 
     // If the fraction gauss value is 0, proceed as Lorentz (w becomes wl)
     if ( f < 1e-6 ) {

@@ -369,8 +369,8 @@ setMethod("pack_peaks", "NMRMixture1D",
                   lb = bounds(object)$lower$peaks[, data.columns], 
                   ub = bounds(object)$upper$peaks[, data.columns])
 
-    shift.span <- shift.range[1] - shift.range[0]
-    intensity.span <- intensity.range[1] - intensity.range[0]
+    shift.span <- shift.range[2] - shift.range[1]
+    intensity.span <- intensity.range[2] - intensity.range[1]
 
     for (name in names(peaks)) {
       peaks[[name]]$position <- (peaks[[name]]$position - shift.range[1])/
@@ -418,8 +418,8 @@ setMethod("unpack_peaks", "NMRMixture1D",
 
     data.columns <- c('position', 'width', 'height', 'fraction.gauss')
 
-    shift.span <- shift.range[1] - shift.range[0]
-    intensity.span <- intensity.range[1] - intensity.range[0]
+    shift.span <- shift.range[2] - shift.range[1]
+    intensity.span <- intensity.range[2] - intensity.range[1]
 
     peaks <- peaks(object)
     new.peaks <- matrix(par, ncol = 4, byrow = TRUE)
@@ -467,7 +467,7 @@ setGeneric("pack_constraints",
 setMethod("pack_constraints", "NMRMixture1D",
   function(object, shift.range = c(0, 1), offset = 0) {
 
-    span <- shift.range[1] - shift.range[0]
+    span <- shift.range[2] - shift.range[1]
 
     #---------------------------------------
     # Defining separate functions for dealing with the 5 different constraints.
@@ -712,9 +712,9 @@ setMethod("fit", "NMRFit1D",
 
     ranges <- range(object@nmrdata)
     shift.range <- ranges$direct
-    shift.span <- shift.range[1] - shift.range[0]
+    shift.span <- shift.range[2] - shift.range[1]
     intensity.range <- ranges$intensity
-    intensity.span <- intensity.range[1] - intensity.range[0]
+    intensity.span <- intensity.range[2] - intensity.range[1]
 
     d <- processed(object@nmrdata)
     x <- (x - shift.range[1])/shift.span
@@ -736,7 +736,7 @@ setMethod("fit", "NMRFit1D",
 
     peaks <- pack_peaks(object2, sf = sf, shift.range = shift.range,
                         intensity.range = intensity.range)
-    n.peaks <- length(peaks$par)
+    n.peaks <- length(peaks$par)/4
 
     #---------------------------------------
     # Scaling and packing baseline/phase terms
@@ -746,12 +746,21 @@ setMethod("fit", "NMRFit1D",
     knots <- (knots - shift.range[1])/shift.span
     n.baseline <- length(baseline(object))
 
+    # In case one of the baseline terms are infinite, avoid complex division
+    lower.baseline <- bounds(object)$lower$baseline
+    lower.baseline <- complex(re = Re(lower.baseline)/intensity.span,
+                              im = Im(lower.baseline)/intensity.span)
+
+    upper.baseline <- bounds(object)$upper$baseline
+    upper.baseline <- complex(re = Re(upper.baseline)/intensity.span, 
+                              im = Im(upper.baseline)/intensity.span)
+
     baseline <- list(
       par = baseline(object)/intensity.span, 
-      lb = rep(bounds(object)$lower$baseline/intensity.span, n.baseline),
-      ub = rep(bounds(object)$upper$baseline/intensity.span, n.baseline)
+      lb = rep(lower.baseline, n.baseline),
+      ub = rep(upper.baseline, n.baseline)
     )
-
+    
     # 1st order phase coefficients must be adapted to the local scale
     # (although a 0 order correction remains constant)
     phase <- phase(object)
@@ -769,7 +778,7 @@ setMethod("fit", "NMRFit1D",
 
     #---------------------------------------
     # Combining the peaks, baseline, and phase terms in single vectors
-
+    ob <<- object
     par <- list(par = NA, lb = NA, ub = NA)
     for (name in names(par)) {
       par[[name]] <- c(peaks[[name]], Re(baseline[[name]]), 
@@ -780,7 +789,7 @@ setMethod("fit", "NMRFit1D",
     # Generating constraint lists
 
     # Comparing constraint code)
-    constraints <- parse_constraints(object, shift.span)
+    constraints <- pack_constraints(object, shift.range)
 
     eq.constraints <- constraints[[1]]
     ineq.constraints <- constraints[[2]]
@@ -805,9 +814,9 @@ setMethod("fit", "NMRFit1D",
 
     #---------------------------------------
     # Unpacking and rescaling parameters
-    
+
     # Starting with peaks
-    peaks <- unpack_peaks(object2, par$par[1:n.peaks], sf = sf, 
+    peaks <- unpack_peaks(object2, par$par[1:(n.peaks*4)], sf = sf, 
                           shift.range = shift.range, 
                           intensity.range = intensity.range)
 

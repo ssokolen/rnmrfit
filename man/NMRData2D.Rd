@@ -3,7 +3,7 @@
 \docType{class}
 \name{NMRData2D-class}
 \alias{NMRData2D-class}
-\alias{NMRData1D}
+\alias{NMRData2D}
 \title{A class combining NMR data and scan parameters}
 \description{
 An extension of the generic NMRData class to provide 2D-specific methods
