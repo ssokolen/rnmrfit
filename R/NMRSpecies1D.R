@@ -362,12 +362,14 @@ setMethod("update_peaks", "NMRSpecies1D",
     id <- resonance@id
     sub.peaks <- peaks %>% filter(resonance == id) %>% select(-resonance)
 
-    if ( nrow(sub.peaks) == 0 ) indexes <- c(indexes, i) 
-
-    resonance <- update_peaks(resonance, sub.peaks,
-                              exclusion.level = exclusion.level,
-                              exclusion.notification = 'none')
-    object@resonances[[i]] <- resonance
+    if ( nrow(sub.peaks) == 0 ) {
+      indexes <- c(indexes, i) 
+    } else {
+      resonance <- update_peaks(resonance, sub.peaks,
+                                exclusion.level = exclusion.level,
+                                exclusion.notification = 'none')
+      object@resonances[[i]] <- resonance
+    }
   }
 
   if ( length(indexes) > 0 ) object@resonances <- object@resonances[-indexes]

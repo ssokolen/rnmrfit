@@ -587,14 +587,9 @@ setMethod("update_peaks", "NMRResonance1D",
   if (! all(colnames(peaks) %in% colnames(current.peaks))) stop(err)
 
   # Check for missing peaks
-  if ( exclusion.level %in% c('resonance', 'species') ) {
-    logic <- rep(TRUE, nrow(current.peaks) )
-  }
-  else {
-    current.ids <- current.peaks$peak
-    new.ids <- peaks$peak
-    logic <- ! current.ids %in% new.ids
-  }
+  current.ids <- current.peaks$peak
+  new.ids <- peaks$peak
+  logic <- ! current.ids %in% new.ids
 
   if ( any(logic) ) {
 

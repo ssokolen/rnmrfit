@@ -353,24 +353,35 @@ setMethod("update_peaks", "NMRSpecies2D",
   function(object, peaks, exclusion.level = nmroptions$exclusion$level,
            exclusion.notification = nmroptions$exclusion$notification) {
 
+  # 2D peak update must be at resonance level
+  wrn <- 'Switching 2D "exclusion.level" from "peak" to "resonance".'
+  if ( exclusion.level == 'peak' ) {
+    exclusion.level = "resonance"
+    warning(wrn)
+  }
+
   # Check that columns match before continuing
   current.peaks <- peaks(object)
   err <- '"peaks" columns must match those of current peaks data.frame.'
   if (! all(colnames(peaks) %in% colnames(current.peaks))) stop(err)
 
   # Check for missing peaks
-  current.ids <- apply(current.peaks[, c('resonance', 'peak')], 1, 
+  current.ids <- apply(current.peaks[, c('resonance', 'peak', 'dimension')], 1, 
                        paste, collapse = '-')
 
-  new.ids <- apply(peaks[, c('resonance', 'peak')], 1, 
+  new.ids <- apply(peaks[, c('resonance', 'peak', 'dimension')], 1, 
                    paste, collapse = '-')
+
   logic <- ! current.ids %in% new.ids
 
   if ( any(logic) ) {
 
+    current.ids <- apply(current.peaks[, c('resonance', 'peak')], 1, 
+                         paste, collapse = '-')
+
     msg <- paste('The following peaks were found outside the data range',
                  'and were therefore excluded:\n',
-                  paste(current.ids[logic], collapse = ', '))
+                  paste(unique(current.ids[logic]), collapse = ', '))
 
     # Expanding message based on level
     if ( exclusion.level %in% c('resonance', 'species') ) {
@@ -407,12 +418,14 @@ setMethod("update_peaks", "NMRSpecies2D",
     id <- id(resonance) 
     sub.peaks <- peaks %>% filter(resonance == id) %>% select(-resonance)
 
-    if ( nrow(sub.peaks) == 0 ) indexes <- c(indexes, i) 
-
-    resonance <- update_peaks(resonance, sub.peaks,
-                              exclusion.level = exclusion.level,
-                              exclusion.notification = 'none')
-    object@resonances[[i]] <- resonance
+    if ( nrow(sub.peaks) == 0 ) {
+      indexes <- c(indexes, i) 
+    } else {
+      resonance <- update_peaks(resonance, sub.peaks,
+                                exclusion.level = exclusion.level,
+                                exclusion.notification = 'none')
+      object@resonances[[i]] <- resonance
+    }
   }
 
   if ( length(indexes) > 0 ) object@resonances <- object@resonances[-indexes]

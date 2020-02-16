@@ -636,8 +636,6 @@ double f_obj_1d(unsigned n, const double *par, double *grad, void *data) {
     double h = par[i*4+2];
     double f = par[i*4+3];
 
-    Rcpp::Rcout << i << ", " << n_peaks << ", " << f << std::endl;
-
     // If the fraction gauss value is 0, proceed as Lorentz (w becomes wl)
     if ( f < 1e-6 ) {
 		  lorentz(p, w, h, 0, i*4, grad, data_direct);	

@@ -344,7 +344,7 @@ nmrfit_1d <- function(
 #' 
 #' @param object An NMRMixture1D object.
 #' @param sf Field strength (used to convert peak width from Hz to ppm).
-#' @param shift.range A two-element vector representing the ppm range of the fit
+#' @param direct.range A two-element vector representing the ppm range of the fit
 #'                    (used to scale peak width and position).
 #' @param intensity.range A two-element vector representing the intensity range
 #'                        of the fit (used to scale peak heights).
@@ -361,7 +361,7 @@ setGeneric("pack_peaks",
 #' @export
 setMethod("pack_peaks", "NMRMixture1D",
   function(object, sf = nmroptions$direct$sf,
-           shift.range = c(0, 1), intensity.range = c(0, 1)) {
+           direct.range = c(0, 1), intensity.range = c(0, 1)) {
 
     data.columns <- c('position', 'width', 'height', 'fraction.gauss')
 
@@ -369,13 +369,13 @@ setMethod("pack_peaks", "NMRMixture1D",
                   lb = bounds(object)$lower$peaks[, data.columns], 
                   ub = bounds(object)$upper$peaks[, data.columns])
 
-    shift.span <- shift.range[2] - shift.range[1]
+    direct.span <- direct.range[2] - direct.range[1]
     intensity.span <- intensity.range[2] - intensity.range[1]
 
     for (name in names(peaks)) {
-      peaks[[name]]$position <- (peaks[[name]]$position - shift.range[1])/
-                                 shift.span
-      peaks[[name]]$width <- peaks[[name]]$width/sf/shift.span
+      peaks[[name]]$position <- (peaks[[name]]$position - direct.range[1])/
+                                 direct.span
+      peaks[[name]]$width <- peaks[[name]]$width/sf/direct.span
       peaks[[name]]$height <- peaks[[name]]$height/intensity.span
 
       peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
@@ -396,7 +396,7 @@ setMethod("pack_peaks", "NMRMixture1D",
 #' @param object An NMRMixture1D object.
 #' @param par Parameter vector.
 #' @param sf Field strength (used to convert peak width from Hz to ppm).
-#' @param shift.range A two-element vector representing the ppm range of the fit
+#' @param direct.range A two-element vector representing the ppm range of the fit
 #'                    (used to scale peak width and position).
 #' @param intensity.range A two-element vector representing the intensity range
 #'                        of the fit (used to scale peak heights).
@@ -414,19 +414,19 @@ setGeneric("unpack_peaks",
 #' @export
 setMethod("unpack_peaks", "NMRMixture1D",
   function(object, par, sf = nmroptions$direct$sf,
-           shift.range = c(0, 1), intensity.range = c(0, 1)) {
+           direct.range = c(0, 1), intensity.range = c(0, 1)) {
 
     data.columns <- c('position', 'width', 'height', 'fraction.gauss')
 
-    shift.span <- shift.range[2] - shift.range[1]
+    direct.span <- direct.range[2] - direct.range[1]
     intensity.span <- intensity.range[2] - intensity.range[1]
 
     peaks <- peaks(object)
     new.peaks <- matrix(par, ncol = 4, byrow = TRUE)
     peaks[, data.columns] <- new.peaks
 
-    peaks$position <- peaks$position*shift.span + shift.range[1]
-    peaks$width <- peaks$width*sf*shift.span
+    peaks$position <- peaks$position*direct.span + direct.range[1]
+    peaks$width <- peaks$width*sf*direct.span
     peaks$height <- peaks$height*intensity.span
 
 
@@ -451,7 +451,7 @@ setMethod("unpack_peaks", "NMRMixture1D",
 #' are added up before dividing the positive ones.
 #' 
 #' @param object An NMRMixture1D object.
-#' @param shift.range A two-element vector representing the ppm range of the fit
+#' @param direct.range A two-element vector representing the ppm range of the fit
 #'                    (used to scale position differences).
 #' @param offset An integer offset to the indexes used to handle direct/indirect
 #'               dimensions for 2D fitting.
@@ -465,9 +465,9 @@ setGeneric("pack_constraints",
 #' @rdname pack_constraints
 #' @export
 setMethod("pack_constraints", "NMRMixture1D",
-  function(object, shift.range = c(0, 1), offset = 0) {
+  function(object, direct.range = c(0, 1), offset = 0) {
 
-    span <- shift.range[2] - shift.range[1]
+    span <- direct.range[2] - direct.range[1]
 
     #---------------------------------------
     # Defining separate functions for dealing with the 5 different constraints.
@@ -702,39 +702,44 @@ setMethod("fit", "NMRFit1D",
            exclusion.level = nmroptions$exclusion$level,
            exclusion.notification = nmroptions$exclusion$notification) {
 
-    # First, run the initialization
-    object <- init(object, sf = sf, init = init, opts = opts, 
-                   exclusion.level = exclusion.level, 
-                   exclusion.notification = exclusion.notification)
-
     #---------------------------------------
     # Scaling data
 
     ranges <- range(object@nmrdata)
-    shift.range <- ranges$direct
-    shift.span <- shift.range[2] - shift.range[1]
+    direct.range <- ranges$direct
+    direct.span <- direct.range[2] - direct.range[1]
     intensity.range <- ranges$intensity
     intensity.span <- intensity.range[2] - intensity.range[1]
 
     d <- processed(object@nmrdata)
-    x <- (x - shift.range[1])/shift.span
-    y <- complex(re = Re(y), im = Im(y))
+    x <- d$direct.shift
+    x <- (x - direct.range[1])/direct.span
+    y <- d$intensity
     y <- y/intensity.span
 
+    #---------------------------------------
     # Exclude peaks in advance by tying into the update_peaks functions
     # (to consider full resonance/fit exclusion)
+
     peaks <- peaks(object)
-    logic <- (peaks$position > shift.range[1]) & 
-             (peaks$position < shift.range[2])
+    logic <- (peaks$position > direct.range[1]) & 
+             (peaks$position < direct.range[2])
     peaks <- peaks[logic, ]
 
     object2 <- update_peaks(object, peaks, exclusion.level = exclusion.level,
                             exclusion.notification = "none")
 
     #---------------------------------------
+    # Initialize parameters (default is just to initialize height)
+
+    object2 <- init(object2, sf = sf, init = init, opts = opts, 
+                    exclusion.level = exclusion.level, 
+                    exclusion.notification = exclusion.notification)
+
+    #---------------------------------------
     # Scaling and packing parameters
 
-    peaks <- pack_peaks(object2, sf = sf, shift.range = shift.range,
+    peaks <- pack_peaks(object2, sf = sf, direct.range = direct.range,
                         intensity.range = intensity.range)
     n.peaks <- length(peaks$par)/4
 
@@ -743,7 +748,7 @@ setMethod("fit", "NMRFit1D",
     
     # Scaling knots in line with x
     knots <- knots(object)
-    knots <- (knots - shift.range[1])/shift.span
+    knots <- (knots - direct.range[1])/direct.span
     n.baseline <- length(baseline(object))
 
     # In case one of the baseline terms are infinite, avoid complex division
@@ -766,8 +771,8 @@ setMethod("fit", "NMRFit1D",
     phase <- phase(object)
     n.phase <- length(phase)
     if ( n.phase == 2 ) {
-      phase[1] <- phase[1] + phase[2]*shift.range[1]
-      phase[2] <- (phase[2] - phase[1])*shift.span
+      phase[1] <- phase[1] + phase[2]*direct.range[1]
+      phase[2] <- (phase[2] - phase[1])*direct.span
     }
 
     phase <- list(
@@ -789,7 +794,7 @@ setMethod("fit", "NMRFit1D",
     # Generating constraint lists
 
     # Comparing constraint code)
-    constraints <- pack_constraints(object, shift.range)
+    constraints <- pack_constraints(object, direct.range)
 
     eq.constraints <- constraints[[1]]
     ineq.constraints <- constraints[[2]]
@@ -817,7 +822,7 @@ setMethod("fit", "NMRFit1D",
 
     # Starting with peaks
     peaks <- unpack_peaks(object2, par$par[1:(n.peaks*4)], sf = sf, 
-                          shift.range = shift.range, 
+                          direct.range = direct.range, 
                           intensity.range = intensity.range)
 
     object <- update_peaks(object, peaks, exclusion.level = exclusion.level,
@@ -840,8 +845,8 @@ setMethod("fit", "NMRFit1D",
       if ( n.phase == 2 ) {
         phase.left <- phase[1]
         phase.right <- phase[1] + phase[2]
-        phase[2] <- (phase.right - phase.left)/shift.span
-        phase[1] <- phase.left - phase[2]*shift.range[1]
+        phase[2] <- (phase.right - phase.left)/direct.span
+        phase[1] <- phase.left - phase[2]*direct.range[1]
       }
 
       object@phase <- phase

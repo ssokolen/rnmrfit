@@ -234,13 +234,13 @@ setMethod("combine_dimensions", "NMRResonance2D",
 #' 
 #' @name split_dimensions
 setGeneric("split_dimensions", 
-  function(object, setter, value) standardGeneric("split_dimensions")
+  function(object, ...) standardGeneric("split_dimensions")
 )
 
 #' @rdname split_dimensions
 #' @export
 setMethod("split_dimensions", "NMRResonance2D", 
-  function(object, setter, value) {
+  function(object, setter, value,  ...) {
 
     # First the input must be a data.frame of some sort
     err <- 'Input value must be a data.frame type object.'
@@ -253,14 +253,14 @@ setMethod("split_dimensions", "NMRResonance2D",
     # Third, the dimension column must only contain direct and indirect values
     err <- 'The "dimension" column must only contain "direct" or "indirect".'
     entries <- sort(unique(as.character(value$dimension)))
-    if (! identical(entries, c('direct', 'indirect')) ) stop(err)
+    if (! all(entries %in% c('direct', 'indirect')) ) stop(err)
 
     # If all of the above is met, then split components
     direct <- filter(value, dimension == 'direct') %>% select(-dimension)
-    object@direct <- setter(object@direct, direct)
+    object@direct <- setter(object@direct, direct, ...)
 
     indirect <- filter(value, dimension == 'indirect') %>% select(-dimension)
-    object@indirect <- setter(object@indirect, indirect)
+    object@indirect <- setter(object@indirect, indirect, ...)
     
     validObject(object)
     object

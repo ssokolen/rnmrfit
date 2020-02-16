@@ -274,12 +274,14 @@ setMethod("update_peaks", "NMRMixture2D",
     id <- species@id
     sub.peaks <- peaks %>% filter(species == id) %>% select(-species)
 
-    if ( nrow(sub.peaks) == 0 ) indexes <- c(indexes, i) 
-
-    species <- update_peaks(species, sub.peaks,
-                            exclusion.level = exclusion.level,
-                            exclusion.notification = 'none')
-    object@species[[i]] <- species
+    if ( nrow(sub.peaks) == 0 ) {
+      indexes <- c(indexes, i) 
+    } else {
+      species <- update_peaks(species, sub.peaks,
+                              exclusion.level = exclusion.level,
+                              exclusion.notification = 'none')
+      object@species[[i]] <- species
+    }
   }
 
   if ( length(indexes) > 0 ) object@species <- object@species[-indexes]

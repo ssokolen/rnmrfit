@@ -19,10 +19,14 @@ p <- tibble(direct.shift = p$x1, indirect.shift = p$x2,
 
 #print(summary(p$intensity))
 
-
 d <- new("NMRData2D")
 d@processed <- p
 
-direct <- direct(d)
+#------------------------------------------------------------------------------
+# Fitting
+
+p <- peaks(s)
+p <- p[-7, ]
+s2 <- rnmrfit:::update_peaks(s, p)
 
 #print(s)
