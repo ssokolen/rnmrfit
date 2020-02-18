@@ -387,15 +387,82 @@ setMethod("fit", "NMRFit2D",
     #---------------------------------------
     # Initialize parameters (default is just to initialize height)
 
-    # From here on, 
+    # From here on, the direct and indirect dimensions are treated apart
+    direct <- direct(object2)
+    indirect <- indirect(object2)
 
-    # First, run the initialization
-    object <- init(object, sf = sf, init = init, opts = opts, 
+    # Run the initialization on the 1D objects
+    direct <- init(direct, sf = direct.sf, init = init, opts = opts, 
                    exclusion.level = exclusion.level, 
                    exclusion.notification = exclusion.notification)
 
+    indirect <- init(indirect, sf = indirect.sf, init = init, opts = opts, 
+                     exclusion.level = exclusion.level, 
+                     exclusion.notification = exclusion.notification)
 
-    object
+    # However, the indirect peak height will essentially be ignored during
+    # fit and is set to 1
+    peaks <- peaks(indirect)
+    peaks$height <- 1
+    peaks(indirect) <- peaks
+
+    #---------------------------------------
+    # Scaling and packing parameters
+
+    direct.peaks <- pack_peaks(direct, sf = direct.sf, 
+                               direct.range = direct.range,
+                               intensity.range = intensity.range)
+
+
+    indirect.peaks <- pack_peaks(indirect, sf = indirect.sf,
+                                 direct.range = indirect.range,
+                                 intensity.range = intensity.range)
+
+
+    #---------------------------------------
+    # Combining all parameters into a single vectors
+
+    par <- list(par = NA, lb = NA, ub = NA)
+    for (name in names(par)) {
+      par[[name]] <- c(direct.peaks[[name]], indirect.peaks)
+    }
+
+    #---------------------------------------
+    # Generating constraint lists
+
+    # Initializing with separate direct/indirect constraints
+    direct.constraints <- pack_constraints(direct, direct.range)
+    n.direct <- length(direct.peaks)
+
+    indirect.constraints <- pack_constraints(indirect, indirect.range,
+                                             offset = n.direct)
+    n.indirect <- length(indirect.peaks)
+
+    eq.constraints <- c(direct.constraints[[1]],
+                        indirect.constraints[[1]])
+
+    ineq.constraints <- c(direct.constraints[[2]],
+                          indirect.constraints[[2]])
+
+    # Forcing indirect heights to 1
+    i.indirect <- 1:(n.indirect/4)
+    indirect.constraints <- list()
+
+    for ( i in i.indirect ) {
+      indirect.constraints[[i]] <- c(2, 1, i + n.direct)
+    }
+
+    eq.constraints <- c(eq.constraints, indirect.constraints)
+
+    #---------------------------------------
+    # Performing the fit
+
+    start.time <- proc.time()
+    fit_lineshape_2d(x, y, par$par, par$lb, par$ub, basis, 
+                     eq.constraints, ineq.constraints,
+                     n.peaks, n.baseline, n.phase)
+    object@time <- as.numeric(proc.time() - start.time)[3]
+
   })
 
 

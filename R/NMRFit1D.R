@@ -482,8 +482,6 @@ setMethod("pack_constraints", "NMRMixture1D",
       }
     }
 
-    # height currently ignored
-
     # Ratios of peak width (fixed at equal)
     f_width <- function(leeway, indexes) {
       if ( leeway == 0 ) {
@@ -493,6 +491,8 @@ setMethod("pack_constraints", "NMRMixture1D",
              c(1, 1/(1-leeway), -indexes))
       }
     }
+
+    # height currently ignored
 
     # Differences of fraction.gauss (fixed at equal)
     f_fraction <- function(leeway, indexes) {
@@ -782,8 +782,8 @@ setMethod("fit", "NMRFit1D",
     )
 
     #---------------------------------------
-    # Combining the peaks, baseline, and phase terms in single vectors
-    ob <<- object
+    # Combining all parameters into a single vectors
+
     par <- list(par = NA, lb = NA, ub = NA)
     for (name in names(par)) {
       par[[name]] <- c(peaks[[name]], Re(baseline[[name]]), 
@@ -793,7 +793,6 @@ setMethod("fit", "NMRFit1D",
     #---------------------------------------
     # Generating constraint lists
 
-    # Comparing constraint code)
     constraints <- pack_constraints(object, direct.range)
 
     eq.constraints <- constraints[[1]]
