@@ -1122,10 +1122,13 @@ double f_obj_2d(unsigned n, const double *par, double *grad, void *data) {
 //' @export
 // [[Rcpp::export]]
 double fit_lineshape_2d(
-  const Rcpp::NumericVector x_val, const Rcpp::ComplexVector y_val,
-  Rcpp::NumericVector par, Rcpp::NumericVector lb, Rcpp::NumericVector ub,
-  Rcpp::NumericMatrix basis_val, Rcpp::List eq, Rcpp::List ineq, 
-  int n_peaks, int n_baseline, int n_phase) {
+  const Rcpp::NumericVector x_direct, const Rcpp::NumericVector x_indirect,
+  const Rcpp::IntegerVector xi_direct, const Rcpp::IntegerVector xi_indirect,
+  const Rcpp::NumericMatrix y_val, const Rcpp::IntegerVector i_res,
+  const Rcpp::IntegerVector i_dim, Rcpp::NumericVector par, 
+  Rcpp::NumericVector lb, Rcpp::NumericVector ub,
+  Rcpp::List eq, Rcpp::List ineq, 
+  int n_direct_peaks, int n_indirect_peaks) {
 
   using namespace std;
 
@@ -1134,46 +1137,62 @@ double fit_lineshape_2d(
   
   int n_points = y_val.size();
   int n_par = par.size();
+  int n_res = max(i_res) + 1;
 
   // x and y data  
-  vector< vector<double> > y(n_points, vector<double> (2,0) );
-  vector< double > x(n_points, 0);
+  vector< vector<double> > y(n_points, vector<double> (4,0) );
+  vector< double > x1(n_points, 0);
+  vector< int > x1i(n_points, 0);
+  vector< double > x2(n_points, 0);
+  vector< int > x2i(n_points, 0);
 
-  vector< double > y_mod(2,0);
-  vector< double > y_fit(2,0);
-  vector< double > y_dif(2,0);
-
-  std::vector< std::vector<double> > basis(n_points, 
-      vector<double> (n_baseline,0) );	
-
-  Rcpp::Function R_re("Re");
-  Rcpp::Function R_im("Im");
+  vector< double > y_mod(4,0);
+  vector< double > y_fit(4,0);
+  vector< double > y_dif(4,0);
 
   // Converting Rcpp objects to std::vector to keep things standardized
   // For 1D fit, x and y can be treated as paired
   for (int i = 0; i < n_points; i++) {
-    y.at(i).at(0) = Rcpp::as<double>(R_re(y_val.at(i)));
-    y.at(i).at(1) = Rcpp::as<double>(R_im(y_val.at(i)));
+    y.at(i).at(0) = Rcpp::as<double>(y_val(i,0));
+    y.at(i).at(1) = Rcpp::as<double>(y_val(i,1));
+    y.at(i).at(2) = Rcpp::as<double>(y_val(i,2));
+    y.at(i).at(3) = Rcpp::as<double>(y_val(i,3));
 
-    x.at(i) = x_val.at(i);
+    x1.at(i) = x_direct.at(i);
+    x1i.at(i) = xi_direct.at(i);
 
-    for (int j = 0; j < n_baseline; j++) {
-      basis.at(i).at(j) = basis_val(i, j);  
-    }
-
+    x2.at(i) = x_indirect.at(i);
+    x2i.at(i) = xi_indirect.at(i);
   }
 
-  // First, packing lineshape data
+  // First, packing direct lineshape data
   data_lineshape data_direct;
   
-  data_direct.x = x;
+  data_direct.x = x1;
+  data_direct.xi = x1i;
 
   data_direct.peak_fit = 
     vector< vector < complex<double> > >
-      ( 1, vector< complex<double> > 
+      ( n_res, vector< complex<double> > 
         ( n_points, complex<double> (0,0) ) );
   
   data_direct.peak_partial = 
+    vector< vector < complex<double> > > 
+      ( n_points, vector< complex<double> > 
+        ( n_par, complex<double> (0,0) ) );
+
+  // Then indirect lineshape data
+  data_lineshape data_indirect;
+  
+  data_indirect.x = x2;
+  data_indirect.xi = x2i;
+
+  data_indirect.peak_fit = 
+    vector< vector < complex<double> > >
+      ( n_res, vector< complex<double> > 
+        ( n_points, complex<double> (0,0) ) );
+  
+  data_indirect.peak_partial = 
     vector< vector < complex<double> > > 
       ( n_points, vector< complex<double> > 
         ( n_par, complex<double> (0,0) ) );
