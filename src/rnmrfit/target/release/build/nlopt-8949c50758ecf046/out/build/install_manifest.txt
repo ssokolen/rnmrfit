@@ -1,0 +1,16 @@
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/pkgconfig/nlopt.pc
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/include/nlopt.h
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/include/nlopt.hpp
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/include/nlopt.f
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/libnlopt.a
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/cmake/nlopt/NLoptLibraryDepends.cmake
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/cmake/nlopt/NLoptLibraryDepends-release.cmake
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/cmake/nlopt/NLoptConfig.cmake
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/cmake/nlopt/NLoptConfigVersion.cmake
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/share/man/man3/nlopt.3
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/share/man/man3/nlopt_minimize.3
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/share/man/man3/nlopt_minimize_constrained.3
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/python3.8/site-packages/nlopt.py
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/python3.8/site-packages/_nlopt.so
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/share/guile/site/2.2/nlopt.scm
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/lib/guile/2.2/extensions/nlopt_guile.so

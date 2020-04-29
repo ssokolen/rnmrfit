@@ -4,7 +4,9 @@
 \name{fit.env}
 \alias{fit.env}
 \title{Fit proto class}
-\format{An object of class \code{proto} (inherits from \code{environment}) of length 9.}
+\format{
+An object of class \code{proto} (inherits from \code{environment}) of length 9.
+}
 \usage{
 fit.env
 }

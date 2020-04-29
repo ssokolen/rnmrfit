@@ -425,6 +425,7 @@ setMethod("parse_constraints", "NMRMixture1D",
     ineq.constraints <- list()
 
     peaks <- peaks(object)
+    peaks$resonance <- as.character(peaks$resonance)
 
     # To ensure that individual leeway values are considered, looping through
     # each species/resonance one at a time
@@ -586,6 +587,7 @@ setMethod("parse_constraints", "NMRMixture1D",
 #' 
 #' @name fit
 #' @export
+#' @useDynLib rnmrfit fit_1d_wrapper
 setGeneric("fit", 
   function(object, ...) {
     standardGeneric("fit")
@@ -701,11 +703,31 @@ setMethod("fit", "NMRFit1D",
       basis <- matrix(0, nrow = length(x), ncol = 1)
     }
 
+    print(par)
+    print(n.peaks*4)
+    print(n.baseline)
+    print(n.phase)
+
     start.time <- proc.time()
-    fit_lineshape_1d(x, y, par$par, par$lb, par$ub, basis, 
-                     eq.constraints, ineq.constraints,
-                     n.peaks, n.baseline, n.phase)
+    #fit_lineshape_1d(x, y, par$par, par$lb, par$ub, basis, 
+    #                 eq.constraints, ineq.constraints,
+    #                 n.peaks, n.baseline, n.phase)
+    out <- .Call("fit_1d_wrapper", 
+      x = as.double(x), 
+      y = as.double(c(Re(y), Im(y))), 
+      p = as.double(par$par), 
+      lb = as.double(par$lb), 
+      ub = as.double(par$ub), 
+      n = as.integer(length(x)),
+      nl = as.integer(n.peaks*4),
+      nb = as.integer(n.baseline),
+      np = as.integer(n.phase),
+      basis = as.double(as.vector(t(basis)))
+    )
     object@time <- as.numeric(proc.time() - start.time)[3]
+
+    print(out)
+    par$par <- out
 
     #---------------------------------------
     # Unpacking and rescaling parameters

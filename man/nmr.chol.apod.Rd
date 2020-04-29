@@ -7,7 +7,9 @@
 The data comes from analysis of a pure cholesterol sample 
 using a 1D 13C INEPT pulse sequence. The spectrum has been apodized
 with a sine function.}
-\format{An NMRData1D object.}
+\format{
+An NMRData1D object.
+}
 \usage{
 nmr.chol.apod
 }

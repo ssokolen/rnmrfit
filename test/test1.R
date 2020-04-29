@@ -19,8 +19,8 @@ d <- new("NMRData1D")
 d@processed <- p
 
 # Fitting data
-r1 <- nmrresonance_1d('1 d 8', position.leeway = 0.4)
-r2 <- nmrresonance_1d('1.5 t 8', position.leeway = 0.4)
+r1 <- nmrresonance_1d('0.98 d 8', position.leeway = 0.4)
+r2 <- nmrresonance_1d('1.45 t 8', position.leeway = 0.4)
 
 s <- nmrspecies_1d(list(r1, r2), areas = c(1, 2))
 

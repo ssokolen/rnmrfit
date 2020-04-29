@@ -7,7 +7,6 @@ Depends:
     R (>= 3.2.2),
     GlobalOptions (>= 0.1),
     magrittr (>= 1.5),
-    nloptr (>= 1.2.0),
     plotly (>= 4.6.0),
     proto (>= 1.0.0),
     RcppFaddeeva (>= 0.1.0),
@@ -15,11 +14,10 @@ Depends:
     tidyverse,
     vctrs,
     zeallot
-Imports: Rcpp, pillar
-LinkingTo: Rcpp, nloptr
+Imports: pillar
 License: Apache (>= 2.0)
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Collate: 
     'cmplxn.R'
     'NMRData.R'
@@ -40,5 +38,4 @@ Collate:
     'fitting_1d.R'
     'jcamp.R'
     'misc.R'
-    'RcppExports.R'
     'options.R'

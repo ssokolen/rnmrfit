@@ -1,0 +1,13 @@
+LIBDIR = rnmrfit/target/release
+STATLIB = $(LIBDIR)/librnmrfit.a
+PKG_LIBS = -L$(LIBDIR) -lrnmrfit -lresolv
+
+all: clean
+
+$(SHLIB): $(STATLIB)
+
+$(STATLIB):
+	cargo build --release --manifest-path=rnmrfit/Cargo.toml
+
+clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rnmrfit/target

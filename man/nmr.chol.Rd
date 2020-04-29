@@ -6,7 +6,9 @@
 \title{An example NMRData1D object 
 The data comes from analysis of a pure cholesterol sample 
 using a 1D 13C INEPT pulse sequence.}
-\format{An NMRData1D object.}
+\format{
+An NMRData1D object.
+}
 \usage{
 nmr.chol
 }

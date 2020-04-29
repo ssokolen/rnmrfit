@@ -1,0 +1,14 @@
+TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
+LIBDIR = rnmrfit/target/$(TARGET)/release
+STATLIB = $(LIBDIR)/rnmrfit.lib
+PKG_LIBS = -L$(LIBDIR) -lrnmrfit -lws2_32 -ladvapi32 -luserenv
+
+all: clean
+
+$(SHLIB): $(STATLIB)
+
+$(STATLIB):
+	cargo build --target=$(TARGET) --release --manifest-path=rnmrfit/Cargo.toml
+
+clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rnmrfit/target

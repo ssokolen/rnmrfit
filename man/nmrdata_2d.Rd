@@ -3,7 +3,7 @@
 \name{nmrdata_2d}
 \alias{nmrdata_2d}
 \alias{nmrdata_2d_from_pdata}
-\title{Constructors for generating an NMRData1D object}
+\title{Constructors for generating an NMRData2D object}
 \usage{
 nmrdata_2d(path, procs.number = NA)
 
@@ -16,7 +16,7 @@ nmrdata_2d_from_pdata(path, procs.number = NA)
 available number.}
 }
 \value{
-An NMRData1D object.
+An NMRData2D object.
 }
 \description{
 \code{nmrdata_2d()} can be used as a generic constructor method that will

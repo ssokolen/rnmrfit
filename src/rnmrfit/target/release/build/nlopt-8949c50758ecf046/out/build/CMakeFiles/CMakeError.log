@@ -1,0 +1,37 @@
+Performing C SOURCE FILE Test HAVE_THREAD_LOCAL_STORAGE failed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_4c1ae/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_4c1ae.dir/build.make CMakeFiles/cmTC_4c1ae.dir/build
+make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4c1ae.dir/src.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE   -o CMakeFiles/cmTC_4c1ae.dir/src.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c:2:5: warning: return type defaults to ‘int’ [-Wimplicit-int]
+    2 |     __declspec(thread) int tls;
+      |     ^~~~~~~~~~
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c: In function ‘__declspec’:
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c:4:20: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+    4 |     int main(void) {
+      |                    ^
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c:2:5: warning: type of ‘thread’ defaults to ‘int’ [-Wimplicit-int]
+    2 |     __declspec(thread) int tls;
+      |     ^~~~~~~~~~
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c:2:28: error: declaration for parameter ‘tls’ but no such parameter
+    2 |     __declspec(thread) int tls;
+      |                            ^~~
+/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c:6: error: expected ‘{’ at end of input
+    6 |     }
+      | 
+make[2]: *** [CMakeFiles/cmTC_4c1ae.dir/build.make:86: CMakeFiles/cmTC_4c1ae.dir/src.c.o] Error 1
+make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make[1]: *** [Makefile:141: cmTC_4c1ae/fast] Error 2
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+
+
+Source file was:
+
+    __declspec(thread) int tls;
+
+    int main(void) {
+        return 0;
+    }

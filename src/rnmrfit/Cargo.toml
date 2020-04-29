@@ -1,0 +1,13 @@
+[package]
+name = "rnmrfit"
+version = "0.1.0"
+authors = ["Stanislav Sokolenko <stanislav@sokolenko.net>"]
+edition = "2018"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+rustnmrfit = {path = "../rustnmrfit", version = "0.1.0"}
+libc = "*"
+ndarray = "0.13.0"

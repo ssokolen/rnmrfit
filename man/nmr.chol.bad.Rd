@@ -8,7 +8,9 @@ The data comes from analysis of a pure cholesterol sample
 using a 1D 13C INEPT pulse sequence. The spectrum has been artificially
 modified to feature a 15 degree 0th and 1st order phase error as well as
 a rolling baseline.}
-\format{An NMRData1D object.}
+\format{
+An NMRData1D object.
+}
 \usage{
 nmr.chol.bad
 }

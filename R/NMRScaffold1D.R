@@ -1,8 +1,5 @@
 # Definition of a super-class for 1D resonance data.
 
-#' @useDynLib rnmrfit
-#' @importFrom Rcpp sourceCpp
-NULL
 
 
 #==============================================================================>
@@ -620,10 +617,20 @@ setMethod("f_lineshape", "NMRScaffold1D",
     # If peaks are to be summed, just feed all parameters into the Rcpp function
     if ( sum.peaks ) {
       out <- function(x) {
-        p <- as.vector(t(parameters))
-        y <- matrix(0, nrow = length(x), ncol = 2)
-        .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, y, p)
-        f_out(cmplx1(r = y[,1], i = y[,2]))
+        
+        n <- as.integer(length(x))
+        y <- .Call("eval_1d_wrapper",        
+          x = as.double(x),
+          y = as.double(rep(0, n*2)),
+          p = as.double(as.vector(t(parameters))),
+          n = n,
+          nl = as.integer(length(parameters)),
+          nb = as.integer(0),
+          np = as.integer(0),
+          basis = as.double(0)
+        )
+
+        f_out(cmplx1(r = y[1:n], i = y[(n+1):(n*2)]))
       }
     } 
     # Otherwise, generate a tbl_df data frame
@@ -643,10 +650,19 @@ setMethod("f_lineshape", "NMRScaffold1D",
       # Generating a list of functions, each with their parameters enclosed
       functions <- lapply(parameters, function (p) {
         function(x) {
-          p <- as.vector(p)
-          y <- matrix(0, nrow = length(x), ncol = 2)
-          .Call('_rnmrfit_lineshape_1d', PACKAGE = 'rnmrfit', x, y, p)
-          f_out(cmplx1(r = y[,1], i = y[,2]))
+          n <- as.integer(length(x))
+          y <- .Call("eval_1d_wrapper",        
+            x = as.double(x),
+            y = as.double(rep(0, n*2)),
+            p = as.double(as.vector(p)),
+            n = n,
+            nl = as.integer(length(p)),
+            nb = as.integer(0),
+            np = as.integer(0),
+            basis = as.double(0)
+          )
+
+          f_out(cmplx1(r = y[1:n], i = y[(n+1):(n*2)]))
         }
       })
 
