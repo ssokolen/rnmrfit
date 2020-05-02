@@ -6,8 +6,10 @@ use ndarray::prelude::*;
 
 mod lineshape;
 mod fit;
+mod constraint;
 
 use fit::Fit1D;
+use constraint::Constraint;
 
 /// Optimizes the fit of NMR peaks, baseline, and phase to y data using NLopt.
 ///
@@ -17,21 +19,19 @@ use fit::Fit1D;
 /// WARNING: This function is meant to be used from the R package rnmrfit, YMMV.
 pub fn fit_1d(x: Array<f64, Ix1>, y: Array<f64, Ix2>,
               p: Array<f64, Ix1>, lb: Array<f64, Ix1>, ub: Array<f64, Ix1>,
-              nl: usize, nb: usize, np: usize, 
-              basis: Option<Array<f64, Ix2>>) 
+              nl: usize, nb: usize, np: usize,
+              basis: Option<Array<f64, Ix2>>,
+              eq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
+              iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>)
+
     -> (Array<f64, Ix1>, Result<(SuccessState, f64), (FailState, f64)>) {
 
     // Generate Fit object
     let fit = Fit1D::new(x, y, nl, nb, np, basis);
 
-    // Define objective function
-    fn eval(p: &[f64], grad: Option<&mut [f64]>, obj: &mut Fit1D) -> f64 {
-        obj.eval(p, grad)
-    }
-
     // Initializing nlopt object
     let n_par: usize = nl + nb*2 + np;
-    let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, eval, Target::Minimize, fit);
+    let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit1D::obj, Target::Minimize, fit);
 
     // Fit requirements
     opt.set_maxeval(1000).unwrap();
@@ -43,6 +43,64 @@ pub fn fit_1d(x: Array<f64, Ix1>, y: Array<f64, Ix2>,
 
     opt.set_lower_bounds(&lb[..]).unwrap();
     opt.set_upper_bounds(&ub[..]).unwrap();
+
+    // Add equality constraints
+    if eq.is_some() {
+        let eq = eq.unwrap();
+
+        for i in 0 .. eq.len() {
+        
+            let flag = eq[i].0;
+            let offset = eq[i].1;
+            let lhs = eq[i].2.clone();
+            let rhs = eq[i].3.clone();
+
+            let con = Constraint::new(lhs, rhs, offset);
+        
+            if flag == 0 {
+                opt.add_equality_constraint(Constraint::position, con, 1e-8).unwrap();
+            } else if flag == 1 {
+                opt.add_equality_constraint(Constraint::width, con, 1e-8).unwrap();
+            } else if flag == 2 {
+                opt.add_equality_constraint(Constraint::height, con, 1e-8).unwrap();
+            } else if flag == 3 {
+                opt.add_equality_constraint(Constraint::fraction, con, 1e-8).unwrap();
+            } else if flag == 4 {
+                opt.add_equality_constraint(Constraint::area, con, 1e-8).unwrap();
+            } else {
+                panic!("Constraint flag must be 0-4, inclusive, aborting.")
+            }
+        }
+    }
+
+    // Add inequality constraints
+    if iq.is_some() {
+        let iq = iq.unwrap();
+
+        for i in 0 .. iq.len() {
+        
+            let flag = iq[i].0;
+            let offset = iq[i].1;
+            let lhs = iq[i].2.clone();
+            let rhs = iq[i].3.clone();
+
+            let con = Constraint::new(lhs, rhs, offset);
+        
+            if flag == 0 {
+                opt.add_inequality_constraint(Constraint::position, con, 1e-8).unwrap();
+            } else if flag == 1 {
+                opt.add_inequality_constraint(Constraint::width, con, 1e-8).unwrap();
+            } else if flag == 2 {
+                opt.add_inequality_constraint(Constraint::height, con, 1e-8).unwrap();
+            } else if flag == 3 {
+                opt.add_inequality_constraint(Constraint::fraction, con, 1e-8).unwrap();
+            } else if flag == 4 {
+                opt.add_inequality_constraint(Constraint::area, con, 1e-8).unwrap();
+            } else {
+                panic!("Constraint flag must be 0-4, inclusive, aborting.")
+            }
+        }
+    }
 
     // Run the optimization
     let mut p = p.to_vec();

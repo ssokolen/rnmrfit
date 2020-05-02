@@ -120,7 +120,7 @@ fn test_fit(path: &str, offset: f64, tol: f64) {
 
     // Generating lineshape
     // println!("Before: [{}]", par.iter().fold(String::new(), |acc, &num| acc + &format!("{:.3}", &num) + ", "));
-    let (par, result) = fit_1d(json.x, json.y, par, lb, ub, nl, json.nb, json.np, Some(json.basis));
+    let (par, result) = fit_1d(json.x, json.y, par, lb, ub, nl, json.nb, json.np, Some(json.basis), None);
     // println!("After: [{}]", par.iter().fold(String::new(), |acc, &num| acc + &format!("{:.3}", &num) + ", "));
 
     // Testing optimization state

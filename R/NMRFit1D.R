@@ -703,15 +703,14 @@ setMethod("fit", "NMRFit1D",
       basis <- matrix(0, nrow = length(x), ncol = 1)
     }
 
-    print(par)
-    print(n.peaks*4)
-    print(n.baseline)
-    print(n.phase)
+    # Flattening constraints
+    eq.constraints <- unlist(lapply(eq.constraints, function (x) c(x, NaN)))
+    eq.constraints <- eq.constraints[-length(eq.constraints)]
+
+    ineq.constraints <- unlist(lapply(ineq.constraints, function (x) c(x, NaN)))
+    ineq.constraints <- ineq.constraints[-length(ineq.constraints)]
 
     start.time <- proc.time()
-    #fit_lineshape_1d(x, y, par$par, par$lb, par$ub, basis, 
-    #                 eq.constraints, ineq.constraints,
-    #                 n.peaks, n.baseline, n.phase)
     out <- .Call("fit_1d_wrapper", 
       x = as.double(x), 
       y = as.double(c(Re(y), Im(y))), 
@@ -722,11 +721,14 @@ setMethod("fit", "NMRFit1D",
       nl = as.integer(n.peaks*4),
       nb = as.integer(n.baseline),
       np = as.integer(n.phase),
-      basis = as.double(as.vector(t(basis)))
+      basis = as.double(as.vector(t(basis))),
+      eq = as.double(eq.constraints),
+      iq = as.double(ineq.constraints),
+      neq = as.integer(length(eq.constraints)),
+      niq = as.integer(length(ineq.constraints))
     )
     object@time <- as.numeric(proc.time() - start.time)[3]
 
-    print(out)
     par$par <- out
 
     #---------------------------------------
