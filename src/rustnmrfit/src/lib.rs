@@ -4,6 +4,7 @@ use nlopt::Target;
 
 use ndarray::prelude::*;
 
+mod peak;
 mod lineshape;
 mod fit;
 mod constraint;

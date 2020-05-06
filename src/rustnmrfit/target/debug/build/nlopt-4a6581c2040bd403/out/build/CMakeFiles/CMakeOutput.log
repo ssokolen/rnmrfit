@@ -1,0 +1,888 @@
+The system is: Linux - 5.6.3-arch1-1 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/cc 
+Build flags: ;-ffunction-sections;-fdata-sections;-fPIC;-m64
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is GNU, found in "/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/3.17.1/CompilerIdC/a.out"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/3.17.1/CompilerIdCXX/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_aed9a/fast && /usr/bin/make  -f CMakeFiles/cmTC_aed9a.dir/build.make CMakeFiles/cmTC_aed9a.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_aed9a.dir/testCCompiler.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_aed9a.dir/testCCompiler.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_aed9a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aed9a.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_aed9a.dir/testCCompiler.c.o  -o cmTC_aed9a 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_1d2bf/fast && /usr/bin/make  -f CMakeFiles/cmTC_1d2bf.dir/build.make CMakeFiles/cmTC_1d2bf.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -v -o CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.17/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/usr/bin/cc
+Target: x86_64-pc-linux-gnu
+Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-pkgversion='Arch Linux 9.3.0-1' --with-bugurl=https://bugs.archlinux.org/ --enable-languages=c,c++,ada,fortran,go,lto,objc,obj-c++,d --enable-shared --enable-threads=posix --with-system-zlib --with-isl --enable-__cxa_atexit --disable-libunwind-exceptions --enable-clocale=gnu --disable-libstdcxx-pch --disable-libssp --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-plugin --enable-install-libiberty --with-linker-hash-style=gnu --enable-gnu-indirect-function --enable-multilib --disable-werror --enable-checking=release --enable-default-pie --enable-default-ssp --enable-cet=auto gdc_include_dir=/usr/include/dlang/gdc
+Thread model: posix
+gcc version 9.3.0 (Arch Linux 9.3.0-1) 
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/cc1 -quiet -v /usr/share/cmake-3.17/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -m64 -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o -version -ffunction-sections -fdata-sections -fPIC -o /tmp/cczbcb93.s
+GNU C17 (Arch Linux 9.3.0-1) version 9.3.0 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 9.3.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.21-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../x86_64-pc-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include
+ /usr/local/include
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed
+ /usr/include
+End of search list.
+GNU C17 (Arch Linux 9.3.0-1) version 9.3.0 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 9.3.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.21-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 692ee564c92e51fae6616097075dc3ce
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o /tmp/cczbcb93.s
+GNU assembler version 2.34 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.34
+COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+Linking C executable cmTC_1d2bf
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1d2bf.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64    -v -rdynamic CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o  -o cmTC_1d2bf 
+Using built-in specs.
+COLLECT_GCC=/usr/bin/cc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-pkgversion='Arch Linux 9.3.0-1' --with-bugurl=https://bugs.archlinux.org/ --enable-languages=c,c++,ada,fortran,go,lto,objc,obj-c++,d --enable-shared --enable-threads=posix --with-system-zlib --with-isl --enable-__cxa_atexit --disable-libunwind-exceptions --enable-clocale=gnu --disable-libstdcxx-pch --disable-libssp --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-plugin --enable-install-libiberty --with-linker-hash-style=gnu --enable-gnu-indirect-function --enable-multilib --disable-werror --enable-checking=release --enable-default-pie --enable-default-ssp --enable-cet=auto gdc_include_dir=/usr/include/dlang/gdc
+Thread model: posix
+gcc version 9.3.0 (Arch Linux 9.3.0-1) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_1d2bf' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccY29oYp.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_1d2bf /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../.. CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crtn.o
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_1d2bf' '-mtune=generic' '-march=x86-64'
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include]
+    add: [/usr/local/include]
+    add: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include] ==> [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed] ==> [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include;/usr/local/include;/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed;/usr/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/make cmTC_1d2bf/fast && /usr/bin/make  -f CMakeFiles/cmTC_1d2bf.dir/build.make CMakeFiles/cmTC_1d2bf.dir/build]
+  ignore line: [make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -v -o CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.17/Modules/CMakeCCompilerABI.c]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/cc]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-pkgversion='Arch Linux 9.3.0-1' --with-bugurl=https://bugs.archlinux.org/ --enable-languages=c c++ ada fortran go lto objc obj-c++ d --enable-shared --enable-threads=posix --with-system-zlib --with-isl --enable-__cxa_atexit --disable-libunwind-exceptions --enable-clocale=gnu --disable-libstdcxx-pch --disable-libssp --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-plugin --enable-install-libiberty --with-linker-hash-style=gnu --enable-gnu-indirect-function --enable-multilib --disable-werror --enable-checking=release --enable-default-pie --enable-default-ssp --enable-cet=auto gdc_include_dir=/usr/include/dlang/gdc]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 9.3.0 (Arch Linux 9.3.0-1) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/cc1 -quiet -v /usr/share/cmake-3.17/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -m64 -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o -version -ffunction-sections -fdata-sections -fPIC -o /tmp/cczbcb93.s]
+  ignore line: [GNU C17 (Arch Linux 9.3.0-1) version 9.3.0 (x86_64-pc-linux-gnu)]
+  ignore line: [	compiled by GNU C version 9.3.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.21-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../x86_64-pc-linux-gnu/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C17 (Arch Linux 9.3.0-1) version 9.3.0 (x86_64-pc-linux-gnu)]
+  ignore line: [	compiled by GNU C version 9.3.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.21-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: 692ee564c92e51fae6616097075dc3ce]
+  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [ as -v --64 -o CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o /tmp/cczbcb93.s]
+  ignore line: [GNU assembler version 2.34 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.34]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [Linking C executable cmTC_1d2bf]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1d2bf.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64    -v -rdynamic CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o  -o cmTC_1d2bf ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/cc]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-pkgversion='Arch Linux 9.3.0-1' --with-bugurl=https://bugs.archlinux.org/ --enable-languages=c c++ ada fortran go lto objc obj-c++ d --enable-shared --enable-threads=posix --with-system-zlib --with-isl --enable-__cxa_atexit --disable-libunwind-exceptions --enable-clocale=gnu --disable-libstdcxx-pch --disable-libssp --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-plugin --enable-install-libiberty --with-linker-hash-style=gnu --enable-gnu-indirect-function --enable-multilib --disable-werror --enable-checking=release --enable-default-pie --enable-default-ssp --enable-cet=auto gdc_include_dir=/usr/include/dlang/gdc]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 9.3.0 (Arch Linux 9.3.0-1) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_1d2bf' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccY29oYp.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_1d2bf /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../.. CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crtn.o]
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccY29oYp.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_1d2bf] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/Scrt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtbeginS.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0] ==> dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0]
+    arg [-L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../..] ==> dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../..]
+    arg [CMakeFiles/cmTC_1d2bf.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--push-state] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--pop-state] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--push-state] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--pop-state] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtendS.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crtn.o] ==> ignore
+  collapse library dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0] ==> [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0]
+  collapse library dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../..] ==> [/usr/lib]
+  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+  implicit dirs: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0;/usr/lib;/lib]
+  implicit fwks: []
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_52407/fast && /usr/bin/make  -f CMakeFiles/cmTC_52407.dir/build.make CMakeFiles/cmTC_52407.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_52407.dir/testCXXCompiler.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_52407.dir/testCXXCompiler.cxx.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_52407
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_52407.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_52407.dir/testCXXCompiler.cxx.o  -o cmTC_52407 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_930b7/fast && /usr/bin/make  -f CMakeFiles/cmTC_930b7.dir/build.make CMakeFiles/cmTC_930b7.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++    -v -o CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.17/Modules/CMakeCXXCompilerABI.cpp
+Using built-in specs.
+COLLECT_GCC=/usr/bin/c++
+Target: x86_64-pc-linux-gnu
+Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-pkgversion='Arch Linux 9.3.0-1' --with-bugurl=https://bugs.archlinux.org/ --enable-languages=c,c++,ada,fortran,go,lto,objc,obj-c++,d --enable-shared --enable-threads=posix --with-system-zlib --with-isl --enable-__cxa_atexit --disable-libunwind-exceptions --enable-clocale=gnu --disable-libstdcxx-pch --disable-libssp --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-plugin --enable-install-libiberty --with-linker-hash-style=gnu --enable-gnu-indirect-function --enable-multilib --disable-werror --enable-checking=release --enable-default-pie --enable-default-ssp --enable-cet=auto gdc_include_dir=/usr/include/dlang/gdc
+Thread model: posix
+gcc version 9.3.0 (Arch Linux 9.3.0-1) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake-3.17/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/ccmXsc5k.s
+GNU C++14 (Arch Linux 9.3.0-1) version 9.3.0 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 9.3.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.21-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../x86_64-pc-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0/x86_64-pc-linux-gnu
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0/backward
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include
+ /usr/local/include
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed
+ /usr/include
+End of search list.
+GNU C++14 (Arch Linux 9.3.0-1) version 9.3.0 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 9.3.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.21-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 814040b5981cd30c081565ed9d15a61c
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccmXsc5k.s
+GNU assembler version 2.34 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.34
+COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+Linking CXX executable cmTC_930b7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_930b7.dir/link.txt --verbose=1
+/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_930b7 
+Using built-in specs.
+COLLECT_GCC=/usr/bin/c++
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-pkgversion='Arch Linux 9.3.0-1' --with-bugurl=https://bugs.archlinux.org/ --enable-languages=c,c++,ada,fortran,go,lto,objc,obj-c++,d --enable-shared --enable-threads=posix --with-system-zlib --with-isl --enable-__cxa_atexit --disable-libunwind-exceptions --enable-clocale=gnu --disable-libstdcxx-pch --disable-libssp --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-plugin --enable-install-libiberty --with-linker-hash-style=gnu --enable-gnu-indirect-function --enable-multilib --disable-werror --enable-checking=release --enable-default-pie --enable-default-ssp --enable-cet=auto gdc_include_dir=/usr/include/dlang/gdc
+Thread model: posix
+gcc version 9.3.0 (Arch Linux 9.3.0-1) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_930b7' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccBvo2TE.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_930b7 /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../.. CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_930b7' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0]
+    add: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0/x86_64-pc-linux-gnu]
+    add: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0/backward]
+    add: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include]
+    add: [/usr/local/include]
+    add: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0] ==> [/usr/include/c++/9.3.0]
+  collapse include dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0/x86_64-pc-linux-gnu] ==> [/usr/include/c++/9.3.0/x86_64-pc-linux-gnu]
+  collapse include dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0/backward] ==> [/usr/include/c++/9.3.0/backward]
+  collapse include dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include] ==> [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed] ==> [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/usr/include/c++/9.3.0;/usr/include/c++/9.3.0/x86_64-pc-linux-gnu;/usr/include/c++/9.3.0/backward;/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include;/usr/local/include;/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed;/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/make cmTC_930b7/fast && /usr/bin/make  -f CMakeFiles/cmTC_930b7.dir/build.make CMakeFiles/cmTC_930b7.dir/build]
+  ignore line: [make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++    -v -o CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.17/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/c++]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-pkgversion='Arch Linux 9.3.0-1' --with-bugurl=https://bugs.archlinux.org/ --enable-languages=c c++ ada fortran go lto objc obj-c++ d --enable-shared --enable-threads=posix --with-system-zlib --with-isl --enable-__cxa_atexit --disable-libunwind-exceptions --enable-clocale=gnu --disable-libstdcxx-pch --disable-libssp --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-plugin --enable-install-libiberty --with-linker-hash-style=gnu --enable-gnu-indirect-function --enable-multilib --disable-werror --enable-checking=release --enable-default-pie --enable-default-ssp --enable-cet=auto gdc_include_dir=/usr/include/dlang/gdc]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 9.3.0 (Arch Linux 9.3.0-1) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake-3.17/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/ccmXsc5k.s]
+  ignore line: [GNU C++14 (Arch Linux 9.3.0-1) version 9.3.0 (x86_64-pc-linux-gnu)]
+  ignore line: [	compiled by GNU C version 9.3.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.21-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../x86_64-pc-linux-gnu/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0]
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0/x86_64-pc-linux-gnu]
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../include/c++/9.3.0/backward]
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/include-fixed]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C++14 (Arch Linux 9.3.0-1) version 9.3.0 (x86_64-pc-linux-gnu)]
+  ignore line: [	compiled by GNU C version 9.3.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.21-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: 814040b5981cd30c081565ed9d15a61c]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [ as -v --64 -o CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccmXsc5k.s]
+  ignore line: [GNU assembler version 2.34 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.34]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [Linking CXX executable cmTC_930b7]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_930b7.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_930b7 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/c++]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-pkgversion='Arch Linux 9.3.0-1' --with-bugurl=https://bugs.archlinux.org/ --enable-languages=c c++ ada fortran go lto objc obj-c++ d --enable-shared --enable-threads=posix --with-system-zlib --with-isl --enable-__cxa_atexit --disable-libunwind-exceptions --enable-clocale=gnu --disable-libstdcxx-pch --disable-libssp --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-plugin --enable-install-libiberty --with-linker-hash-style=gnu --enable-gnu-indirect-function --enable-multilib --disable-werror --enable-checking=release --enable-default-pie --enable-default-ssp --enable-cet=auto gdc_include_dir=/usr/include/dlang/gdc]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 9.3.0 (Arch Linux 9.3.0-1) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_930b7' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccBvo2TE.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_930b7 /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../.. CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crtn.o]
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccBvo2TE.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_930b7] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/Scrt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtbeginS.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0] ==> dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0]
+    arg [-L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../..] ==> dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../..]
+    arg [CMakeFiles/cmTC_930b7.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/crtendS.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib/crtn.o] ==> ignore
+  collapse library dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0] ==> [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0]
+  collapse library dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0/../../..] ==> [/usr/lib]
+  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit dirs: [/usr/lib/gcc/x86_64-pc-linux-gnu/9.3.0;/usr/lib;/lib]
+  implicit fwks: []
+
+
+Determining if the include file dlfcn.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_588fb/fast && /usr/bin/make  -f CMakeFiles/cmTC_588fb.dir/build.make CMakeFiles/cmTC_588fb.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_588fb.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_588fb.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_588fb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_588fb.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_588fb.dir/CheckIncludeFile.c.o  -o cmTC_588fb 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file getopt.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_ccadd/fast && /usr/bin/make  -f CMakeFiles/cmTC_ccadd.dir/build.make CMakeFiles/cmTC_ccadd.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ccadd.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_ccadd.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_ccadd
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ccadd.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_ccadd.dir/CheckIncludeFile.c.o  -o cmTC_ccadd 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file unistd.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_a54d3/fast && /usr/bin/make  -f CMakeFiles/cmTC_a54d3.dir/build.make CMakeFiles/cmTC_a54d3.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a54d3.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_a54d3.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_a54d3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a54d3.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_a54d3.dir/CheckIncludeFile.c.o  -o cmTC_a54d3 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file string.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_d126a/fast && /usr/bin/make  -f CMakeFiles/cmTC_d126a.dir/build.make CMakeFiles/cmTC_d126a.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d126a.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_d126a.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_d126a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d126a.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_d126a.dir/CheckIncludeFile.c.o  -o cmTC_d126a 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file strings.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_0adfc/fast && /usr/bin/make  -f CMakeFiles/cmTC_0adfc.dir/build.make CMakeFiles/cmTC_0adfc.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0adfc.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_0adfc.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0adfc
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0adfc.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_0adfc.dir/CheckIncludeFile.c.o  -o cmTC_0adfc 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file inttypes.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_0c8e8/fast && /usr/bin/make  -f CMakeFiles/cmTC_0c8e8.dir/build.make CMakeFiles/cmTC_0c8e8.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0c8e8.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_0c8e8.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0c8e8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0c8e8.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_0c8e8.dir/CheckIncludeFile.c.o  -o cmTC_0c8e8 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file memory.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_49da6/fast && /usr/bin/make  -f CMakeFiles/cmTC_49da6.dir/build.make CMakeFiles/cmTC_49da6.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_49da6.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_49da6.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_49da6
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_49da6.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_49da6.dir/CheckIncludeFile.c.o  -o cmTC_49da6 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file stdlib.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_55363/fast && /usr/bin/make  -f CMakeFiles/cmTC_55363.dir/build.make CMakeFiles/cmTC_55363.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_55363.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_55363.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_55363
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_55363.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_55363.dir/CheckIncludeFile.c.o  -o cmTC_55363 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file stdint.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_3cfd3/fast && /usr/bin/make  -f CMakeFiles/cmTC_3cfd3.dir/build.make CMakeFiles/cmTC_3cfd3.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3cfd3.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_3cfd3.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_3cfd3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3cfd3.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_3cfd3.dir/CheckIncludeFile.c.o  -o cmTC_3cfd3 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file time.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_9de90/fast && /usr/bin/make  -f CMakeFiles/cmTC_9de90.dir/build.make CMakeFiles/cmTC_9de90.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9de90.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_9de90.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_9de90
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9de90.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_9de90.dir/CheckIncludeFile.c.o  -o cmTC_9de90 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file sys/types.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_826a3/fast && /usr/bin/make  -f CMakeFiles/cmTC_826a3.dir/build.make CMakeFiles/cmTC_826a3.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_826a3.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_826a3.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_826a3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_826a3.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_826a3.dir/CheckIncludeFile.c.o  -o cmTC_826a3 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file sys/stat.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_cf6df/fast && /usr/bin/make  -f CMakeFiles/cmTC_cf6df.dir/build.make CMakeFiles/cmTC_cf6df.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_cf6df.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_cf6df.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_cf6df
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cf6df.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_cf6df.dir/CheckIncludeFile.c.o  -o cmTC_cf6df 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file sys/time.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_70cff/fast && /usr/bin/make  -f CMakeFiles/cmTC_70cff.dir/build.make CMakeFiles/cmTC_70cff.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_70cff.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_70cff.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_70cff
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_70cff.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_70cff.dir/CheckIncludeFile.c.o  -o cmTC_70cff 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function getpid exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_60806/fast && /usr/bin/make  -f CMakeFiles/cmTC_60806.dir/build.make CMakeFiles/cmTC_60806.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_60806.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=getpid   -o CMakeFiles/cmTC_60806.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Linking C executable cmTC_60806
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_60806.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=getpid    -rdynamic CMakeFiles/cmTC_60806.dir/CheckFunctionExists.c.o  -o cmTC_60806 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function syscall exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_ad792/fast && /usr/bin/make  -f CMakeFiles/cmTC_ad792.dir/build.make CMakeFiles/cmTC_ad792.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ad792.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=syscall   -o CMakeFiles/cmTC_ad792.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Linking C executable cmTC_ad792
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ad792.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=syscall    -rdynamic CMakeFiles/cmTC_ad792.dir/CheckFunctionExists.c.o  -o cmTC_ad792 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function isinf exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_11df7/fast && /usr/bin/make  -f CMakeFiles/cmTC_11df7.dir/build.make CMakeFiles/cmTC_11df7.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_11df7.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isinf   -o CMakeFiles/cmTC_11df7.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+<command-line>: warning: conflicting types for built-in function ‘isinf’; expected ‘int()’ [-Wbuiltin-declaration-mismatch]
+/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+    7 |   CHECK_FUNCTION_EXISTS(void);
+      |   ^~~~~~~~~~~~~~~~~~~~~
+/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:1:1: note: ‘isinf’ is declared in header ‘<math.h>’
+  +++ |+#include <math.h>
+    1 | #ifdef CHECK_FUNCTION_EXISTS
+Linking C executable cmTC_11df7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_11df7.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isinf    -rdynamic CMakeFiles/cmTC_11df7.dir/CheckFunctionExists.c.o  -o cmTC_11df7 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function isnan exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e9849/fast && /usr/bin/make  -f CMakeFiles/cmTC_e9849.dir/build.make CMakeFiles/cmTC_e9849.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e9849.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isnan   -o CMakeFiles/cmTC_e9849.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+<command-line>: warning: conflicting types for built-in function ‘isnan’; expected ‘int()’ [-Wbuiltin-declaration-mismatch]
+/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+    7 |   CHECK_FUNCTION_EXISTS(void);
+      |   ^~~~~~~~~~~~~~~~~~~~~
+/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:1:1: note: ‘isnan’ is declared in header ‘<math.h>’
+  +++ |+#include <math.h>
+    1 | #ifdef CHECK_FUNCTION_EXISTS
+Linking C executable cmTC_e9849
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e9849.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isnan    -rdynamic CMakeFiles/cmTC_e9849.dir/CheckFunctionExists.c.o  -o cmTC_e9849 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function gettimeofday exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_4fef5/fast && /usr/bin/make  -f CMakeFiles/cmTC_4fef5.dir/build.make CMakeFiles/cmTC_4fef5.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4fef5.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=gettimeofday   -o CMakeFiles/cmTC_4fef5.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Linking C executable cmTC_4fef5
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4fef5.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=gettimeofday    -rdynamic CMakeFiles/cmTC_4fef5.dir/CheckFunctionExists.c.o  -o cmTC_4fef5 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function qsort_r exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_1a6c9/fast && /usr/bin/make  -f CMakeFiles/cmTC_1a6c9.dir/build.make CMakeFiles/cmTC_1a6c9.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1a6c9.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=qsort_r   -o CMakeFiles/cmTC_1a6c9.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Linking C executable cmTC_1a6c9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1a6c9.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=qsort_r    -rdynamic CMakeFiles/cmTC_1a6c9.dir/CheckFunctionExists.c.o  -o cmTC_1a6c9 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function time exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_5c598/fast && /usr/bin/make  -f CMakeFiles/cmTC_5c598.dir/build.make CMakeFiles/cmTC_5c598.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5c598.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=time   -o CMakeFiles/cmTC_5c598.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Linking C executable cmTC_5c598
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5c598.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=time    -rdynamic CMakeFiles/cmTC_5c598.dir/CheckFunctionExists.c.o  -o cmTC_5c598 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function copysign exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_1335c/fast && /usr/bin/make  -f CMakeFiles/cmTC_1335c.dir/build.make CMakeFiles/cmTC_1335c.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1335c.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=copysign   -o CMakeFiles/cmTC_1335c.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+<command-line>: warning: conflicting types for built-in function ‘copysign’; expected ‘double(double,  double)’ [-Wbuiltin-declaration-mismatch]
+/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+    7 |   CHECK_FUNCTION_EXISTS(void);
+      |   ^~~~~~~~~~~~~~~~~~~~~
+/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:1:1: note: ‘copysign’ is declared in header ‘<math.h>’
+  +++ |+#include <math.h>
+    1 | #ifdef CHECK_FUNCTION_EXISTS
+Linking C executable cmTC_1335c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1335c.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=copysign    -rdynamic CMakeFiles/cmTC_1335c.dir/CheckFunctionExists.c.o  -o cmTC_1335c 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file stddef.h exists passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_9cf80/fast && /usr/bin/make  -f CMakeFiles/cmTC_9cf80.dir/build.make CMakeFiles/cmTC_9cf80.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9cf80.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_9cf80.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_9cf80
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9cf80.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_9cf80.dir/CheckIncludeFile.c.o  -o cmTC_9cf80 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of uint32_t passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_ec6df/fast && /usr/bin/make  -f CMakeFiles/cmTC_ec6df.dir/build.make CMakeFiles/cmTC_ec6df.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ec6df.dir/SIZEOF_UINT32_T.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_ec6df.dir/SIZEOF_UINT32_T.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UINT32_T.c
+Linking C executable cmTC_ec6df
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ec6df.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_ec6df.dir/SIZEOF_UINT32_T.c.o  -o cmTC_ec6df 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of unsigned int passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_5c8b1/fast && /usr/bin/make  -f CMakeFiles/cmTC_5c8b1.dir/build.make CMakeFiles/cmTC_5c8b1.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5c8b1.dir/SIZEOF_UNSIGNED_INT.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_5c8b1.dir/SIZEOF_UNSIGNED_INT.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UNSIGNED_INT.c
+Linking C executable cmTC_5c8b1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5c8b1.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_5c8b1.dir/SIZEOF_UNSIGNED_INT.c.o  -o cmTC_5c8b1 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of unsigned long passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_4bd3b/fast && /usr/bin/make  -f CMakeFiles/cmTC_4bd3b.dir/build.make CMakeFiles/cmTC_4bd3b.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4bd3b.dir/SIZEOF_UNSIGNED_LONG.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_4bd3b.dir/SIZEOF_UNSIGNED_LONG.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UNSIGNED_LONG.c
+Linking C executable cmTC_4bd3b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4bd3b.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_4bd3b.dir/SIZEOF_UNSIGNED_LONG.c.o  -o cmTC_4bd3b 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function sqrt exists in the m passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_b2566/fast && /usr/bin/make  -f CMakeFiles/cmTC_b2566.dir/build.make CMakeFiles/cmTC_b2566.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b2566.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=sqrt   -o CMakeFiles/cmTC_b2566.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+<command-line>: warning: conflicting types for built-in function ‘sqrt’; expected ‘double(double)’ [-Wbuiltin-declaration-mismatch]
+/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+    7 |   CHECK_FUNCTION_EXISTS(void);
+      |   ^~~~~~~~~~~~~~~~~~~~~
+/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:1:1: note: ‘sqrt’ is declared in header ‘<math.h>’
+  +++ |+#include <math.h>
+    1 | #ifdef CHECK_FUNCTION_EXISTS
+Linking C executable cmTC_b2566
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b2566.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=sqrt    -rdynamic CMakeFiles/cmTC_b2566.dir/CheckFunctionExists.c.o  -o cmTC_b2566  -lm 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+
+Performing C SOURCE FILE Test HAVE_THREAD_LOCAL_STORAGE succeeded with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_87ade/fast && /usr/bin/make  -f CMakeFiles/cmTC_87ade.dir/build.make CMakeFiles/cmTC_87ade.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_87ade.dir/src.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE   -o CMakeFiles/cmTC_87ade.dir/src.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_87ade
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_87ade.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE    -rdynamic CMakeFiles/cmTC_87ade.dir/src.c.o  -o cmTC_87ade 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+Source file was:
+
+    __thread int tls;
+
+    int main(void) {
+        return 0;
+    }
+Determining if the __cplusplus exist passed with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_1f4ac/fast && /usr/bin/make  -f CMakeFiles/cmTC_1f4ac.dir/build.make CMakeFiles/cmTC_1f4ac.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_1f4ac.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_1f4ac.dir/CheckSymbolExists.cxx.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+Linking CXX executable cmTC_1f4ac
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1f4ac.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_1f4ac.dir/CheckSymbolExists.cxx.o  -o cmTC_1f4ac 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+File /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <ciso646>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef __cplusplus
+  return ((int*)(&__cplusplus))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C++ SOURCE FILE Test SUPPORTS_STDCXX11 succeeded with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_88536/fast && /usr/bin/make  -f CMakeFiles/cmTC_88536.dir/build.make CMakeFiles/cmTC_88536.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_88536.dir/src.cxx.o
+/usr/bin/c++    -DSUPPORTS_STDCXX11   -std=c++11 -o CMakeFiles/cmTC_88536.dir/src.cxx.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_88536
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_88536.dir/link.txt --verbose=1
+/usr/bin/c++   -DSUPPORTS_STDCXX11    -rdynamic CMakeFiles/cmTC_88536.dir/src.cxx.o  -o cmTC_88536 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test HAS_FPIC succeeded with the following output:
+Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_a2d8d/fast && /usr/bin/make  -f CMakeFiles/cmTC_a2d8d.dir/build.make CMakeFiles/cmTC_a2d8d.dir/build
+make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a2d8d.dir/src.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAS_FPIC   -fPIC -o CMakeFiles/cmTC_a2d8d.dir/src.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_a2d8d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a2d8d.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DHAS_FPIC    -rdynamic CMakeFiles/cmTC_a2d8d.dir/src.c.o  -o cmTC_a2d8d 
+make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out/build/CMakeFiles/CMakeTmp'
+
+
+Source file was:
+int main(void) { return 0; }

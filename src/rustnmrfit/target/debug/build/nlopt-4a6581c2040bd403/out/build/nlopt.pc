@@ -1,0 +1,11 @@
+prefix=/media/sf_files/Dal/Code/rnmrfit_dev/src/rustnmrfit/target/debug/build/nlopt-4a6581c2040bd403/out
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: NLopt
+Description: nonlinear optimization libary
+Version: 2.5.0
+Libs: -L${libdir} -lnlopt
+Libs.private: -lm
+Cflags: -I${includedir}
