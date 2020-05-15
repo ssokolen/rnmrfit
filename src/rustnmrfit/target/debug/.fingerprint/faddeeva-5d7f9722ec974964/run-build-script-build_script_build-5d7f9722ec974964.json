@@ -1,1 +1,0 @@
-{"rustc":15199935378135370970,"features":"","target":0,"profile":0,"path":0,"deps":[[15462799310833697473,"build_script_build",false,13852318268400590551]],"local":[{"RerunIfChanged":{"output":"debug/build/faddeeva-5d7f9722ec974964/output","paths":["src/Faddeeva.c"]}}],"rustflags":[],"metadata":0}

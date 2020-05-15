@@ -2,7 +2,7 @@ use ndarray::prelude::*;
 use std::iter::FromIterator;
 
 use super::lineshape::Lineshape1D;
-use super::lineshape::LineshapeND;
+use super::phase::Phase1D;
 
 //==============================================================================
 // Fit1D 
@@ -10,7 +10,8 @@ use super::lineshape::LineshapeND;
 //------------------------------------------------------------------------------
 pub struct Fit1D {
 
-    // y is the observed spectral data
+    // x, y spectral data
+    x: Array<f64, Ix1>,
     y: Array<f64, Ix2>,
 
     // Number of parameters (p) dedicated to each component of fit
@@ -18,21 +19,16 @@ pub struct Fit1D {
     nb: usize,
     np: usize,
 
+    phase: Phase1D,
+
     // NMRLineshape object holding gradients and lineshape fit
     lineshape: Lineshape1D,
 
     // Baseline b-spline basis
     basis: Array<f64, Ix2>,
 
-    // Phase angles and intermediate terms
-    theta: Array<f64, Ix1>,
-    sin_theta: Array<f64, Ix1>,
-    cos_theta: Array<f64, Ix1>,
-
     // Intermediate matrices
-    y_mod: Array<f64, Ix2>,
     y_diff: Array<f64, Ix2>,
-    grad_theta: Array<f64, Ix2>,
 
     // Primary output
     pub y_fit: Array<f64, Ix2>,
@@ -56,23 +52,18 @@ impl Fit1D {
         };
 
         Fit1D {
+            phase: Phase1D::new(&y, n, np),
+            lineshape: Lineshape1D::new(n, n, nl),
+            basis: basis,
+
+            x: x,
             y: y,
 
             nl: nl,
             nb: nb,
             np: np,
 
-            lineshape: Lineshape1D::new(x, Array::from_iter((0 .. nl).step_by(4))),
-            basis: basis,
-
-            theta: Array::zeros((n, )),
-            sin_theta: Array::zeros((n, )),
-            cos_theta: Array::zeros((n, )),
-
-            y_mod: Array::zeros((2, n)),
             y_diff: Array::zeros((2, n)),
-            grad_theta: Array::zeros((2, n)),
-
             y_fit: Array::zeros((2, n)),
             grad: Array::zeros((2, nl + 2*nb + np)),
         }
@@ -103,42 +94,15 @@ impl Fit1D {
 
         //--------------------------------------
         // Phasing
-
-        // Modifying y based on phase correction
-        if np > 0 {
-
-            if np == 1 {
-                let theta_0 = p[nl + nb*2];
-                self.theta.fill(theta_0);
-                self.sin_theta.fill(theta_0.sin());
-                self.cos_theta.fill(theta_0.cos());
-            } else {
-                let theta_0 = p[nl + nb*2];
-                let theta_1 = p[nl + nb*2 + 1];
-                self.theta.assign(&( self.lineshape.x.mapv(|x| theta_0 + theta_1*x) ));
-                self.sin_theta.assign(&( self.theta.mapv(|x| x.sin()) ));
-                self.cos_theta.assign(&( self.theta.mapv(|x| x.cos()) ));
-            }
-
-            let mut y_mod_r: ArrayViewMut<_, Ix1> = self.y_mod.slice_mut(s![0, ..]);
-            y_mod_r.assign(&( &y_r * &self.cos_theta + &y_i * &self.sin_theta ));
-            
-            let mut y_mod_i: ArrayViewMut<_, Ix1> = self.y_mod.slice_mut(s![1, ..]);
-            y_mod_i.assign(&( -&y_r * &self.sin_theta + &y_i * &self.cos_theta ));
-
-        } else {    
-            let mut y_mod_r: ArrayViewMut<_, Ix1> = self.y_mod.slice_mut(s![0, ..]);
-            y_mod_r.assign(&y_r);
-            
-            let mut y_mod_i: ArrayViewMut<_, Ix1> = self.y_mod.slice_mut(s![1, ..]);
-            y_mod_i.assign(&y_i);
-        }
+        let p_array = Array::from_shape_vec((np,), p[(nl + 2*nb)..].to_vec()).unwrap(); 
+        self.phase.eval(&self.x, &p_array);
             
         //--------------------------------------
         // Lineshape
 
         // Calculating peak fit and gradient terms 
-        self.lineshape.calculate(p);
+        let p_array = Array::from_shape_vec((nl,), p[0..nl].to_vec()).unwrap(); 
+        self.lineshape.eval(&self.x, &p_array);
 
         // Updating with lineshapes
         self.y_fit += &self.lineshape.y.slice(s![.., ..]);
@@ -165,7 +129,7 @@ impl Fit1D {
         // All gradients
 
         // Calculating total difference
-        self.y_diff = &self.y_mod - &self.y_fit;
+        self.y_diff = &self.phase.y - &self.y_fit;
 
         let y_diff_r: ArrayView<_, Ix1> = self.y_diff.slice(s![0, ..]);
         let y_diff_i: ArrayView<_, Ix1> = self.y_diff.slice(s![1, ..]);
@@ -193,35 +157,17 @@ impl Fit1D {
             } 
         }
 
+        let y_diff_r: ArrayView<_, Ix1> = self.y_diff.slice(s![0, ..]);
+        let y_diff_i: ArrayView<_, Ix1> = self.y_diff.slice(s![1, ..]);
+
         // Phase
-        if np > 0 {
+        for i in 0 .. np {
+            let dydp_r: ArrayView<_, Ix1> = self.phase.dydp.slice(s![0, i, ..]);
+            let dydp_i: ArrayView<_, Ix1> = self.phase.dydp.slice(s![1, i, ..]);
 
-            let mut grad_theta_r: ArrayViewMut<_, Ix1> = self.grad_theta.slice_mut(s![0, ..]);
-            grad_theta_r.assign(&( -&y_r * &self.sin_theta + &y_i * &self.cos_theta ));
-            
-            let mut grad_theta_i: ArrayViewMut<_, Ix1> = self.grad_theta.slice_mut(s![1, ..]);
-            grad_theta_i.assign(&( -&y_r * &self.cos_theta - &y_i * &self.sin_theta ));
-
-            let grad_theta_r: ArrayView<_, Ix1> = self.grad_theta.slice(s![0, ..]);
-            let grad_theta_i: ArrayView<_, Ix1> = self.grad_theta.slice(s![1, ..]);
-
-            // The negative is a hack to counteract the general negative below
-            if np == 1 {
-                self.grad[[0, nl + nb*2]] = -y_diff_r.dot(&grad_theta_r);
-                self.grad[[1, nl + nb*2]] = -y_diff_i.dot(&grad_theta_i);
-            } else {
-                self.grad[[0, nl + nb*2]] = -y_diff_r.dot(&grad_theta_r);
-                self.grad[[1, nl + nb*2]] = -y_diff_i.dot(&grad_theta_i);
-
-                self.grad[[0, nl + nb*2 + 1]] = -y_diff_r.dot(
-                    &( &grad_theta_r * &self.lineshape.x )
-                );
-                self.grad[[1, nl + nb*2 + 1]] = -y_diff_i.dot(
-                    &( &grad_theta_i * &self.lineshape.x )
-                );
-            }
-
-        }
+            self.grad[[0, nl + 2*nb + i]] = -y_diff_r.dot(&dydp_r);
+            self.grad[[1, nl + 2*nb + i]] = -y_diff_i.dot(&dydp_i);
+        } 
 
         // Tacking on the -2 scalar term to the gradient
         self.grad *= -2.0;
@@ -241,14 +187,21 @@ impl Fit1D {
 }
 
 
+/*
 //==============================================================================
 // Fit2D 
 
 //------------------------------------------------------------------------------
 pub struct Fit2D {
 
-    // y is the observed spectral data
+    // x, y spectral data (where the x values are unique)
+    x_direct: Array<f64, Ix1>,
+    x_indirect: Array<f64, Ix1>,
     y: Array<f64, Ix2>,
+
+    // Mapping of unique x values to y values
+    xi_direct: Array<usize, Ix1>,
+    xi_indirect: Array<usize, Ix1>,
 
     // Number of parameters (p) dedicated to each component of fit
     nl: usize,
@@ -271,58 +224,106 @@ pub struct Fit2D {
     // Intermediate matrices
     y_mod: Array<f64, Ix2>,
     y_diff: Array<f64, Ix2>,
-    grad_theta: Array<f64, Ix2>,
+    //grad_theta: Array<f64, Ix2>,
 
     // Primary output
     pub y_fit: Array<f64, Ix2>,
     pub grad: Array<f64, Ix2>,
 
 }
-/*
+
 //------------------------------------------------------------------------------
 impl Fit2D {
 
     //--------------------------------------
-    pub fn new(x_direct: Array<f64, Ix1>, x_indirect: Array<f64, Ix1>, 
+    pub fn new(x_direct: Array<f64, Ix1>, x_indirect: Array<f64, Ix1>, y: Array<f64, Ix2>,  
                xi_direct: Array<usize, Ix1>, xi_indirect: Array<usize, Ix1>,
-               
-               y: Array<f64, Ix2>,  
+               peak_resonances: Array<usize, Ix1>, peak_dimensions: Array<usize, Ix1>,
                nl: usize, nb: usize, np: usize,
                _: Option<Array<f64, Ix2>>) 
         -> Fit2D {
 
-        let n = x.len();
+        let ni = xi_direct.len();
 
-        let basis: Array<f64, Ix2> = match basis {
-            Some(array) => array,
-            None => Array::zeros((n, 1)),
+        // Generating vectors of lineshapes
+        let mut direct: Vec<Vec<usize>> = Vec::new();
+        let mut indirect: Vec<Vec<usize>> = Vec::new();
+        
+        let mut ir: usize;
+        let mut id: usize;
+        
+        // Looping through
+        for i in 0 .. peak_resonances.len() {
+            
+            ir = peak_resonances[i];
+            id = peak_dimensions[i];
+            
+            // Ensure correct vector length
+            while direct.len() <= ir {
+                direct.push(Vec::new());
+                indirect.push(Vec::new());
+            }
+            
+            // Adding peak index
+            if id == 0 {
+                direct[ir].push(i * 4);
+                direct[ir].push(i * 4 + 1);
+                direct[ir].push(i * 4 + 2);
+                direct[ir].push(i * 4 + 3);
+            } else {
+                indirect[ir].push(i * 4);
+                indirect[ir].push(i * 4 + 1);
+                indirect[ir].push(i * 4 + 2);
+                indirect[ir].push(i * 4 + 3);
+            }
+            
+        }
+        
+        let f_direct = |x: &Vec<usize>| -> LineshapeND {
+            let indexes = Array::from_shape_vec((x.len(),), x.to_vec()).unwrap();
+            LineshapeND::new(x_direct.len(), ni, indexes)
         };
 
-        Fit1D {
+        let f_indirect = |x: &Vec<usize>| -> LineshapeND {
+            let indexes = Array::from_shape_vec((x.len(),), x.to_vec()).unwrap();
+            LineshapeND::new(x_indirect.len(), ni, indexes)
+        };
+        
+        // Converting into Arrays
+        let direct: Vec<LineshapeND> = direct.iter().map(f_direct).collect();
+        let indirect: Vec<LineshapeND> = indirect.iter().map(f_indirect).collect();
+
+        Fit2D {
+            x_direct: x_direct,
+            x_indirect: x_indirect,
             y: y,
+            xi_direct: xi_direct,
+            xi_indirect: xi_indirect,
 
             nl: nl,
             nb: nb,
             np: np,
 
-            lineshape: Lineshape1D::new(x, Array::from_iter((0 .. nl).step_by(4))),
-            basis: basis,
+            direct: direct,
+            indirect: indirect,
 
-            theta: Array::zeros((n, )),
-            sin_theta: Array::zeros((n, )),
-            cos_theta: Array::zeros((n, )),
+            //basis: basis,
 
-            y_mod: Array::zeros((2, n)),
-            y_diff: Array::zeros((2, n)),
-            grad_theta: Array::zeros((2, n)),
+            //theta: Array::zeros((n, )),
+            //sin_theta: Array::zeros((n, )),
+            //cos_theta: Array::zeros((n, )),
 
-            y_fit: Array::zeros((2, n)),
-            grad: Array::zeros((2, nl + 2*nb + np)),
+            y_mod: Array::zeros((4, ni)),
+            y_diff: Array::zeros((4, ni)),
+            //grad_theta: Array::zeros((2, ni)),
+
+            y_fit: Array::zeros((4, ni)),
+            grad: Array::zeros((4, nl + 2*nb + np)),
         }
     }
 
     //--------------------------------------
-    pub fn obj(p: &[f64], grad: Option<&mut [f64]>, obj: &mut Fit1D) -> f64 {
+    pub fn obj(p: &[f64], grad: Option<&mut [f64]>, obj: &mut Fit2D) -> f64 {
         obj.eval(p, grad)
     }
 
@@ -334,19 +335,22 @@ impl Fit2D {
     //--------------------------------------
     pub fn eval(&mut self, p: &[f64], grad: Option<&mut [f64]>) -> f64 {
 
-        let nl = self.nl;
-        let nb = self.nb;
-        let np = self.np;
+        let _nl = self.nl;
+        let _nb = self.nb;
+        let _np = self.np;
 
         // Initializing fit
         self.y_fit.fill(0.0);
 
-        let y_r: ArrayView<_, Ix1> = self.y.slice(s![0, ..]);
-        let y_i: ArrayView<_, Ix1> = self.y.slice(s![1, ..]);
+        let _y_rr: ArrayView<_, Ix1> = self.y.slice(s![0, ..]);
+        let _y_ri: ArrayView<_, Ix1> = self.y.slice(s![1, ..]);
+        let _y_ir: ArrayView<_, Ix1> = self.y.slice(s![2, ..]);
+        let _y_ii: ArrayView<_, Ix1> = self.y.slice(s![3, ..]);
 
         //--------------------------------------
         // Phasing
 
+        /*
         // Modifying y based on phase correction
         if np > 0 {
 
@@ -376,19 +380,46 @@ impl Fit2D {
             let mut y_mod_i: ArrayViewMut<_, Ix1> = self.y_mod.slice_mut(s![1, ..]);
             y_mod_i.assign(&y_i);
         }
+        */
+
+        self.y_mod.assign(&self.y);
             
         //--------------------------------------
         // Lineshape
 
         // Calculating peak fit and gradient terms 
-        self.lineshape.calculate(p);
+        for i in 0 .. self.direct.len() {
+            let x_direct = self.x_direct.slice(s![..]);
+            let x_indirect = self.x_indirect.slice(s![..]);
 
-        // Updating with lineshapes
-        self.y_fit += &self.lineshape.y.slice(s![.., ..]);
+            let xi_direct = self.xi_direct.slice(s![..]);
+            let xi_indirect = self.xi_indirect.slice(s![..]);
+
+            self.direct[i].eval(x_direct, xi_direct, p);
+            self.indirect[i].eval(x_indirect, xi_indirect, p);
+
+            // Updating with lineshapes
+            let mut y_fit_rr: ArrayViewMut<_, Ix1> = self.y_fit.slice_mut(s![0, ..]);
+            y_fit_rr += &( &self.direct[i].y.slice(s![0, ..]) *
+                           &self.direct[i].y.slice(s![0, ..]) );
+
+            let mut y_fit_ri: ArrayViewMut<_, Ix1> = self.y_fit.slice_mut(s![1, ..]);
+            y_fit_ri += &( &self.direct[i].y.slice(s![0, ..]) *
+                           &self.direct[i].y.slice(s![1, ..]) );
+
+            let mut y_fit_ir: ArrayViewMut<_, Ix1> = self.y_fit.slice_mut(s![2, ..]);
+            y_fit_ir += &( &self.direct[i].y.slice(s![1, ..]) *
+                           &self.direct[i].y.slice(s![0, ..]) );
+
+            let mut y_fit_ii: ArrayViewMut<_, Ix1> = self.y_fit.slice_mut(s![3, ..]);
+            y_fit_ii += &( &self.direct[i].y.slice(s![1, ..]) *
+                           &self.direct[i].y.slice(s![1, ..]) );
+        }
 
         //--------------------------------------
         // Baseline
 
+        /*
         // Tacking on baseline
         if nb > 0 {
             let pb_r = p[nl .. (nl + nb)].to_vec();
@@ -403,6 +434,7 @@ impl Fit2D {
 
             y_fit_i += &( self.basis.dot(&pb_i) );
         }
+        */
 
         //--------------------------------------
         // All gradients
@@ -410,18 +442,60 @@ impl Fit2D {
         // Calculating total difference
         self.y_diff = &self.y_mod - &self.y_fit;
 
-        let y_diff_r: ArrayView<_, Ix1> = self.y_diff.slice(s![0, ..]);
-        let y_diff_i: ArrayView<_, Ix1> = self.y_diff.slice(s![1, ..]);
+        let y_diff_rr: ArrayView<_, Ix1> = self.y_diff.slice(s![0, ..]);
+        let y_diff_ri: ArrayView<_, Ix1> = self.y_diff.slice(s![1, ..]);
+        let y_diff_ir: ArrayView<_, Ix1> = self.y_diff.slice(s![2, ..]);
+        let y_diff_ii: ArrayView<_, Ix1> = self.y_diff.slice(s![3, ..]);
 
-        // Lineshape
-        for i in 0 .. nl {
-            let dydp_r: ArrayView<_, Ix1> = self.lineshape.dydp.slice(s![0, i, ..]);
-            let dydp_i: ArrayView<_, Ix1> = self.lineshape.dydp.slice(s![1, i, ..]);
+        // Looping over direct dimension peaks
+        for i in 0 .. self.direct.len() {
 
-            self.grad[[0, i]] = y_diff_r.dot(&dydp_r);
-            self.grad[[1, i]] = y_diff_i.dot(&dydp_i);
+            // Direct dimension i is multiplied by indirect dimension i
+            let y_indirect_r: ArrayView<_, Ix1> = self.indirect[i].y.slice(s![0, ..]);
+            let y_indirect_i: ArrayView<_, Ix1> = self.indirect[i].y.slice(s![1, ..]);
+            
+            // Index j corresponds to parameter j of np accounted for by each lineshape
+            for j in 0 .. self.direct[i].np {
+
+                let dydp_r: ArrayView<_, Ix1> = self.direct[i].dydp.slice(s![0, j, ..]);
+                let dydp_i: ArrayView<_, Ix1> = self.direct[i].dydp.slice(s![1, j, ..]);
+
+                // Use index array to figure out which parameter j actually represents
+                let k = self.direct[i].indexes[j];
+
+                self.grad[[0, k]] = y_diff_rr.dot(&(&dydp_r * &y_indirect_r));
+                self.grad[[1, k]] = y_diff_ri.dot(&(&dydp_r * &y_indirect_i));
+                self.grad[[2, k]] = y_diff_ir.dot(&(&dydp_i * &y_indirect_r));
+                self.grad[[3, k]] = y_diff_ii.dot(&(&dydp_i * &y_indirect_i));
+
+            }
+        }
+
+        // Repeating the same procedure for indirect dimension peaks
+        for i in 0 .. self.indirect.len() {
+
+            // Direct dimension i is multiplied by indirect dimension i
+            let y_direct_r: ArrayView<_, Ix1> = self.direct[i].y.slice(s![0, ..]);
+            let y_direct_i: ArrayView<_, Ix1> = self.direct[i].y.slice(s![1, ..]);
+            
+            // Index j corresponds to parameter j of np accounted for by each lineshape
+            for j in 0 .. self.indirect[i].np {
+
+                let dydp_r: ArrayView<_, Ix1> = self.indirect[i].dydp.slice(s![0, j, ..]);
+                let dydp_i: ArrayView<_, Ix1> = self.indirect[i].dydp.slice(s![1, j, ..]);
+
+                // Use index array to figure out which parameter j actually represents
+                let k = self.direct[i].indexes[j];
+
+                self.grad[[0, k]] = y_diff_rr.dot(&(&dydp_r * &y_direct_r));
+                self.grad[[1, k]] = y_diff_ri.dot(&(&dydp_i * &y_direct_r));
+                self.grad[[2, k]] = y_diff_ir.dot(&(&dydp_r * &y_direct_i));
+                self.grad[[3, k]] = y_diff_ii.dot(&(&dydp_i * &y_direct_i));
+
+            }
         } 
 
+        /*
         // Baseline 
         if nb > 0 {
             let y_diff_r: ArrayView<_, Ix2> = self.y_diff.slice(s![0 .. 1, ..]);
@@ -465,6 +539,7 @@ impl Fit2D {
             }
 
         }
+        */
 
         // Tacking on the -2 scalar term to the gradient
         self.grad *= -2.0;

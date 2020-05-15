@@ -166,5 +166,3 @@ fn test_baseline_fit() {
 fn test_phase_fit() {
     test_fit("./tests/data/phase_fit.json", 0.05, 2e-2);
 }
-
-

@@ -7,6 +7,69 @@ use faddeeva;
 const SQRT_PI: f64 = 1.772453850905515881919427556567825376987457275390625_f64;
 
 //==============================================================================
+// Generic peak function traits
+
+pub trait PeakFunctions {
+    fn value(&mut self, x: f64) -> Complex<f64>;
+    fn gradients(&mut self, x: f64, grad: &mut[Complex<f64>]) -> Complex<f64>;
+}
+
+
+//==============================================================================
+// Generic peak structure
+
+pub enum Peak {
+    Lorentz(Lorentz),
+    Voigt(Voigt),
+}
+
+impl Peak {
+
+    //------------------------------------------------
+    pub fn new(p: f64, w: f64, h: f64, f: f64) -> Peak {
+
+        if f < 1e-8 {
+            Peak::Lorentz( Lorentz::new(p, w, h) )
+        } else if f < (1.0 - 1e-8) {
+            Peak::Voigt( Voigt::new(p, w, h, f) )
+        } else {
+            panic!("Gauss peaks not currently supported.");
+        }
+
+    }
+
+    //--------------------------------------
+    pub fn from_vec(p: &[f64]) -> Peak {
+
+        Peak::new(p[0], p[1], p[2], p[3])
+
+    }
+
+}
+
+impl PeakFunctions for Peak {
+
+    //--------------------------------------
+    fn value(&mut self, x: f64) -> Complex<f64> {
+
+        match self {
+            Peak::Lorentz( lorentz ) => lorentz.value(x),
+            Peak::Voigt( voigt ) => voigt.value(x),
+        }
+    }
+
+    //--------------------------------------
+    fn gradients(&mut self, x: f64, grad: &mut[Complex<f64>]) -> Complex<f64> {
+
+        match self {
+            Peak::Lorentz( lorentz ) => lorentz.gradients(x, grad),
+            Peak::Voigt( voigt ) => voigt.gradients(x, grad),
+        }  
+    }
+
+}
+
+//==============================================================================
 // Lorentz
 
 pub struct Lorentz {
@@ -53,15 +116,9 @@ impl Lorentz {
         Lorentz::new(p[0], p[1], p[2])
 
     }
-}
-
-//------------------------------------------------------------------------------
-// Calculations
-
-impl Lorentz {
 
     //--------------------------------------
-    pub fn intermediates(&mut self, x: f64) {
+    fn intermediates(&mut self, x: f64) {
 
         self.z = (self.p - x) / self.w;
         self.z_2 = self.z * self.z;
@@ -69,9 +126,15 @@ impl Lorentz {
         self.yo = Complex::new(1.0, self.z)  / (self.z_2 + 1.0);
 
     }
+}
+
+//------------------------------------------------------------------------------
+// Calculations
+
+impl PeakFunctions for Lorentz {
 
     //--------------------------------------
-    pub fn value(&mut self, x: f64) -> Complex<f64> {
+    fn value(&mut self, x: f64) -> Complex<f64> {
 
         // Generate common intermediates
         self.intermediates(x);
@@ -81,7 +144,7 @@ impl Lorentz {
     }
 
     //--------------------------------------
-    pub fn gradients(&mut self, x: f64, grad: &mut[Complex<f64>]) -> Complex<f64> {
+    fn gradients(&mut self, x: f64, grad: &mut[Complex<f64>]) -> Complex<f64> {
 
         // Generate common intermediates 
         self.intermediates(x);
@@ -116,12 +179,11 @@ pub struct Voigt {
     // Main parameters
     p: f64,
     w: f64,
-    h: f64,
-    f: f64,
+    _h: f64,
+    _f: f64,
     wg: f64,
     
     // Intermediate terms independent of x
-    zn: Complex<f64>,
     yn: Complex<f64>,
 
     a: Complex<f64>,
@@ -160,11 +222,10 @@ impl Voigt {
         Voigt {
             p: p,
             w: w,
-            h: h,
-            f: f,
+            _h: h,
+            _f: f,
             wg: wg,
 
-            zn: zn,
             yn: yn,
 
             a: a,
@@ -186,23 +247,23 @@ impl Voigt {
         Voigt::new(p[0], p[1], p[2], p[3])
 
     }
-}
-
-//------------------------------------------------------------------------------
-// Calculations
-
-impl Voigt {
 
     //--------------------------------------
-    pub fn intermediates(&mut self, x: f64) {
+    fn intermediates(&mut self, x: f64) {
 
         self.z =  Complex::new( self.p - x, self.w )  / ( SQRT_2 * self.wg);
         self.yo = faddeeva::w( self.z, 1e-6 );
 
     }
+}
+
+//------------------------------------------------------------------------------
+// Calculations
+
+impl PeakFunctions for Voigt {
 
     //--------------------------------------
-    pub fn value(&mut self, x: f64) -> Complex<f64> {
+    fn value(&mut self, x: f64) -> Complex<f64> {
 
         // Generate common intermediates
         self.intermediates(x);
@@ -212,7 +273,7 @@ impl Voigt {
     }
 
     //--------------------------------------
-    pub fn gradients(&mut self, x: f64, grad: &mut[Complex<f64>]) -> Complex<f64> {
+    fn gradients(&mut self, x: f64, grad: &mut[Complex<f64>]) -> Complex<f64> {
 
         // Generate common intermediates 
         self.intermediates(x);
@@ -249,68 +310,23 @@ mod tests {
     use num::complex::Complex;
     use nlopt;
 
-    #[test]
-    fn lorentz_gradient() {
+    use super::PeakFunctions;
+    use super::Peak;
+
+    fn check_gradient(p: Vec<f64>) {
+
+        // x must be hard coded due to nlopt
+        let x: f64 = 0.45;
 
         // Analytical gradients
-        let p = vec![0.5, 0.5, 0.5, 0.0];
-        let x = 0.45;
-
-        let mut peak = super::Lorentz::from_vec(&p);
+        let mut peak = Peak::from_vec(&p);
         let mut grad = vec![Complex::new(0.0, 0.0); 4];
         peak.gradients(x, &mut grad);
 
         // Comparing to real numerical gradients
         fn f_real(p: &[f64]) -> f64 {
             let x = 0.45;
-            let mut peak = super::Lorentz::from_vec(p);
-            peak.value(x).re
-        };
-
-        let mut grad_real = vec![0.0; 4];
-        nlopt::approximate_gradient(&p, f_real, &mut grad_real);
-
-        assert!((grad[0].re - grad_real[0]).abs() < 1e-6, 
-                "Position gradient error -- real domain");
-        assert!((grad[1].re - grad_real[1]).abs() < 1e-6, 
-                "Width gradient error -- real domain");
-        assert!((grad[2].re - grad_real[2]).abs() < 1e-6, 
-                "Height gradient error -- real domain");
-
-        // Comparing to maginary numerical gradients
-        fn f_imag(p: &[f64]) -> f64 {
-            let x = 0.45;
-            let mut peak = super::Lorentz::from_vec(p);
-            peak.value(x).im
-        };
-
-        let mut grad_imag = vec![0.0; 4];
-        nlopt::approximate_gradient(&p, f_imag, &mut grad_imag);
-
-        assert!((grad[0].im - grad_imag[0]).abs() < 1e-6, 
-                "Position gradient error -- imaginary domain");
-        assert!((grad[1].im - grad_imag[1]).abs() < 1e-6, 
-                "Width gradient error -- imaginary domain");
-        assert!((grad[2].im - grad_imag[2]).abs() < 1e-6, 
-                "Height gradient error -- imaginary domain");
-
-    }
-
-    #[test]
-    fn voigt_gradient() {
-
-        // Analytical gradients
-        let p = vec![0.5, 0.5, 0.5, 0.5];
-        let x = 0.45;
-
-        let mut peak = super::Voigt::from_vec(&p);
-        let mut grad = vec![Complex::new(0.0, 0.0); 4];
-        peak.gradients(x, &mut grad);
-
-        // Comparing to real numerical gradients
-        fn f_real(p: &[f64]) -> f64 {
-            let x = 0.45;
-            let mut peak = super::Voigt::from_vec(p);
+            let mut peak = Peak::from_vec(p);
             peak.value(x).re
         };
 
@@ -329,7 +345,7 @@ mod tests {
         // Comparing to maginary numerical gradients
         fn f_imag(p: &[f64]) -> f64 {
             let x = 0.45;
-            let mut peak = super::Voigt::from_vec(p);
+            let mut peak = Peak::from_vec(p);
             peak.value(x).im
         };
 
@@ -344,6 +360,22 @@ mod tests {
                 "Height gradient error -- imaginary domain");
         assert!((grad[3].re - grad_real[3]).abs() < 1e-5, 
                 "Fraction gradient error -- imaginary domain");
+
+    }
+
+    #[test]
+    fn lorentz_gradient() {
+
+        let p = vec![0.5, 0.5, 0.5, 0.0];
+        check_gradient(p);
+
+    }
+
+    #[test]
+    fn voigt_gradient() {
+
+        let p = vec![0.5, 0.5, 0.5, 0.5];
+        check_gradient(p);
 
     }
 }

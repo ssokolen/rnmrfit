@@ -1,0 +1,39 @@
+Performing C SOURCE FILE Test HAVE_THREAD_LOCAL_STORAGE failed with the following output:
+Change Dir: /files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_cf00f/fast"
+make[1]: Entering directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp'
+make -f CMakeFiles/cmTC_cf00f.dir/build.make CMakeFiles/cmTC_cf00f.dir/build
+make[2]: Entering directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_cf00f.dir/src.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE   -o CMakeFiles/cmTC_cf00f.dir/src.c.o   -c /files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp/src.c
+/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp/src.c:2:5: warning: return type defaults to ‘int’ [-Wimplicit-int]
+     __declspec(thread) int tls;
+     ^~~~~~~~~~
+/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp/src.c: In function ‘__declspec’:
+/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp/src.c:4:20: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+     int main(void) {
+                    ^
+/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp/src.c:2:5: warning: type of ‘thread’ defaults to ‘int’ [-Wimplicit-int]
+     __declspec(thread) int tls;
+     ^~~~~~~~~~
+/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp/src.c:2:28: error: declaration for parameter ‘tls’ but no such parameter
+     __declspec(thread) int tls;
+                            ^~~
+/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp/src.c:6:5: error: expected ‘{’ at end of input
+     }
+     ^
+CMakeFiles/cmTC_cf00f.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_cf00f.dir/src.c.o' failed
+make[2]: *** [CMakeFiles/cmTC_cf00f.dir/src.c.o] Error 1
+make[2]: Leaving directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_cf00f/fast' failed
+make[1]: *** [cmTC_cf00f/fast] Error 2
+make[1]: Leaving directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+    __declspec(thread) int tls;
+
+    int main(void) {
+        return 0;
+    }

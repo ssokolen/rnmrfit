@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC  -ffunction-sections -fdata-sections -fPIC -m64 -O3 -DNDEBUG  -rdynamic CMakeFiles/testopt.dir/testfuncs.c.o CMakeFiles/testopt.dir/testopt.c.o CMakeFiles/testopt.dir/__/src/util/timer.c.o CMakeFiles/testopt.dir/__/src/util/mt19937ar.c.o CMakeFiles/testopt.dir/__/src/util/nlopt-getopt.c.o  -o testopt ../libnlopt.a -lm 
