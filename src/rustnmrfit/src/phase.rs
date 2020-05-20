@@ -163,7 +163,7 @@ mod tests {
     fn check_gradient(p: Array1<f64>) {
 
         // x/y must be hard coded due to nlopt
-        let x = Array::from_shape_vec((2), vec![0.3, 0.7]).unwrap();
+        let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap();
         let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
 
         // Analytical gradients
@@ -172,7 +172,7 @@ mod tests {
 
         // Comparing to real numerical gradients
         fn f_real(p: &[f64]) -> f64 {
-            let x = Array::from_shape_vec((2), vec![0.3, 0.7]).unwrap();
+            let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap();
             let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
             let p = Array::from_shape_vec((p.len(),), p.to_vec()).unwrap();
             let mut phase = Phase1D::new(&y, 2, p.len());
@@ -188,9 +188,9 @@ mod tests {
                     "Phase gradient error -- real domain, term {}", i+1);
         }
 
-        // Comparing to maginary numerical gradients
+        // Comparing to imaginary numerical gradients
         fn f_imag(p: &[f64]) -> f64 {
-            let x = Array::from_shape_vec((2), vec![0.3, 0.7]).unwrap();
+            let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap();
             let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
             let p = Array::from_shape_vec((p.len(),), p.to_vec()).unwrap();
             let mut phase = Phase1D::new(&y, 2, p.len());

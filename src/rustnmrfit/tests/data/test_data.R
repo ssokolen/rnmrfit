@@ -88,7 +88,7 @@ gen_data(x, p3, f, "combined_data.json")
 #==============================================================================>
 # Testing fit
 
-gen_data <- function(x, p, f, nb = 0, np = 0, filename) {
+gen_data <- function(x, p, f, nb = 0, np = 0, nk = 2, filename) {
 
   out <- list(par = c(p, rep(0, nb*2 + np)), x = x)
 
@@ -98,12 +98,7 @@ gen_data <- function(x, p, f, nb = 0, np = 0, filename) {
   out$y_im <- Im(y)
 
   # Generating basis
-  if ( nb == 0 ) {
-    basis <- matrix(0, nrow = length(x), ncol = 1)
-  } else {
-    basis <- bs(x, degree = nb - 1, intercept = TRUE)
-  }
-  out$basis <- as.vector(t(basis))
+  out$knots <- seq(min(x), max(x), length.out = nk)
 
   # Adding length terms
   out$nb <- nb
@@ -124,19 +119,19 @@ x <- seq(0, 1, length.out = 100)
 # Lorentz
 p1 <- c(0.6, 0.1, 0.8, 0.0)
 f <- function(x, p) f_lorentz(x, p) + rnorm(length(x), 0, p1[3]/50)
-gen_data(x, p1, f, 0, 0, "lorentz_fit.json")
+gen_data(x, p1, f, 0, 0, 0, "lorentz_fit.json")
 
 # Voigt
 p2 <- c(0.3, 0.05, 0.6, 0.5)
 f <- function(x, p) f_voigt(x, p) + rnorm(length(x), 0, p2[3]/50)
-gen_data(x, p2, f, 0, 0, "voigt_fit.json")
+gen_data(x, p2, f, 0, 0, 0, "voigt_fit.json")
 
 # Combined
 p3 <- c(p1, p2)
 f <- function(x, p) {
   f_lorentz(x, p[1:4]) + f_voigt(x, p[5:8]) + rnorm(length(x), 0, p3[3]/50)
 }
-gen_data(x, p3, f, 0, 0, "combined_fit.json")
+gen_data(x, p3, f, 0, 0, 0, "combined_fit.json")
 
 # Baseline
 p3 <- c(p1, p2)
@@ -145,15 +140,15 @@ f <- function(x, p) {
     rnorm(length(x), 0, p3[3]/50) + 
     f_normalize(-(x-.4)*(x-.4))*0.2
 }
-gen_data(x, p3, f, 3, 0, "baseline_fit.json")
+gen_data(x, p3, f, 3, 0, 2, "baseline_fit.json")
 
 # Phase
 p3 <- c(p1, p2)
 f <- function(x, p) {
   y <- f_lorentz(x, p[1:4]) + f_voigt(x, p[5:8]) +
-    rnorm(length(x), 0, p3[3]/50) + 
+    rnorm(length(x), 0, p3[3]/50) +
     f_normalize(-(x-.4)*(x-.4))*0.2
   y <- f_phase(x, y, c(pi/12, pi/16))
 }
 
-gen_data(x, p3, f, 3, 2, "phase_fit.json")
+gen_data(x, p3, f, 3, 2, 2, "phase_fit.json")

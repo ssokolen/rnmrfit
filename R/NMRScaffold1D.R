@@ -622,12 +622,13 @@ setMethod("f_lineshape", "NMRScaffold1D",
         y <- .Call("eval_1d_wrapper",        
           x = as.double(x),
           y = as.double(rep(0, n*2)),
+          knots = as.double(0),
           p = as.double(as.vector(t(parameters))),
           n = n,
           nl = as.integer(length(parameters)),
           nb = as.integer(0),
           np = as.integer(0),
-          basis = as.double(0)
+          nk = as.integer(0)
         )
 
         f_out(cmplx1(r = y[1:n], i = y[(n+1):(n*2)]))
@@ -654,12 +655,13 @@ setMethod("f_lineshape", "NMRScaffold1D",
           y <- .Call("eval_1d_wrapper",        
             x = as.double(x),
             y = as.double(rep(0, n*2)),
+            knots = as.double(0),
             p = as.double(as.vector(p)),
             n = n,
             nl = as.integer(length(p)),
             nb = as.integer(0),
             np = as.integer(0),
-            basis = as.double(0)
+            nk = as.integer(0)
           )
 
           f_out(cmplx1(r = y[1:n], i = y[(n+1):(n*2)]))

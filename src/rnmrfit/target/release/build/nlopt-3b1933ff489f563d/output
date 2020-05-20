@@ -94,13 +94,13 @@ make[3]: Entering directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/rele
 Scanning dependencies of target nlopt
 make[3]: Leaving directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build'
 make[3]: Entering directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build'
-[ 11%] Building C object CMakeFiles/nlopt.dir/src/algs/praxis/praxis.c.o
+[ 11%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/hybrid.c.o
 [ 11%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRect.c.o
-[ 11%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRserial.c.o
 [ 11%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/direct_wrap.c.o
-[ 11%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/cdirect.c.o
-[ 13%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/hybrid.c.o
-[ 15%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRsubrout.c.o
+[ 11%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRserial.c.o
+[ 11%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRsubrout.c.o
+[ 13%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/cdirect.c.o
+[ 15%] Building C object CMakeFiles/nlopt.dir/src/algs/praxis/praxis.c.o
 [ 18%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/plis.c.o
 [ 20%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/plip.c.o
 [ 22%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/pnet.c.o
@@ -120,9 +120,9 @@ make[3]: Entering directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/rele
 [ 54%] Building C object CMakeFiles/nlopt.dir/src/algs/slsqp/slsqp.c.o
 [ 56%] Building C object CMakeFiles/nlopt.dir/src/algs/esch/esch.c.o
 [ 59%] Building C object CMakeFiles/nlopt.dir/src/api/general.c.o
-[ 63%] Building C object CMakeFiles/nlopt.dir/src/api/optimize.c.o
-[ 63%] Building C object CMakeFiles/nlopt.dir/src/api/options.c.o
-[ 65%] Building C object CMakeFiles/nlopt.dir/src/api/deprecated.c.o
+[ 61%] Building C object CMakeFiles/nlopt.dir/src/api/options.c.o
+[ 63%] Building C object CMakeFiles/nlopt.dir/src/api/deprecated.c.o
+[ 65%] Building C object CMakeFiles/nlopt.dir/src/api/optimize.c.o
 [ 68%] Building C object CMakeFiles/nlopt.dir/src/api/f77api.c.o
 [ 70%] Building C object CMakeFiles/nlopt.dir/src/util/mt19937ar.c.o
 [ 72%] Building C object CMakeFiles/nlopt.dir/src/util/sobolseq.c.o
@@ -138,11 +138,11 @@ make[3]: Entering directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/rele
 Scanning dependencies of target testopt
 make[3]: Leaving directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build'
 make[3]: Entering directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build'
-[ 88%] Building C object test/CMakeFiles/testopt.dir/testfuncs.c.o
+[ 93%] Building C object test/CMakeFiles/testopt.dir/testopt.c.o
 [ 93%] Building C object test/CMakeFiles/testopt.dir/__/src/util/mt19937ar.c.o
-[ 93%] Building C object test/CMakeFiles/testopt.dir/__/src/util/nlopt-getopt.c.o
-[ 95%] Building C object test/CMakeFiles/testopt.dir/testopt.c.o
-[ 97%] Building C object test/CMakeFiles/testopt.dir/__/src/util/timer.c.o
+[ 93%] Building C object test/CMakeFiles/testopt.dir/testfuncs.c.o
+[ 95%] Building C object test/CMakeFiles/testopt.dir/__/src/util/timer.c.o
+[ 97%] Building C object test/CMakeFiles/testopt.dir/__/src/util/nlopt-getopt.c.o
 [100%] Linking C executable testopt
 make[3]: Leaving directory '/files/Dal/Code/rnmrfit_dev/src/rnmrfit/target/release/build/nlopt-3b1933ff489f563d/out/build'
 [100%] Built target testopt

@@ -694,14 +694,8 @@ setMethod("fit", "NMRFit1D",
     #---------------------------------------
     # Performing the fit
 
-    # Generating baseline basis
-    order <- n.baseline - length(knots) - 1
-    if ( n.baseline > 0 ) {
-      basis <- splines::bs(x, degree = order, knots = knots, intercept = TRUE)
-    } else {
-      # Creating a mock basis that will be ignored in the Rcpp code
-      basis <- matrix(0, nrow = length(x), ncol = 1)
-    }
+    # Adding boundary knots
+    knots <- sort(c(knots, c(0,1)))
 
     # Flattening constraints
     eq.constraints <- unlist(lapply(eq.constraints, function (x) c(x, NaN)))
@@ -714,6 +708,7 @@ setMethod("fit", "NMRFit1D",
     out <- .Call("fit_1d_wrapper", 
       x = as.double(x), 
       y = as.double(c(Re(y), Im(y))), 
+      knots = as.double(knots),
       p = as.double(par$par), 
       lb = as.double(par$lb), 
       ub = as.double(par$ub), 
@@ -721,7 +716,7 @@ setMethod("fit", "NMRFit1D",
       nl = as.integer(n.peaks*4),
       nb = as.integer(n.baseline),
       np = as.integer(n.phase),
-      basis = as.double(as.vector(t(basis))),
+      nk = as.integer(length(knots)),
       eq = as.double(eq.constraints),
       iq = as.double(ineq.constraints),
       neq = as.integer(length(eq.constraints)),

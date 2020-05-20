@@ -14,16 +14,16 @@ struct JSONVec {
     x: Vec<f64>,
     y_re: Vec<f64>,
     y_im: Vec<f64>,
-    basis: Vec<f64>,
+    knots: Vec<f64>,
     nb: Vec<usize>,
     np: Vec<usize>,
 }
 
 struct JSONArray {
-    par: Array<f64, Ix1>,
-    x: Array<f64, Ix1>,
-    y: Array<f64, Ix2>,
-    basis: Array<f64, Ix2>,
+    par: Array1<f64>,
+    x: Array1<f64>,
+    y: Array2<f64>,
+    knots: Array1<f64>,
     nb: usize,
     np: usize,
 }
@@ -52,13 +52,13 @@ fn read_json(path: &str) -> JSONArray {
     let mut view = y.slice_mut(s![1, .. ]);
     view.assign(&y_im);
 
-    let basis: Array<f64, Ix2> = Array::from_shape_vec(( n, json.nb[0].max(1) ), json.basis).unwrap(); 
+    let knots: Array1<f64> = Array::from_shape_vec(( json.knots.len(), ), json.knots).unwrap(); 
 
     JSONArray {
         par: par,
         x: x,
         y: y,
-        basis: basis,
+        knots: knots,
         nb: json.nb[0],
         np: json.np[0],
     }
@@ -120,7 +120,7 @@ fn test_fit(path: &str, offset: f64, tol: f64) {
 
     // Generating lineshape
     // println!("Before: [{}]", par.iter().fold(String::new(), |acc, &num| acc + &format!("{:.3}", &num) + ", "));
-    let (par, result) = fit_1d(json.x, json.y, par, lb, ub, nl, json.nb, json.np, Some(json.basis), None, None);
+    let (par, result) = fit_1d(json.x, json.y, json.knots, par, lb, ub, nl, json.nb, json.np, None, None);
     // println!("After: [{}]", par.iter().fold(String::new(), |acc, &num| acc + &format!("{:.3}", &num) + ", "));
 
     // Testing optimization state
