@@ -1,4 +1,4 @@
-use ndarray::prelude::*;
+use ndarray::{prelude::*};
 
 use super::lineshape::Lineshape1D;
 use super::baseline::Baseline1D;
@@ -9,9 +9,6 @@ use super::phase::Phase1D;
 
 //------------------------------------------------------------------------------
 pub struct Fit1D {
-
-    // x for spectral data (y is effectively contained within the phase term)
-    x: Array1<f64>,
 
     // Number of parameters (p) dedicated to each component of fit
     nl: usize,
@@ -43,11 +40,9 @@ impl Fit1D {
         let n = x.len();
 
         Fit1D {
-            lineshape: Lineshape1D::new(n, n, nl),
-            baseline: Baseline1D::new(&x, &knots, nb),
-            phase: Phase1D::new(&y, n, np),
-
-            x: x,
+            lineshape: Lineshape1D::new(x.clone(), nl),
+            baseline: Baseline1D::new(x.clone(), knots, nb),
+            phase: Phase1D::new(x, y, np),
 
             nl: nl,
             nb: nb,
@@ -64,11 +59,6 @@ impl Fit1D {
         obj.eval(p, grad)
     }
 
-}
-
-//------------------------------------------------------------------------------
-impl Fit1D {
-
     //--------------------------------------
     pub fn eval(&mut self, p: &[f64], grad: Option<&mut [f64]>) -> f64 {
 
@@ -81,11 +71,11 @@ impl Fit1D {
 
         // Phasing
         let p_slice = Array::from_shape_vec((np,), p[(nl + nb*2) ..].to_vec()).unwrap(); 
-        self.phase.eval(&self.x, &p_slice);
+        self.phase.eval(&p_slice);
             
         // Lineshape
         let p_slice = Array::from_shape_vec((nl,), p[.. nl].to_vec()).unwrap(); 
-        self.lineshape.eval(&self.x, &p_slice);
+        self.lineshape.eval(&p_slice);
 
         self.y_fit += &self.lineshape.y;
 
@@ -106,11 +96,11 @@ impl Fit1D {
         // Combine real/imaginary components into one loop
         for i in 0 .. 2 {
 
-            let y_diff_slice: ArrayView<_, Ix1> = self.y_diff.slice(s![i, ..]);
+            let y_diff_slice: ArrayView1<_> = self.y_diff.slice(s![i, ..]);
 
             // Lineshape
-            let dydp_slice: ArrayView<_, Ix2> = self.lineshape.dydp.slice(s![i, .., ..]);
-            let mut grad_slice: ArrayViewMut<_, Ix1> = self.grad.slice_mut(s![i, 0 .. nl]);
+            let dydp_slice: ArrayView2<_> = self.lineshape.dydp.slice(s![i, .., ..]);
+            let mut grad_slice: ArrayViewMut1<_> = self.grad.slice_mut(s![i, 0 .. nl]);
 
             grad_slice.assign(&( -2.0*dydp_slice.dot(&y_diff_slice) ));
 
@@ -119,16 +109,16 @@ impl Fit1D {
                 let nb1 = nb*i;
                 let nb2 = nb*(i+1);
 
-                let dydp_slice: ArrayView<_, Ix2> = self.baseline.dydp.slice(s![i, nb1 .. nb2, ..]);
-                let mut grad_slice: ArrayViewMut<_, Ix1> = self.grad.slice_mut(s![i, (nl + nb1) .. (nl + nb2)]);
+                let dydp_slice: ArrayView2<_> = self.baseline.dydp.slice(s![i, nb1 .. nb2, ..]);
+                let mut grad_slice: ArrayViewMut1<_> = self.grad.slice_mut(s![i, (nl + nb1) .. (nl + nb2)]);
 
                 grad_slice.assign(&( -2.0*dydp_slice.dot(&y_diff_slice) ));
             }
 
             // Phase
             if np > 0 {
-                let dydp_slice: ArrayView<_, Ix2> = self.phase.dydp.slice(s![i, .., ..]);
-                let mut grad_slice: ArrayViewMut<_, Ix1> = self.grad.slice_mut(s![i, (nl + nb*2) ..]);
+                let dydp_slice: ArrayView2<_> = self.phase.dydp.slice(s![i, .., ..]);
+                let mut grad_slice: ArrayViewMut1<_> = self.grad.slice_mut(s![i, (nl + nb*2) ..]);
 
                 grad_slice.assign(&( 2.0*dydp_slice.dot(&y_diff_slice) ));
             }

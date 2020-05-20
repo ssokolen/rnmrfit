@@ -5,6 +5,9 @@ use ndarray::{prelude::*, Zip};
 
 pub struct Phase1D {
 
+    // Reference to x values for convenience
+    x: Array1<f64>,
+
     // Initial values
     pub y_in: Array2<f64>,
 
@@ -15,7 +18,7 @@ pub struct Phase1D {
     grad_i: Array1<f64>,
 
     // Phase function
-    f: fn (&mut Phase1D, &Array<f64, Ix1>, &Array<f64, Ix1>),
+    f: fn (&mut Phase1D, &Array<f64, Ix1>),
 
     // Final output
     pub y: Array2<f64>,
@@ -27,11 +30,10 @@ pub struct Phase1D {
 impl Phase1D {
 
     //--------------------------------------
-    pub fn new(y: &Array2<f64>, n:usize, np: usize) -> Phase1D {
-        
-        let mut y_copy: Array2<f64> = Array::zeros((2,n));
-        y_copy.assign(y);
+    pub fn new(x: Array1<f64>, y: Array2<f64>, np: usize) -> Phase1D {
 
+        let n = x.len();
+        
         // Choose f based on number of parameters
         let f = match np {
             0 => Phase1D::eval_0,
@@ -41,7 +43,8 @@ impl Phase1D {
         };
 
         Phase1D {
-            y_in: y_copy.clone(),
+            x: x,
+            y_in: y.clone(),
             
             sin_theta: Array::zeros((n,)),
             cos_theta: Array::zeros((n,)),
@@ -50,27 +53,27 @@ impl Phase1D {
 
             f: f,
 
-            y: y_copy,
+            y: y,
             dydp: Array::zeros((2, np, n)),
         }
     }
 
     //--------------------------------------
-    pub fn eval(&mut self, x: &Array<f64, Ix1>, p: &Array<f64, Ix1>) {       
+    pub fn eval(&mut self, p: &Array<f64, Ix1>) {       
 
-        (self.f)(self, x, p);
+        (self.f)(self, p);
 
     }
 
     //--------------------------------------
-    pub fn eval_0(&mut self, _x: &Array<f64, Ix1>, _p: &Array<f64, Ix1>) {       
+    pub fn eval_0(&mut self, _p: &Array<f64, Ix1>) {       
 
         // Nothing to do -- if there are no phasing terms, then y is unchanged
 
     }
 
     //--------------------------------------
-    pub fn eval_1(&mut self, _x: &Array<f64, Ix1>, p: &Array<f64, Ix1>) {       
+    pub fn eval_1(&mut self, p: &Array<f64, Ix1>) {       
 
         // With a single phase term, generate single value intermediates
         let theta = p[0];
@@ -99,13 +102,13 @@ impl Phase1D {
     }
 
     //--------------------------------------
-    pub fn eval_2(&mut self, x: &Array<f64, Ix1>, p: &Array<f64, Ix1>) {       
+    pub fn eval_2(&mut self, p: &Array<f64, Ix1>) {       
 
         // With two phase terms, generate array intermediates
         let theta_0 = p[0];
         let theta_1 = p[1];
 
-        Zip::from(x)
+        Zip::from(&self.x)
             .and(&mut self.sin_theta)
             .and(&mut self.cos_theta)
             .apply(|&x, s, c| {
@@ -141,12 +144,12 @@ impl Phase1D {
         let mut dydp_r = self.dydp.slice_mut(s![0, 0, ..]);
         dydp_r.assign( &self.grad_r );
         let mut dydp_r = self.dydp.slice_mut(s![0, 1, ..]);
-        dydp_r.assign( &(&self.grad_r * x) );
+        dydp_r.assign( &(&self.grad_r * &self.x) );
 
         let mut dydp_i = self.dydp.slice_mut(s![1, 0, ..]);
         dydp_i.assign( &self.grad_i );
         let mut dydp_i = self.dydp.slice_mut(s![1, 1, ..]);
-        dydp_i.assign( &(&self.grad_i * x) );
+        dydp_i.assign( &(&self.grad_i * &self.x) );
     }
 
 }
@@ -167,16 +170,16 @@ mod tests {
         let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
 
         // Analytical gradients
-        let mut phase = Phase1D::new(&y, 2, p.len());
-        phase.eval(&x, &p);
+        let mut phase = Phase1D::new(x, y, p.len());
+        phase.eval(&p);
 
         // Comparing to real numerical gradients
         fn f_real(p: &[f64]) -> f64 {
             let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap();
             let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
             let p = Array::from_shape_vec((p.len(),), p.to_vec()).unwrap();
-            let mut phase = Phase1D::new(&y, 2, p.len());
-            phase.eval(&x, &p);
+            let mut phase = Phase1D::new(x, y, p.len());
+            phase.eval(&p);
             phase.y[[0, 0]] 
         };
 
@@ -193,8 +196,8 @@ mod tests {
             let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap();
             let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
             let p = Array::from_shape_vec((p.len(),), p.to_vec()).unwrap();
-            let mut phase = Phase1D::new(&y, 2, p.len());
-            phase.eval(&x, &p);
+            let mut phase = Phase1D::new(x, y, p.len());
+            phase.eval(&p);
             phase.y[[1, 0]] 
         };
 
