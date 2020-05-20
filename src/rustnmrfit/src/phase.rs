@@ -1,4 +1,4 @@
-use ndarray::{prelude::*, Zip};
+use ndarray::{prelude::*, ArcArray1, Zip};
 
 //==============================================================================
 // General 1D phase correction
@@ -6,7 +6,7 @@ use ndarray::{prelude::*, Zip};
 pub struct Phase1D {
 
     // Reference to x values for convenience
-    x: Array1<f64>,
+    x: ArcArray1<f64>,
 
     // Initial values
     pub y_in: Array2<f64>,
@@ -30,7 +30,7 @@ pub struct Phase1D {
 impl Phase1D {
 
     //--------------------------------------
-    pub fn new(x: Array1<f64>, y: Array2<f64>, np: usize) -> Phase1D {
+    pub fn new(x: ArcArray1<f64>, y: Array2<f64>, np: usize) -> Phase1D {
 
         let n = x.len();
         
@@ -166,7 +166,7 @@ mod tests {
     fn check_gradient(p: Array1<f64>) {
 
         // x/y must be hard coded due to nlopt
-        let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap();
+        let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap().into_shared();
         let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
 
         // Analytical gradients
@@ -175,7 +175,7 @@ mod tests {
 
         // Comparing to real numerical gradients
         fn f_real(p: &[f64]) -> f64 {
-            let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap();
+            let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap().into_shared();
             let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
             let p = Array::from_shape_vec((p.len(),), p.to_vec()).unwrap();
             let mut phase = Phase1D::new(x, y, p.len());
@@ -193,7 +193,7 @@ mod tests {
 
         // Comparing to imaginary numerical gradients
         fn f_imag(p: &[f64]) -> f64 {
-            let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap();
+            let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap().into_shared();
             let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
             let p = Array::from_shape_vec((p.len(),), p.to_vec()).unwrap();
             let mut phase = Phase1D::new(x, y, p.len());

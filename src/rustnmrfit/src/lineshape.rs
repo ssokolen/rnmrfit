@@ -1,4 +1,4 @@
-use ndarray::{prelude::*, Zip};
+use ndarray::{prelude::*, ArcArray1, Zip};
 use num::complex::Complex;
 
 use crate::peak::{Peak, PeakFunctions};
@@ -9,7 +9,7 @@ use crate::peak::{Peak, PeakFunctions};
 pub struct Lineshape1D {
 
     // Reference to x values for convenience
-    x: Array1<f64>,
+    x: ArcArray1<f64>,
 
     // Final output
     pub y: Array2<f64>,
@@ -21,7 +21,7 @@ pub struct Lineshape1D {
 impl Lineshape1D {
 
     //--------------------------------------
-    pub fn new(x: Array1<f64>, np: usize) -> Lineshape1D {
+    pub fn new(x: ArcArray1<f64>, np: usize) -> Lineshape1D {
 
         let n = x.len();
 
@@ -58,18 +58,21 @@ impl Lineshape1D {
         // Temporary holder for gradient terms
         let mut grad: Vec<Complex<f64>> = vec![Complex::new(0.0, 0.0); 4];
 
+        let mut y = self.y.slice_mut(s![.., ..]);
+        let mut dydp = self.dydp.slice_mut(s![.., i .. (i+4), ..]);
+
         // Looping over x
         for j in 0 .. self.x.len() {
 
             let fit = peak.gradients(self.x[j], &mut grad);
 
-            self.y[[0, j]] += fit.re;
-            self.y[[1, j]] += fit.im;
+            y[[0, j]] += fit.re;
+            y[[1, j]] += fit.im;
 
             for k in 0 .. 4 {
 
-                self.dydp[[0, i + k, j]] = grad[k].re;
-                self.dydp[[1, i + k, j]] = grad[k].im;
+                dydp[[0, k, j]] = grad[k].re;
+                dydp[[1, k, j]] = grad[k].im;
 
             }
         }
@@ -82,7 +85,7 @@ impl Lineshape1D {
 pub struct Lineshape1DMap {
 
     // Reference to x indices for convenience
-    x_map: Array1<usize>,
+    x_map: ArcArray1<usize>,
 
     // Lineshape object for unique values
     lineshape: Lineshape1D,
@@ -97,7 +100,7 @@ pub struct Lineshape1DMap {
 impl Lineshape1DMap {
 
     //--------------------------------------
-    pub fn new(x: Array1<f64>, x_map: Array1<usize>, np: usize) -> Lineshape1DMap {
+    pub fn new(x: ArcArray1<f64>, x_map: ArcArray1<usize>, np: usize) -> Lineshape1DMap {
 
         let n = x_map.len();
 
@@ -152,16 +155,16 @@ mod tests {
     #[test]
     fn map() {
 
-        let x  = Array::linspace(0.0, 1.0, 5);
+        let x  = Array::linspace(0.0, 1.0, 5).into_shared();
 
         let xi = vec![0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
-        let xi = Array::from_shape_vec((xi.len(),), xi).unwrap();
+        let xi = Array::from_shape_vec((xi.len(),), xi).unwrap().into_shared();
 
         let p = vec![0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.3, 0.3];
         let p = Array::from_shape_vec((p.len(),), p).unwrap();
 
         let mut l = super::Lineshape1D::new(x.clone(), p.len());
-        let mut lmap = super::Lineshape1DMap::new(x, xi, p.len());
+        let mut lmap = super::Lineshape1DMap::new(x.clone(), xi.clone(), p.len());
 
         l.eval(&p);
         lmap.eval(&p);

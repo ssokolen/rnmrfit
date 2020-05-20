@@ -1,4 +1,4 @@
-use ndarray::{prelude::*, stack};
+use ndarray::{prelude::*, ArcArray1, stack};
 
 //==============================================================================
 // General 1D baseline
@@ -24,7 +24,7 @@ pub struct Baseline1D {
 impl Baseline1D {
 
     //--------------------------------------
-    pub fn new(x: Array1<f64>, knots: Array1<f64>, np: usize) -> Baseline1D {
+    pub fn new(x: ArcArray1<f64>, knots: Array1<f64>, np: usize) -> Baseline1D {
 
         let n: usize = x.len();
 
@@ -89,7 +89,7 @@ impl Baseline1D {
     }
 
     //--------------------------------------
-    pub fn gen_basis(x: Array1<f64>, knots: Array1<f64>, np: usize) -> Array2<f64> { 
+    pub fn gen_basis(x: ArcArray1<f64>, knots: Array1<f64>, np: usize) -> Array2<f64> { 
 
         // Assuming that the knots vector includes boundary knots
         let n_knots: usize = knots.len();

@@ -118,13 +118,15 @@ pub fn eval_1d(x: Array1<f64>, knots: Array1<f64>, p: Array1<f64>,
                nl: usize, nb: usize, _np: usize) 
     -> Array2<f64> {
 
+    let x = x.into_shared();
+
     // First lineshape
     let mut lineshape = Lineshape1D::new(x.clone(), nl);
     let p_slice = p.slice(s![0 .. nl]).to_owned(); 
     lineshape.eval(&p_slice);
 
     // Then baseline
-    let mut baseline = Baseline1D::new(x, knots, nb);
+    let mut baseline = Baseline1D::new(x.clone(), knots, nb);
     let p_slice = p.slice(s![nl .. (nl + nb*2)]).to_owned(); 
     baseline.eval(&p_slice);
 

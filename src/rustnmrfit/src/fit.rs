@@ -1,4 +1,4 @@
-use ndarray::{prelude::*};
+use ndarray::prelude::*;
 
 use super::lineshape::Lineshape1D;
 use super::baseline::Baseline1D;
@@ -38,11 +38,12 @@ impl Fit1D {
         -> Fit1D {
 
         let n = x.len();
+        let x = x.into_shared();
 
         Fit1D {
             lineshape: Lineshape1D::new(x.clone(), nl),
             baseline: Baseline1D::new(x.clone(), knots, nb),
-            phase: Phase1D::new(x, y, np),
+            phase: Phase1D::new(x.clone(), y, np),
 
             nl: nl,
             nb: nb,
