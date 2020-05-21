@@ -18,7 +18,7 @@ pub struct Phase1D {
     grad_i: Array1<f64>,
 
     // Phase function
-    f: fn (&mut Phase1D, &Array<f64, Ix1>),
+    f: fn (&mut Phase1D, &[f64]),
 
     // Final output
     pub y: Array2<f64>,
@@ -59,21 +59,21 @@ impl Phase1D {
     }
 
     //--------------------------------------
-    pub fn eval(&mut self, p: &Array<f64, Ix1>) {       
+    pub fn eval(&mut self, p: &[f64]) {       
 
         (self.f)(self, p);
 
     }
 
     //--------------------------------------
-    pub fn eval_0(&mut self, _p: &Array<f64, Ix1>) {       
+    pub fn eval_0(&mut self, _p: &[f64]) {       
 
         // Nothing to do -- if there are no phasing terms, then y is unchanged
 
     }
 
     //--------------------------------------
-    pub fn eval_1(&mut self, p: &Array<f64, Ix1>) {       
+    pub fn eval_1(&mut self, p: &[f64]) {       
 
         // With a single phase term, generate single value intermediates
         let theta = p[0];
@@ -102,7 +102,7 @@ impl Phase1D {
     }
 
     //--------------------------------------
-    pub fn eval_2(&mut self, p: &Array<f64, Ix1>) {       
+    pub fn eval_2(&mut self, p: &[f64]) {       
 
         // With two phase terms, generate array intermediates
         let theta_0 = p[0];
@@ -163,7 +163,7 @@ mod tests {
 
     use super::Phase1D;
 
-    fn check_gradient(p: Array1<f64>) {
+    fn check_gradient(p: &[f64]) {
 
         // x/y must be hard coded due to nlopt
         let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap().into_shared();
@@ -177,14 +177,13 @@ mod tests {
         fn f_real(p: &[f64]) -> f64 {
             let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap().into_shared();
             let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
-            let p = Array::from_shape_vec((p.len(),), p.to_vec()).unwrap();
             let mut phase = Phase1D::new(x, y, p.len());
             phase.eval(&p);
             phase.y[[0, 0]] 
         };
 
         let mut grad_real = vec![0.0; 2];
-        nlopt::approximate_gradient(&(p.to_vec()), f_real, &mut grad_real);
+        nlopt::approximate_gradient(p, f_real, &mut grad_real);
 
         for i in 0 .. p.len() {
             assert!((phase.dydp[[0,i,0]] - grad_real[i]).abs() < 1e-5, 
@@ -195,14 +194,13 @@ mod tests {
         fn f_imag(p: &[f64]) -> f64 {
             let x = Array::from_shape_vec((2,), vec![0.3, 0.7]).unwrap().into_shared();
             let y = Array::from_shape_vec((2,2), vec![0.5, 0.4, 0.3, 0.2]).unwrap();
-            let p = Array::from_shape_vec((p.len(),), p.to_vec()).unwrap();
             let mut phase = Phase1D::new(x, y, p.len());
             phase.eval(&p);
             phase.y[[1, 0]] 
         };
 
         let mut grad_imag = vec![0.0; 2];
-        nlopt::approximate_gradient(&(p.to_vec()), f_imag, &mut grad_imag);
+        nlopt::approximate_gradient(p, f_imag, &mut grad_imag);
 
         for i in 0 .. p.len() {
             assert!((phase.dydp[[1,i,0]] - grad_imag[i]).abs() < 1e-5, 
@@ -214,16 +212,16 @@ mod tests {
     #[test]
     fn phase_gradient_0_order() {
 
-        let p = Array::from_shape_vec((1,), vec![0.3]).unwrap();
-        check_gradient(p);
+        let p =  vec![0.3];
+        check_gradient(&p);
 
     }
 
     #[test]
     fn phase_gradient_1_order() {
 
-        let p = Array::from_shape_vec((2,), vec![0.3, 0.1]).unwrap();
-        check_gradient(p);
+        let p = vec![0.3, 0.1];
+        check_gradient(&p);
 
     }
 }

@@ -12,7 +12,7 @@ pub struct Baseline1D {
     basis: Array2<f64>,
 
     // Baseline function
-    f: fn (&mut Baseline1D, &Array<f64, Ix1>),
+    f: fn (&mut Baseline1D, &[f64]),
 
     // Final output
     pub y: Array2<f64>,
@@ -62,26 +62,27 @@ impl Baseline1D {
     }
 
     //--------------------------------------
-    pub fn eval(&mut self, p: &Array<f64, Ix1>) {       
+    pub fn eval(&mut self, p: &[f64]) {       
 
         (self.f)(self, p);
 
     }
 
     //--------------------------------------
-    pub fn eval_0(&mut self, _p: &Array<f64, Ix1>) {       
+    pub fn eval_0(&mut self, _p: &[f64]) {       
 
         // Nothing to do -- if there are no baseline terms, then y is unchanged
 
     }
 
     //--------------------------------------
-    pub fn eval_n(&mut self, p: &Array<f64, Ix1>) {       
+    pub fn eval_n(&mut self, p: &[f64]) {       
 
         // Assume that p is divided in half -- real parameters then imaginary ones,
         // so loop over the two halves
+        let np = self.np;
         for i in 0 .. 2 {
-            let p_slice = p.slice(s![(self.np*i) .. (self.np*(i+1))]);
+            let p_slice = Array::from_shape_vec((np,), p[(np*i) .. (np*(i+1))].to_vec()).unwrap();
             let mut y_slice = self.y.slice_mut(s![i, ..]);
             y_slice.assign( &(self.basis.dot(&p_slice)) );
         }

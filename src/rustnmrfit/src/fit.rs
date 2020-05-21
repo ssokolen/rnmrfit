@@ -71,18 +71,15 @@ impl Fit1D {
         self.y_fit.fill(0.0);
 
         // Phasing
-        let p_slice = Array::from_shape_vec((np,), p[(nl + nb*2) ..].to_vec()).unwrap(); 
-        self.phase.eval(&p_slice);
+        self.phase.eval(&p[(nl + nb*2) ..]);
             
         // Lineshape
-        let p_slice = Array::from_shape_vec((nl,), p[.. nl].to_vec()).unwrap(); 
-        self.lineshape.eval(&p_slice);
+        self.lineshape.eval(&p[.. nl]);
 
         self.y_fit += &self.lineshape.y;
 
         // Baseline
-        let p_slice = Array::from_shape_vec((nb*2,), p[nl .. (nl + nb*2)].to_vec()).unwrap();
-        self.baseline.eval(&p_slice);
+        self.baseline.eval(&p[nl .. (nl + nb*2)]);
 
         if nb > 0 {
             self.y_fit += &self.baseline.y;

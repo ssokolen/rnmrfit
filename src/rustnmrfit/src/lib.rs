@@ -122,12 +122,12 @@ pub fn eval_1d(x: Array1<f64>, knots: Array1<f64>, p: Array1<f64>,
 
     // First lineshape
     let mut lineshape = Lineshape1D::new(x.clone(), nl);
-    let p_slice = p.slice(s![0 .. nl]).to_owned(); 
+    let p_slice = p.slice(s![0 .. nl]).to_vec(); 
     lineshape.eval(&p_slice);
 
     // Then baseline
     let mut baseline = Baseline1D::new(x.clone(), knots, nb);
-    let p_slice = p.slice(s![nl .. (nl + nb*2)]).to_owned(); 
+    let p_slice = p.slice(s![nl .. (nl + nb*2)]).to_vec(); 
     baseline.eval(&p_slice);
 
     // Output is the sum of lineshape and baseline components
