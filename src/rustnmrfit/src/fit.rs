@@ -1,8 +1,9 @@
 use ndarray::prelude::*;
 
-use super::lineshape::Lineshape1D;
-use super::baseline::Baseline1D;
-use super::phase::Phase1D;
+use crate::testing::Eval;
+use crate::lineshape::Lineshape1D;
+use crate::baseline::Baseline1D;
+use crate::phase::Phase1D;
 
 //==============================================================================
 // Fit1D 

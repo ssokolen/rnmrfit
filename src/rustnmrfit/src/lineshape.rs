@@ -4,6 +4,7 @@ use num::complex::Complex;
 use std::collections::HashMap;
 
 use crate::peak::{Peak, PeakFunctions};
+use crate::testing::Eval;
 
 //==============================================================================
 // General 1D lineshape
@@ -35,25 +36,6 @@ impl Lineshape1D {
         }
     }
 
-    //--------------------------------------
-    pub fn eval(&mut self, p: &[f64]) {
-
-        // Initializing y to zero (unlike dydp, y is incremented)
-        self.y.fill(0.0);
-
-         // Loop through each peak
-        for i in (0 .. p.len()).step_by(4) {
-
-            // Generate peak object and match based on result
-            let peak = Peak::new(p[i], p[i+1], p[i+2], p[i+3]);
-
-            match peak {
-                Peak::Lorentz( lorentz ) => self.eval_peak(lorentz, i),
-                Peak::Voigt( voigt ) => self.eval_peak(voigt, i),
-            };
-        }
-    }   
-
     //------------------------------------------------------------------------------
     fn eval_peak(&mut self, mut peak: impl PeakFunctions, i: usize) {
 
@@ -79,6 +61,37 @@ impl Lineshape1D {
             }
         }
     }
+}
+
+//--------------------------------------
+impl Eval for Lineshape1D {
+
+    fn get_y(&self) -> Array2<f64> {
+        self.y.clone()
+    }
+
+    fn get_dydp(&self) -> Array3<f64> {
+        self.dydp.clone()
+    }
+
+    //--------------------------------------
+    fn eval(&mut self, p: &[f64]) {
+
+        // Initializing y to zero (unlike dydp, y is incremented)
+        self.y.fill(0.0);
+
+         // Loop through each peak
+        for i in (0 .. p.len()).step_by(4) {
+
+            // Generate peak object and match based on result
+            let peak = Peak::new(p[i], p[i+1], p[i+2], p[i+3]);
+
+            match peak {
+                Peak::Lorentz( lorentz ) => self.eval_peak(lorentz, i),
+                Peak::Voigt( voigt ) => self.eval_peak(voigt, i),
+            };
+        }
+    }   
 }
 
 //==============================================================================
@@ -205,54 +218,6 @@ impl Lineshape2D {
         }
     }
 
-    //--------------------------------------
-    pub fn eval(&mut self, p: &[f64]) {       
-
-        self.y.fill(0.0);
-
-        // Loop over the resonances
-        for i in 0 .. self.lineshapes.len() {
-
-            // First, perform individual evaluations
-            let r_direct = self.ranges[i][0].clone();
-            let r_indirect = self.ranges[i][1].clone();
-
-            self.lineshapes[i][0].eval(&p[r_direct.clone()]);
-            self.lineshapes[i][1].eval(&p[r_indirect.clone()]);
-
-            // Then perform cross product
-            let mut j = 0;
-            for j1 in 0 .. 2 {
-                for j2 in 0 .. 2 {
-
-                    let y_direct = self.lineshapes[i][0].y.slice(s![j1, ..]);
-                    let y_indirect = self.lineshapes[i][1].y.slice(s![j2, ..]);
-
-                    let dydp_direct = self.lineshapes[i][0].dydp.slice(s![j1, .., ..]);
-                    let dydp_indirect = self.lineshapes[i][1].dydp.slice(s![j2, .., ..]);
-
-                    // Trying to minimize temporary array creation
-                    self.y_temp.assign( &y_direct );
-                    self.y_temp *= &y_indirect;
-
-                    let mut y = self.y.slice_mut(s![j, ..]);
-                    y += &self.y_temp;
-
-                    // Gradients correspond to one set of components -- direct or indirect
-
-                    // First, the direct gradients
-                    let mut dydp = self.dydp.slice_mut(s![j, r_direct.clone(), ..]);
-                    dydp.assign( &( &dydp_direct * &y_indirect ));
-
-                    // And the indirect
-                    let mut dydp = self.dydp.slice_mut(s![j, r_indirect.clone(), ..]);
-                    dydp.assign( &( &dydp_indirect * &y_direct ));
-
-                    j += 1;
-                }
-            }
-        }
-    }
 
     //--------------------------------------
     fn map_unique(x: ArcArray1<f64>) -> (ArcArray1<f64>, ArcArray1<usize>) {
@@ -335,14 +300,76 @@ impl Lineshape2D {
     }
 }
 
+impl Eval for Lineshape2D {
+
+    fn get_y(&self) -> Array2<f64> {
+        self.y.clone()
+    }
+
+    fn get_dydp(&self) -> Array3<f64> {
+        self.dydp.clone()
+    }
+
+    //--------------------------------------
+    fn eval(&mut self, p: &[f64]) {       
+
+        self.y.fill(0.0);
+
+        // Loop over the resonances
+        for i in 0 .. self.lineshapes.len() {
+
+            // First, perform individual evaluations
+            let r_direct = self.ranges[i][0].clone();
+            let r_indirect = self.ranges[i][1].clone();
+
+            self.lineshapes[i][0].eval(&p[r_direct.clone()]);
+            self.lineshapes[i][1].eval(&p[r_indirect.clone()]);
+
+            // Then perform cross product
+            let mut j = 0;
+            for j1 in 0 .. 2 {
+                for j2 in 0 .. 2 {
+
+                    let y_direct = self.lineshapes[i][0].y.slice(s![j1, ..]);
+                    let y_indirect = self.lineshapes[i][1].y.slice(s![j2, ..]);
+
+                    let dydp_direct = self.lineshapes[i][0].dydp.slice(s![j1, .., ..]);
+                    let dydp_indirect = self.lineshapes[i][1].dydp.slice(s![j2, .., ..]);
+
+                    // Trying to minimize temporary array creation
+                    self.y_temp.assign( &y_direct );
+                    self.y_temp *= &y_indirect;
+
+                    let mut y = self.y.slice_mut(s![j, ..]);
+                    y += &self.y_temp;
+
+                    // Gradients correspond to one set of components -- direct or indirect
+
+                    // First, the direct gradients
+                    let mut dydp = self.dydp.slice_mut(s![j, r_direct.clone(), ..]);
+                    dydp.assign( &( &dydp_direct * &y_indirect ) );
+
+                    // And the indirect
+                    let mut dydp = self.dydp.slice_mut(s![j, r_indirect.clone(), ..]);
+                    dydp.assign( &( &dydp_indirect * &y_direct ) );
+
+                    j += 1;
+                }
+            }
+        }
+    }
+}
+
 //==============================================================================
-// Double checking that map works correctly 
+// Unit tests
 
 #[cfg(test)]
 mod tests {
 
+    use crate::testing::Eval;
     use ndarray::prelude::*;
 
+    //--------------------------------------
     #[test]
     fn map() {
 
@@ -364,19 +391,70 @@ mod tests {
             for j in 0 .. 2 {
 
                 assert!(l.y[[0, i]] == lmap.y[[0, i*2+j]], 
-                        "ND vs 1D fit mismatch");
+                        "map y mismatch");
                 assert!(l.y[[1, i]] == lmap.y[[1, i*2+j]], 
-                        "ND vs 1D fit mismatch");
+                        "map y mismatch");
 
                 for k in 0 .. p.len() {
 
                     assert!(l.dydp[[0, k, i]] == lmap.dydp[[0, k, i*2+j]], 
-                            "ND vs 1D gradient mismatch");
+                            "map dydp mismatch");
                     assert!(l.dydp[[1, k, i]] == lmap.dydp[[1, k, i*2+j]],
-                            "ND vs 1D gradient mismatch");
+                            "map dydp mismatch");
 
                 }
             }
         }
     }
+
+    //--------------------------------------
+    #[test]
+    fn lineshape_1d_gradient() {
+
+        let x: Array1<f64> = Array::linspace(0.0, 1.0, 20);
+        let x = x.into_shared();
+        let p = vec![0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.3, 0.3];
+
+        let mut lineshape = super::Lineshape1D::new(x, p.len());
+
+        // Summing up errors across one dimensions increases threshold
+        lineshape.grad_test(&p, 5e-4);
+
+    }
+
+    //--------------------------------------
+    #[test]
+    fn lineshape_2d_gradient() {
+
+        let x: Array1<f64> = Array::linspace(0.0, 1.0, 20);
+        let n = x.len();
+
+        // Building grid from x
+        let mut x1: Array1<f64> = Array::zeros((n*n,));
+        let mut x2 = x1.clone();
+
+        for i in 0 .. n {
+            for j in 0 .. n {
+                x1[i+n*j] = x[j];
+                x2[i+n*j] = x[i];
+            }
+        }
+
+        let x1 = x1.into_shared();
+        let x2 = x2.into_shared();
+
+        let p = vec![0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.3, 0.3];
+        let resonances: Array1<usize> = Array::zeros((p.len(),));
+        let mut dimensions: Array1<usize> = Array::zeros((p.len(),));
+        for i in 4 .. 8 {
+            dimensions[i] = 1;
+        }
+
+        let mut lineshape = super::Lineshape2D::new(x1, x2, resonances, dimensions);
+
+        // Summing up errors across two dimensions increases threshold
+        lineshape.grad_test(&p, 5e-3);
+
+    }
+
 }

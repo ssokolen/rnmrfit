@@ -10,12 +10,15 @@ mod baseline;
 mod phase;
 mod fit;
 mod constraint;
+mod testing;
 
+pub use peak::{Peak, Lorentz, Voigt}; 
+
+use constraint::Constraint;
+use testing::Eval;
 use lineshape::{Lineshape1D};
 use baseline::{Baseline1D};
 use fit::{Fit1D};
-use constraint::Constraint;
-pub use peak::{Peak, Lorentz, Voigt}; 
 
 //==============================================================================
 pub fn fit_1d(x: Array1<f64>, y: Array2<f64>, knots: Array1<f64>,
