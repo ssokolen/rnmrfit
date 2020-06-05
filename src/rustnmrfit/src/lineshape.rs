@@ -4,7 +4,7 @@ use num::complex::Complex;
 use std::collections::HashMap;
 
 use crate::peak::{Peak, PeakFunctions};
-use crate::testing::Eval;
+use crate::common::Eval;
 
 //==============================================================================
 // General 1D lineshape
@@ -366,8 +366,9 @@ impl Eval for Lineshape2D {
 #[cfg(test)]
 mod tests {
 
-    use crate::testing::Eval;
     use ndarray::prelude::*;
+
+    use crate::common::Eval;
 
     //--------------------------------------
     #[test]

@@ -15,7 +15,7 @@ pub trait Eval {
         let mut analytical = self.get_dydp();
         
         // Calculate numerical gradients
-        // (numerical gradient estimate from rust NLOPT)
+        // (numerical gradient estimate based on rust NLOPT approximate_gradient)
         let mut numerical = Array::zeros(analytical.raw_dim());
         
         let mut p = p.to_vec();

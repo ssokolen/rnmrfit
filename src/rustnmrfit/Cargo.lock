@@ -182,6 +182,7 @@ dependencies = [
  "ndarray",
  "nlopt",
  "num",
+ "num-integer",
  "serde",
  "serde_json",
 ]

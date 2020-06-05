@@ -1,6 +1,6 @@
 use ndarray::prelude::*;
 
-use crate::testing::Eval;
+use crate::common::Eval;
 use crate::lineshape::Lineshape1D;
 use crate::baseline::Baseline1D;
 use crate::phase::Phase1D;

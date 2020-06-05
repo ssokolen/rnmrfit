@@ -4,20 +4,20 @@ use nlopt::Target;
 
 use ndarray::prelude::*;
 
+mod common;
+mod constraint;
 mod peak;
 mod lineshape;
 mod baseline;
 mod phase;
 mod fit;
-mod constraint;
-mod testing;
 
 pub use peak::{Peak, Lorentz, Voigt}; 
 
+use common::Eval;
 use constraint::Constraint;
-use testing::Eval;
-use lineshape::{Lineshape1D};
-use baseline::{Baseline1D};
+use lineshape::{Lineshape1D, Lineshape2D};
+use baseline::{Baseline1D, Baseline2D};
 use fit::{Fit1D};
 
 //==============================================================================
