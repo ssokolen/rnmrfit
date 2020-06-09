@@ -4,7 +4,7 @@ use num::complex::Complex;
 use std::collections::HashMap;
 
 use crate::peak::{Peak, PeakFunctions};
-use crate::common::Eval;
+use crate::common::NMRFitComponent;
 
 //==============================================================================
 // General 1D lineshape
@@ -64,7 +64,7 @@ impl Lineshape1D {
 }
 
 //--------------------------------------
-impl Eval for Lineshape1D {
+impl NMRFitComponent for Lineshape1D {
 
     fn get_y(&self) -> Array2<f64> {
         self.y.clone()
@@ -300,7 +300,7 @@ impl Lineshape2D {
     }
 }
 
-impl Eval for Lineshape2D {
+impl NMRFitComponent for Lineshape2D {
 
     fn get_y(&self) -> Array2<f64> {
         self.y.clone()
@@ -368,7 +368,7 @@ mod tests {
 
     use ndarray::prelude::*;
 
-    use crate::common::Eval;
+    use crate::common::NMRFitComponent;
 
     //--------------------------------------
     #[test]

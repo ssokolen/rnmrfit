@@ -1,6 +1,6 @@
 use ndarray::{prelude::*, ArcArray1, Zip};
 
-use crate::common::Eval;
+use crate::common::NMRFitComponent;
 
 //==============================================================================
 // General 1D phase correction
@@ -125,7 +125,7 @@ impl Phase1D {
 
 }
 
-impl Eval for Phase1D {
+impl NMRFitComponent for Phase1D {
 
     fn get_y(&self) -> Array2<f64> {
         self.y.clone()
@@ -294,7 +294,7 @@ impl Phase2D {
 
 }
 
-impl Eval for Phase2D {
+impl NMRFitComponent for Phase2D {
 
     fn get_y(&self) -> Array2<f64> {
         self.y.clone()
@@ -317,7 +317,7 @@ mod tests {
     
     use ndarray::prelude::*;
 
-    use crate::common::Eval;
+    use crate::common::NMRFitComponent;
     use crate::lineshape::{Lineshape1D, Lineshape2D};
 
     use super::{Phase1D, Phase2D};
@@ -327,9 +327,9 @@ mod tests {
 
         let x: Array1<f64> = Array::linspace(0.0, 1.0, 20);
         let x = x.into_shared();
+        let p = vec![0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.3, 0.3];
 
         // First, generate realistic peaks
-        let p = vec![0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.3, 0.3];
         let mut lineshape = Lineshape1D::new(x.clone(), p.len());
         lineshape.eval(&p);
         let y = lineshape.y.clone();
@@ -352,6 +352,7 @@ mod tests {
 
         let x: Array1<f64> = Array::linspace(0.0, 1.0, 20);
         let n = x.len();
+        let p = vec![0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.3, 0.3];
 
         // Building grid from x
         let mut x1: Array1<f64> = Array::zeros((n*n,));
@@ -368,7 +369,6 @@ mod tests {
         let x2 = x2.into_shared();
 
         // First, generate realistic peaks
-        let p = vec![0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.3, 0.3];
         let resonances: Array1<usize> = Array::zeros((p.len(),));
         let mut dimensions: Array1<usize> = Array::zeros((p.len(),));
         for i in 4 .. 8 {

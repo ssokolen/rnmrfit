@@ -1,7 +1,7 @@
 use ndarray::{prelude::*, ArcArray1, stack};
 use num_integer::Roots;
 
-use crate::common::Eval;
+use crate::common::NMRFitComponent;
 
 //==============================================================================
 // Basis function
@@ -146,7 +146,7 @@ impl Baseline1D {
     }
 }
 
-impl Eval for Baseline1D {
+impl NMRFitComponent for Baseline1D {
 
     fn get_y(&self) -> Array2<f64> {
         self.y.clone()
@@ -279,7 +279,7 @@ impl Baseline2D {
     }
 }
 
-impl Eval for Baseline2D {
+impl NMRFitComponent for Baseline2D {
 
     fn get_y(&self) -> Array2<f64> {
         self.y.clone()
@@ -305,7 +305,7 @@ mod tests {
 
     use ndarray::prelude::*;
 
-    use crate::common::Eval;
+    use crate::common::NMRFitComponent;
 
     //--------------------------------------
     #[test]

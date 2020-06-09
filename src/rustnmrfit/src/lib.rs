@@ -14,11 +14,11 @@ mod fit;
 
 pub use peak::{Peak, Lorentz, Voigt}; 
 
-use common::Eval;
+use common::{NMRFitComponent, NMRFit};
 use constraint::Constraint;
 use lineshape::{Lineshape1D, Lineshape2D};
 use baseline::{Baseline1D, Baseline2D};
-use fit::{Fit1D};
+use fit::{Fit1D, Fit2D};
 
 //==============================================================================
 pub fn fit_1d(x: Array1<f64>, y: Array2<f64>, knots: Array1<f64>,
@@ -137,42 +137,23 @@ pub fn eval_1d(x: Array1<f64>, knots: Array1<f64>, p: Array1<f64>,
     &lineshape.y + &baseline.y
 }
 
-/*
-/// Evaluates the gradient of NMR peaks, baseline, and phase.
-///
-/// WARNING: This function is meant to be used from the R package rnmrfit, YMMV.
-pub fn grad_1d(x: Array<f64, Ix1>, p: Array<f64, Ix1>, nl: usize, nb: usize, np: usize, 
-           basis: Option<Array<f64, Ix2>>) 
-    -> Array<f64, Ix2> {
-
-    let (_, grad) = eval_grad_1d(x, p, nl, nb, np, basis);
-    grad
-}
-
-/// Optimizes the fit of NMR peaks, baseline, and phase to y data using NLopt.
-///
-/// The y data is a 2D array with the first row encoding rr, ri, ir, and ii component in 4 rows
-///
-/// 
-/// WARNING: This function is meant to be used from the R package rnmrfit, YMMV.
-pub fn fit_2d(x_direct: Array<f64, Ix1>, x_indirect: Array<f64, Ix1>, y: Array<f64, Ix2>,
-              xi_direct: Array<usize, Ix1>, xi_indirect: Array<usize, Ix1>,
-              peak_resonances: Array<usize, Ix1>, peak_dimensions: Array<usize, Ix1>,
-              p: Array<f64, Ix1>, lb: Array<f64, Ix1>, ub: Array<f64, Ix1>,
+//==============================================================================
+pub fn fit_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, y: Array2<f64>, 
+              resonances: Array1<usize>, dimensions: Array1<usize>, knots: Array1<f64>,
+              p: Array1<f64>, lb: Array1<f64>, ub: Array1<f64>,
               nl: usize, nb: usize, np: usize,
-              _: Option<Array<f64, Ix2>>,
               eq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
               iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>)
 
     -> (Array<f64, Ix1>, Result<(SuccessState, f64), (FailState, f64)>) {
 
     // Generate Fit object
-    let fit = Fit2D::new(x_direct, x_indirect, y, xi_direct, xi_indirect, 
-                         peak_resonances, peak_dimensions, nl, nb, np, _);
+    let fit = Fit2D::new(x_direct, x_indirect, y, resonances, dimensions, knots, nl, nb, np);
 
     // Initializing nlopt object
-    let n_par: usize = nl + nb*2 + np;
+    let n_par: usize = nl + nb*4 + np;
     let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit2D::obj, Target::Minimize, fit);
+    //let mut opt = Nlopt::new(Algorithm::Cobyla, n_par, Fit1D::obj, Target::Minimize, fit);
 
     // Fit requirements
     opt.set_maxeval(1000).unwrap();
@@ -253,63 +234,27 @@ pub fn fit_2d(x_direct: Array<f64, Ix1>, x_indirect: Array<f64, Ix1>, y: Array<f
     (p, out)
 }
 
-/// Evaluates the fit and gradient of NMR peaks, baseline, and phase.
-fn eval_grad_2d(x_direct: Array<f64, Ix1>, x_indirect: Array<f64, Ix1>, 
-                xi_direct: Array<usize, Ix1>, xi_indirect: Array<usize, Ix1>,
-                peak_resonances: Array<usize, Ix1>, peak_dimensions: Array<usize, Ix1>,
-                p: Array<f64, Ix1>, nl: usize, nb: usize, np: usize,
-                _: Option<Array<f64, Ix2>>)
-    -> (Array<f64, Ix2>, Array<f64, Ix2>) {
+//==============================================================================
+pub fn eval_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, 
+               resonances: Array1<usize>, dimensions: Array1<usize>, knots: Array1<f64>,
+               p: Array1<f64>,  nl: usize, nb: usize, _np: usize)
+    -> Array2<f64> {
 
-    // Initialize output
-    let n = x.len();
-    let n_par = p.len();
+    let x_direct = x_direct.into_shared();
+    let x_indirect = x_indirect.into_shared();
 
-    // Generate Fit object
-    let y = Array::zeros((4, n));
-    let mut fit = Fit2D::new(x_direct, x_indirect, y, xi_direct, xi_indirect, 
-                             peak_resonances, peak_dimensions, nl, nb, np, _);
+    // First lineshape
+    let mut lineshape = Lineshape2D::new(x_direct.clone(), x_indirect.clone(),
+                                         resonances, dimensions);
+    let p_slice = p.slice(s![0 .. nl]).to_vec(); 
+    lineshape.eval(&p_slice);
 
-    // Evaluate fit using given parameters
-    let mut grad = vec![0.0; n_par];
-    fit.eval(&p.to_vec(), Some(&mut grad));
+    // Then baseline
+    let mut baseline = Baseline2D::new(x_direct.clone(), x_indirect.clone(),
+                                       knots, nb);
+    let p_slice = p.slice(s![nl .. (nl + nb*4)]).to_vec(); 
+    baseline.eval(&p_slice);
 
-    // Extracting fit
-    let mut y = Array::zeros((4, n));
-    y.assign(&fit.y_fit);
-    let mut grad = Array::zeros((4, n_par));
-    grad.assign(&fit.grad);
-
-    (y, grad)
+    // Output is the sum of lineshape and baseline components
+    &lineshape.y + &baseline.y
 }
-
-/// Evaluates the fit of NMR peaks, baseline, and phase.
-///
-/// WARNING: This function is meant to be used from the R package rnmrfit, YMMV.
-pub fn eval_2d(x_direct: Array<f64, Ix1>, x_indirect: Array<f64, Ix1>, 
-               xi_direct: Array<usize, Ix1>, xi_indirect: Array<usize, Ix1>,
-               peak_resonances: Array<usize, Ix1>, peak_dimensions: Array<usize, Ix1>,
-               p: Array<f64, Ix1>, nl: usize, nb: usize, np: usize,
-               _: Option<Array<f64, Ix2>> 
-    -> Array<f64, Ix2> {
-
-    let (y, _) = eval_grad_2d(x_direct, x_indirect, xi_direct, xi_indirect,
-                              peak_resonances, peak_dimensions, p, nl, nb, np, _);
-    y
-}
-
-/// Evaluates the gradient of NMR peaks, baseline, and phase.
-///
-/// WARNING: This function is meant to be used from the R package rnmrfit, YMMV.
-pub fn grad_2d(x_direct: Array<f64, Ix1>, x_indirect: Array<f64, Ix1>, 
-               xi_direct: Array<usize, Ix1>, xi_indirect: Array<usize, Ix1>,
-               peak_resonances: Array<usize, Ix1>, peak_dimensions: Array<usize, Ix1>,
-               p: Array<f64, Ix1>, nl: usize, nb: usize, np: usize,
-               _: Option<Array<f64, Ix2>> 
-    -> Array<f64, Ix2> {
-
-    let (_, grad) = eval_grad_2d(x_direct, x_indirect, xi_direct, xi_indirect,
-                              peak_resonances, peak_dimensions, p, nl, nb, np, _);
-    grad
-}
-*/
