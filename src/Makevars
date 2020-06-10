@@ -1,13 +1,13 @@
-LIBDIR = rnmrfit/target/release
-STATLIB = $(LIBDIR)/librnmrfit.a
-PKG_LIBS = -L$(LIBDIR) -lrnmrfit -lresolv
+LIBDIR = wrapper/target/release
+STATLIB = $(LIBDIR)/wrapper.a
+PKG_LIBS = -L$(LIBDIR) -lwrapper -lresolv
 
 all: clean
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	cargo build --release --manifest-path=rnmrfit/Cargo.toml
+	cargo build --release --manifest-path=wrapper/Cargo.toml
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rnmrfit/target
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) wrapper/target

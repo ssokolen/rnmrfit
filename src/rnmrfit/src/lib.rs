@@ -1,146 +1,230 @@
-use libc::c_double;
+use nlopt::{Algorithm, Target, Nlopt, ObjFn, SuccessState, FailState};
+
 use ndarray::prelude::*;
-use std::slice;
 
-use rustnmrfit;
+mod common;
+mod constraint;
+mod peak;
+mod lineshape;
+mod baseline;
+mod phase;
+mod fit;
 
-fn parse_constraints(eq: &[f64]) 
-    -> Vec<(usize, f64, Vec<usize>, Vec<usize>)> {
-    
-    let mut eq_in: Vec<(usize, f64, Vec<usize>, Vec<usize>)> = Vec::new();
+pub use peak::{Peak, Lorentz, Voigt}; 
 
-    let mut flag: usize;
-    let mut offset: f64;
-    let mut lhs: Vec<usize> = Vec::new();
-    let mut rhs: Vec<usize> = Vec::new();
+use common::{NMRFitComponent, NMRFit};
+use constraint::Constraint;
+use lineshape::{Lineshape1D, Lineshape2D};
+use baseline::{Baseline1D, Baseline2D};
+use phase::{Phase1D, Phase2D};
+use fit::{Fit1D, Fit2D};
 
-    let neq = eq.len();
-    
-    // Starting parsing
-    if neq > 2 {
-        flag = eq[0].round() as usize;
-        offset = eq[1] as f64;
-    } else {
-        panic!("Constraints too short to be parsed, aborting.")
-    }
+//==============================================================================
+pub fn add_constraints<F: ObjFn<T>, T>(opt: &mut Nlopt<F, T>, lb: Array1<f64>, ub: Array1<f64>,
+                                       eq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
+                                       iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>) {
 
-    let mut i: usize = 2;
-    while i < neq {
-    
-        // NAN signifies new set of constraints
-        if eq[i].is_nan() {
+    // Basic constraints
+    opt.set_maxeval(1000).unwrap();
+    opt.set_xtol_rel(1e-4).unwrap();
 
-            // Append previous set
-            eq_in.push( (flag, offset, lhs.clone(), rhs.clone()) );
-            lhs = Vec::new();
-            rhs = Vec::new();
+    // Set simple bounds
+    let lb = lb.to_vec();
+    let ub = ub.to_vec();
 
-            flag = eq[i+1].round() as usize;
-            offset = eq[i+2] as f64;
-            i += 2;
-            
-        } else if eq[i] > 0.0 {
-            
-            lhs.push( (eq[i].round() as usize) - 1 );
-            
-        } else if eq[i] < 0.0 {
+    opt.set_lower_bounds(&lb[..]).unwrap();
+    opt.set_upper_bounds(&ub[..]).unwrap();
+
+    // Add equality constraints
+    if eq.is_some() {
+        let eq = eq.unwrap();
+
+        for i in 0 .. eq.len() {
         
-            rhs.push( (-eq[i].round() as usize) - 1 );
-            
+            let flag = eq[i].0;
+            let offset = eq[i].1;
+            let lhs = eq[i].2.clone();
+            let rhs = eq[i].3.clone();
+
+            let con = Constraint::new(lhs, rhs, offset);
+        
+            if flag == 0 {
+                opt.add_equality_constraint(Constraint::position, con, 1e-8).unwrap();
+            } else if flag == 1 {
+                opt.add_equality_constraint(Constraint::width, con, 1e-8).unwrap();
+            } else if flag == 2 {
+                opt.add_equality_constraint(Constraint::height, con, 1e-8).unwrap();
+            } else if flag == 3 {
+                opt.add_equality_constraint(Constraint::fraction, con, 1e-8).unwrap();
+            } else if flag == 4 {
+                opt.add_equality_constraint(Constraint::area, con, 1e-8).unwrap();
+            } else {
+                panic!("Constraint flag must be 0-4, inclusive, aborting.")
+            }
         }
+    }
+
+    // Add inequality constraints
+    if iq.is_some() {
+        let iq = iq.unwrap();
+
+        for i in 0 .. iq.len() {
         
-        i += 1;
+            let flag = iq[i].0;
+            let offset = iq[i].1;
+            let lhs = iq[i].2.clone();
+            let rhs = iq[i].3.clone();
+
+            let con = Constraint::new(lhs, rhs, offset);
+        
+            if flag == 0 {
+                opt.add_inequality_constraint(Constraint::position, con, 1e-8).unwrap();
+            } else if flag == 1 {
+                opt.add_inequality_constraint(Constraint::width, con, 1e-8).unwrap();
+            } else if flag == 2 {
+                opt.add_inequality_constraint(Constraint::height, con, 1e-8).unwrap();
+            } else if flag == 3 {
+                opt.add_inequality_constraint(Constraint::fraction, con, 1e-8).unwrap();
+            } else if flag == 4 {
+                opt.add_inequality_constraint(Constraint::area, con, 1e-8).unwrap();
+            } else {
+                panic!("Constraint flag must be 0-4, inclusive, aborting.")
+            }
+        }
     }
-    
-    // Pushing last created constraint
-    eq_in.push( (flag, offset, lhs.clone(), rhs.clone()) );
-    
-    eq_in
+
 }
 
-#[no_mangle]
-pub extern fn fit_1d(x: *const c_double, y: *const c_double, knots: *const c_double,
-                     p: *mut c_double, lb: *const c_double, ub: *const c_double,  
-                     n: i32, nl: i32, nb: i32, np: i32, nk: i32,
-                     eq: *const c_double, iq: *const c_double,
-                     neq: i32, niq: i32) {
+//==============================================================================
+pub fn fit_1d(x: Array1<f64>, y: Array2<f64>, knots: Array1<f64>,
+              p: Array1<f64>, lb: Array1<f64>, ub: Array1<f64>,
+              nl: usize, nb: usize, np: usize,
+              eq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
+              iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>)
 
-    let n = n as usize;
-    let nl = nl as usize;
-    let nb = nb as usize;
-    let np = np as usize;
-    let nk = nk as usize;
-    let neq = neq as usize;
-    let niq = niq as usize;
+    -> (Array<f64, Ix1>, Result<(SuccessState, f64), (FailState, f64)>) {
 
-    // Parsing equality constraint tuples from a flat list
-    let eq_in: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>> = if neq > 0 {
-        let eq: &[f64] = unsafe { slice::from_raw_parts(eq, neq) };
-        Some(parse_constraints(eq))
-    } else {
-        None
-    };
+    // Generate Fit object
+    let fit = Fit1D::new(x, y, knots, nl, nb, np);
 
-    // Parsing inequality constraint tuples from a flat list
-    let iq_in: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>> = if niq > 0 {
-        let iq: &[f64] = unsafe { slice::from_raw_parts(iq, niq) };
-        Some(parse_constraints(iq))
-    } else {
-        None
-    };
+    // Initializing nlopt object
+    let n_par: usize = nl + nb*2 + np;
+    let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit1D::obj, Target::Minimize, fit);
+    //let mut opt = Nlopt::new(Algorithm::Cobyla, n_par, Fit1D::obj, Target::Minimize, fit);
 
-    // Converting rest into slices
-    let x: &[f64] = unsafe { slice::from_raw_parts(x, n) };
-    let y: &[f64] = unsafe { slice::from_raw_parts(y, n*2) };
-    let knots: &[f64] = unsafe { slice::from_raw_parts(knots, nk) };
-    let p: &mut[f64] = unsafe { slice::from_raw_parts_mut(p, nl + nb*2 + np) };   
-    let lb: &[f64] = unsafe { slice::from_raw_parts(lb, nl + nb*2 + np) };   
-    let ub: &[f64] = unsafe { slice::from_raw_parts(ub, nl + nb*2 + np) };   
+    // Common nlopt setup
+    add_constraints(&mut opt, lb, ub, eq, iq);
 
-    // Converting rest into arrays
-    let x = Array::from_shape_vec((n,), x.to_vec()).unwrap();
-    let y = Array::from_shape_vec((2, n), y.to_vec()).unwrap();
-    let knots = Array::from_shape_vec((nk,), knots.to_vec()).unwrap();
-    let p_in = Array::from_shape_vec((nl + nb*2 + np,), p.to_vec()).unwrap();
-    let lb = Array::from_shape_vec((nl + nb*2 + np,), lb.to_vec()).unwrap();
-    let ub = Array::from_shape_vec((nl + nb*2 + np,), ub.to_vec()).unwrap();
+    // Run the optimization
+    let mut p = p.to_vec();
+    let out = opt.optimize(&mut p[..]);
 
-    // Calling fit
-    let (p_out, _) = rustnmrfit::fit_1d(x, y, knots, p_in, lb, ub, nl, nb, np, eq_in, iq_in);
-
-    // Copying over new parameters
-    for i in 0 .. (nl + nb*2 + np) {
-        p[i] = p_out[i];
-    }
+    // Reforming array from vector
+    let p = Array::from_shape_vec((p.len(), ), p).unwrap();
+    
+    (p, out)
 }
 
-#[no_mangle]
-pub extern fn eval_1d(x: *const c_double, y: *mut c_double, knots: *const c_double,
-                      p: *const c_double, n: i32, nl: i32, nb: i32, np: i32, nk: i32) {
+//==============================================================================
+pub fn eval_1d(x: Array1<f64>, knots: Array1<f64>, p: Array1<f64>, 
+               nl: usize, nb: usize, np: usize) 
+    -> Array2<f64> {
 
-    let n = n as usize;
-    let nl = nl as usize;
-    let nb = nb as usize;
-    let np = np as usize;
-    let nk = nk as usize;
+    let x = x.into_shared();
 
-    // Converting rest into slices
-    let x: &[f64] = unsafe { slice::from_raw_parts(x, n) };
-    let y: &mut[f64] = unsafe { slice::from_raw_parts_mut(y, n*2) };
-    let p: &[f64] = unsafe { slice::from_raw_parts(p, nl + nb*2 + np) };   
-    let knots: &[f64] = unsafe { slice::from_raw_parts(knots, nk) };
+    // First lineshape
+    let mut lineshape = Lineshape1D::new(x.clone(), nl);
+    let p_slice = p.slice(s![0 .. nl]).to_vec(); 
+    lineshape.eval(&p_slice);
 
-    // Converting rest into arrays
-    let x = Array::from_shape_vec((n,), x.to_vec()).unwrap();
-    let p = Array::from_shape_vec((nl + nb*2 + np,), p.to_vec()).unwrap();
-    let knots = Array::from_shape_vec((nk,), knots.to_vec()).unwrap();
+    // Then baseline
+    let mut baseline = Baseline1D::new(x.clone(), knots, nb);
+    let p_slice = p.slice(s![nl .. (nl + nb*2)]).to_vec(); 
+    baseline.eval(&p_slice);
 
-    // Calling eval
-    let y_out = rustnmrfit::eval_1d(x, knots, p, nl, nb, np);
+    // Output is the sum of lineshape and baseline components
+    let y = &lineshape.y + &baseline.y;
 
-    // Copying over y values
-    for i in 0 .. n {
-        y[i] = y_out[[0, i]];
-        y[i + n] = y_out[[1, i]];
+    // Adding phase (only useful for simulating phase errors)
+    let mut phase = Phase1D::new(x.clone(), y, np);
+    let p_slice = p.slice(s![(nl + nb*2) .. (nl + nb*2 + np)]).to_vec(); 
+    phase.eval(&p_slice);
+
+    phase.y.clone() 
+}
+
+//==============================================================================
+pub fn fit_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, y: Array2<f64>, 
+              resonances: Array1<usize>, dimensions: Array1<usize>, knots: Array1<f64>,
+              p: Array1<f64>, lb: Array1<f64>, ub: Array1<f64>,
+              nl: usize, nb: usize, np: usize,
+              eq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
+              iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>)
+
+    -> (Array<f64, Ix1>, Result<(SuccessState, f64), (FailState, f64)>) {
+
+    // Generate Fit object
+    let fit = Fit2D::new(x_direct, x_indirect, y, resonances.clone(), dimensions.clone(), knots, nl, nb, np);
+
+    // Initializing nlopt object
+    let n_par: usize = nl + nb*4 + np;
+    let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit2D::obj, Target::Minimize, fit);
+    //let mut opt = Nlopt::new(Algorithm::Cobyla, n_par, Fit1D::obj, Target::Minimize, fit);
+
+    // Common nlopt setup
+    add_constraints(&mut opt, lb, ub, eq, iq);
+
+    // Fixing height of direct and indirect components 
+    let ranges = Lineshape2D::gen_ranges(resonances, dimensions);
+
+    for i in 0 .. ranges.len() {
+        
+        let lhs: usize = ranges[i][0].start; 
+        let rhs: usize = ranges[i][1].start; 
+
+        let con = Constraint::new(vec![lhs/4], vec![rhs/4], p[lhs+2]/p[rhs+2]);
+        opt.add_equality_constraint(Constraint::height, con, 1e-8).unwrap();
+
     }
+
+    // Run the optimization
+    let mut p = p.to_vec();
+    let out = opt.optimize(&mut p[..]);
+
+    // Reforming array from vector
+    let p = Array::from_shape_vec((p.len(), ), p).unwrap();
+    
+    (p, out)
+}
+
+//==============================================================================
+pub fn eval_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, 
+               resonances: Array1<usize>, dimensions: Array1<usize>, knots: Array1<f64>,
+               p: Array1<f64>,  nl: usize, nb: usize, np: usize)
+    -> Array2<f64> {
+
+    let x_direct = x_direct.into_shared();
+    let x_indirect = x_indirect.into_shared();
+
+    // First lineshape
+    let mut lineshape = Lineshape2D::new(x_direct.clone(), x_indirect.clone(),
+                                         resonances, dimensions);
+    let p_slice = p.slice(s![0 .. nl]).to_vec(); 
+    lineshape.eval(&p_slice);
+
+    // Then baseline
+    let mut baseline = Baseline2D::new(x_direct.clone(), x_indirect.clone(),
+                                       knots, nb);
+    let p_slice = p.slice(s![nl .. (nl + nb*4)]).to_vec(); 
+    baseline.eval(&p_slice);
+
+    // Output is the sum of lineshape and baseline components
+    let y = &lineshape.y + &baseline.y;
+
+    // Adding phase (only useful for simulating phase errors)
+    let mut phase = Phase2D::new(x_direct.clone(), x_indirect.clone(), y, np);
+    let p_slice = p.slice(s![(nl + nb*4) .. (nl + nb*4 + np)]).to_vec(); 
+    phase.eval(&p_slice);
+
+    phase.y.clone() 
 }

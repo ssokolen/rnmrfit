@@ -1,0 +1,13 @@
+[package]
+name = "wrapper"
+version = "0.1.0"
+authors = ["Stanislav Sokolenko <stanislav@sokolenko.net>"]
+edition = "2018"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+libc = "*"
+ndarray = "0.13.0"
+rnmrfit = { path = "../rnmrfit", version = "0.1.0" }

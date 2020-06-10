@@ -39,3 +39,5 @@ Collate:
     'jcamp.R'
     'misc.R'
     'options.R'
+Suggests: 
+    testthat
