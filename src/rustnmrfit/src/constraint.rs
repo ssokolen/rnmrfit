@@ -10,6 +10,7 @@ const SQRT_PI: f64 = 1.772453850905515881919427556567825376987457275390625_f64;
 // Constraint
 
 //------------------------------------------------------------------------------
+#[derive(Debug)]
 pub struct Constraint {
 
     // Two sets of peak indexes

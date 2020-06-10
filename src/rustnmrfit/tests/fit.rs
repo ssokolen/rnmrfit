@@ -1,103 +1,59 @@
 extern crate rustnmrfit;
 
+#[macro_use(stack)]
+extern crate ndarray;
+
 use std::f64::consts::PI;
 use ndarray::prelude::*;
-use serde::{Deserialize, Serialize};
-use std::fs::File;
-use std::io::BufReader;
+use ndarray_rand::RandomExt;
+use ndarray_rand::rand::SeedableRng;
+use ndarray_rand::rand_distr::{Normal, Distribution};
+use rand_isaac::isaac64::Isaac64Rng;
 
-use rustnmrfit::fit_1d;
-
-#[derive(Serialize, Deserialize)]
-struct JSONVec {
-    par: Vec<f64>,
-    x: Vec<f64>,
-    y_re: Vec<f64>,
-    y_im: Vec<f64>,
-    knots: Vec<f64>,
-    nb: Vec<usize>,
-    np: Vec<usize>,
-}
-
-struct JSONArray {
-    par: Array1<f64>,
-    x: Array1<f64>,
-    y: Array2<f64>,
-    knots: Array1<f64>,
-    nb: usize,
-    np: usize,
-}
+use rustnmrfit::{eval_1d, fit_1d, eval_2d, fit_2d};
 
 //--------------------------------------
-fn read_json(path: &str) -> JSONArray {
+fn test_fit_1d(nl: usize, nb: usize, np: usize, offset: f64, tol: f64) {
 
-    let file = File::open(path).unwrap();
-    let reader = BufReader::new(file);
+    // Setting up ideal fit
+    let x: Array1<f64> = Array::linspace(0.0, 1.0, 50);
+    let p = [&(vec![0.7, 0.05, 0.8, 0.0, 
+                    0.3, 0.05, 0.6, 0.5])[0 .. nl],
+             &(vec![0.05, 0.1, 0.1, 0.05][0 .. nb]),
+             &(vec![0.05, 0.1, 0.1, 0.05][0 .. nb]),
+             &(vec![0.05, 0.05])[0 .. np]].concat();
 
-    let json: JSONVec = serde_json::from_reader(reader).unwrap();
+    // Basic boundary knots
+    let knots: Array1<f64> = Array::from_shape_vec((2,), vec![0.0, 1.0]).unwrap();
 
-    let n_par: usize = json.par.len();
-    let n: usize = json.x.len();
+    // Generating ideal y
+    let p = Array::from_shape_vec((p.len(),), p).unwrap();
+    let mut y = eval_1d(x.clone(), knots.clone(), p.clone(), nl, nb, np); 
 
-    let par: Array<f64, Ix1> = Array::from_shape_vec((n_par, ), json.par).unwrap(); 
-    let x: Array<f64, Ix1> = Array::from_shape_vec((n, ), json.x).unwrap(); 
+    // Adding some noise for a bit of realism
+    let seed = 1111;
+    let mut rng = Isaac64Rng::seed_from_u64(seed);
+    let noise = Array::random_using(y.raw_dim(), Normal::new(0., 0.01).unwrap(), &mut rng);
+    y += &noise;
 
-    let y_re: Array<f64, Ix1> = Array::from_shape_vec((n, ), json.y_re).unwrap(); 
-    let y_im: Array<f64, Ix1> = Array::from_shape_vec((n, ), json.y_im).unwrap(); 
-    
-    let mut y: Array<f64, Ix2> = Array::zeros((2, n));
-
-    let mut view = y.slice_mut(s![0, .. ]);
-    view.assign(&y_re);
-    let mut view = y.slice_mut(s![1, .. ]);
-    view.assign(&y_im);
-
-    let knots: Array1<f64> = Array::from_shape_vec(( json.knots.len(), ), json.knots).unwrap(); 
-
-    JSONArray {
-        par: par,
-        x: x,
-        y: y,
-        knots: knots,
-        nb: json.nb[0],
-        np: json.np[0],
-    }
-}
-
-//--------------------------------------
-fn approx_eq(lhs: f64, rhs: f64, tol: f64) -> bool {
-    (lhs - rhs).abs() < tol
-}
-
-//--------------------------------------
-fn test_fit(path: &str, offset: f64, tol: f64) {
-
-    // Reading JSON data
-    let json = read_json(path);
-    
-    let n_par = json.par.len();
-    let nb = json.nb;
-    let np = json.np;
-    let nl = n_par - nb*2 - np;
-
-    let mut lb = Array::zeros((n_par,));
-    let mut ub = Array::zeros((n_par,));
+    let mut lb = Array::zeros((p.len(),));
+    let mut ub = Array::zeros((p.len(),));
 
     // Defining reasonable lower and upper bounds for parameters
     for i in (0 .. nl).step_by(4) {
-        lb[i] = 0.0;
+        lb[i] = p[i] - 0.05;
         lb[i+1] = 1e-8;
         lb[i+2] = 0.0;
         lb[i+3] = 0.0;
 
-        ub[i] = 1.0; 
+        ub[i] = p[i] + 0.05; 
         ub[i+1] = 1.0;
         ub[i+2] = 1.0;
-        ub[i+3] = 1.0-1e-8;
+        ub[i+3] = 0.9;
     }
 
     // Defining reasonable lower and upper bounds for baseline
-    for i in 0 .. (nb) {
+    for i in 0 .. nb {
         lb[nl + i] = -1.0;
         lb[nl + nb + i] = -1.0;
         ub[nl + i] = 1.0; 
@@ -105,23 +61,19 @@ fn test_fit(path: &str, offset: f64, tol: f64) {
     }
 
     // Defining reasonable lower and upper bounds for phase
-    for i in 0 .. (np) {
+    for i in 0 .. np {
         lb[nl + nb*2 + i] = -PI/8.0;
         ub[nl + nb*2 + i] = PI/8.0; 
     }
 
-    // Generating set of initial guesses
-    let mut par = &json.par + offset;
-
-    // Initial guess for phase is always 0
-    for i in 0 .. (np) {
-        par[nl + nb*2 + i] = 0.0;
+    // Generating set of initial guesses (baseline and phase guess is 0)
+    let mut p0 = Array::zeros(p.raw_dim());
+    for i in 0 .. nl {
+        p0[i] = p[i] + offset;
     }
 
-    // Generating lineshape
-    // println!("Before: [{}]", par.iter().fold(String::new(), |acc, &num| acc + &format!("{:.3}", &num) + ", "));
-    let (par, result) = fit_1d(json.x, json.y, json.knots, par, lb, ub, nl, json.nb, json.np, None, None);
-    // println!("After: [{}]", par.iter().fold(String::new(), |acc, &num| acc + &format!("{:.3}", &num) + ", "));
+    // Fitting
+    let (par, result) = fit_1d(x, y, knots, p0.clone(), lb, ub, nl, nb, np, None, None);
 
     // Testing optimization state
     let success = match result {
@@ -135,34 +87,159 @@ fn test_fit(path: &str, offset: f64, tol: f64) {
     for i in 0 .. nl {
         // Fractions are ignored as they are quite sensitive
         if (i + 1) % 4 != 0 {
-            assert!(approx_eq(json.par[i], par[i], tol),
+            assert!( (par[i] - p[i]).abs() < tol,
                     "parameter {} did not meet tolerance ({} vs {})", 
-                    i+1, json.par[i], par[i]);
+                    i, par[i], p[i]);
         }
     }
 }
 
 #[test]
-fn test_lorentz_fit() {
-    test_fit("./tests/data/lorentz_fit.json", 0.05, 2e-2);
+fn test_single_peak_fit_1d() {
+    test_fit_1d(4, 0, 0, 0.05, 0.02);
 }
 
 #[test]
-fn test_voigt_fit() {
-    test_fit("./tests/data/voigt_fit.json", 0.05, 2e-2);
+fn test_multiple_peak_fit_1d() {
+    test_fit_1d(8, 0, 0, 0.05, 0.02);
 }
 
 #[test]
-fn test_combined_fit() {
-    test_fit("./tests/data/combined_fit.json", 0.05, 2e-2);
+fn test_baseline_fit_1d() {
+    test_fit_1d(8, 4, 0, 0.05, 0.02);
 }
 
 #[test]
-fn test_baseline_fit() {
-    test_fit("./tests/data/baseline_fit.json", 0.05, 2e-2);
+fn test_phase_fit_1d() {
+    test_fit_1d(8, 4, 2, 0.05, 0.02);
+}
+
+//--------------------------------------
+fn test_fit_2d(nl: usize, nb: usize, np: usize, offset: f64, tol: f64) {
+
+    // Setting up ideal fit
+    let x: Array1<f64> = Array::linspace(0.0, 1.0, 50);
+    let p = [&(vec![0.7, 0.05, 0.8, 0.0, 
+                    0.7, 0.05, 0.6, 0.5,
+                    0.3, 0.05, 0.8, 0.0, 
+                    0.3, 0.05, 0.6, 0.5])[0 .. nl],
+             &(vec![0.05, 0.1, 0.1, 0.05][0 .. nb]),
+             &(vec![0.05, 0.1, 0.1, 0.05][0 .. nb]),
+             &(vec![0.05, 0.1, 0.1, 0.05][0 .. nb]),
+             &(vec![0.05, 0.1, 0.1, 0.05][0 .. nb]),
+             &(vec![0.05, 0.05, 0.05])[0 .. np]].concat();
+
+    let resonances: Array1<usize> = stack![Axis(0), Array::zeros((8,)), Array::from_elem((8,), 1)];
+    let dimensions: Array1<usize> = stack![Axis(0), Array::zeros((4,)), Array::from_elem((4,), 1),
+                                                    Array::zeros((4,)), Array::from_elem((4,), 1)];
+
+    let resonances = resonances.slice(s![0 .. nl]).to_owned();
+    let dimensions = dimensions.slice(s![0 .. nl]).to_owned();
+
+    // Basic boundary knots
+    let knots: Array1<f64> = Array::from_shape_vec((2,), vec![0.0, 1.0]).unwrap();
+
+    // Building grid from x
+    let n = x.len();
+    let mut x1: Array1<f64> = Array::zeros((n*n,));
+    let mut x2 = x1.clone();
+
+    for i in 0 .. n {
+        for j in 0 .. n {
+            x1[i+n*j] = x[j];
+            x2[i+n*j] = x[i];
+        }
+    }
+
+    // Generating ideal y
+    let p = Array::from_shape_vec((p.len(),), p).unwrap();
+    let mut y = eval_2d(x1.clone(), x2.clone(), resonances.clone(), dimensions.clone(), 
+                        knots.clone(), p.clone(), nl, nb, np); 
+
+    // Adding some noise for a bit of realism
+    let seed = 1111;
+    let mut rng = Isaac64Rng::seed_from_u64(seed);
+    let noise = Array::random_using(y.raw_dim(), Normal::new(0., 0.01).unwrap(), &mut rng);
+    y += &noise;
+
+    let mut lb = Array::zeros((p.len(),));
+    let mut ub = Array::zeros((p.len(),));
+
+    // Defining reasonable lower and upper bounds for parameters
+    for i in (0 .. nl).step_by(4) {
+        lb[i] = p[i] - 0.05;
+        lb[i+1] = 1e-8;
+        lb[i+2] = 0.0;
+        lb[i+3] = 0.0;
+
+        ub[i] = p[i] + 0.05; 
+        ub[i+1] = 1.0;
+        ub[i+2] = 1.0;
+        ub[i+3] = 0.9;
+    }
+
+    // Defining reasonable lower and upper bounds for baseline
+    for i in 0 .. nb {
+        for j in 0 .. 4 {
+            lb[nl + nb*j + i] = -1.0;
+            ub[nl + nb*j + i] = 1.0; 
+        }
+    }
+
+    // Defining reasonable lower and upper bounds for phase
+    for i in 0 .. np {
+        lb[nl + nb*4 + i] = -PI/8.0;
+        ub[nl + nb*4 + i] = PI/8.0; 
+    }
+
+    // Generating set of initial guesses (baseline and phase guess is 0)
+    let mut p0 = Array::zeros(p.raw_dim());
+    for i in 0 .. nl {
+        p0[i] = p[i] + offset;
+    }
+
+    // Generating lineshape
+    let (par, result) = fit_2d(x1, x2, y, resonances, dimensions, knots, 
+                               p0.clone(), lb, ub, nl, nb, np, None, None);
+
+    // Testing optimization state
+    let success = match result {
+        Ok(_) => true,
+        Err(_) => false,
+    };
+    
+    assert!(success, "optimization failed with: {:?}", result);
+
+    // Testing deviation from parameters
+    for i in 0 .. nl {
+        // Fractions are ignored as they are quite sensitive
+        if (i + 1) % 4 != 0 {
+            assert!( (par[i] - p[i]).abs() < tol,
+                    "parameter {} did not meet tolerance ({} vs {})", 
+                    i, par[i], p[i]);
+        }
+    }
 }
 
 #[test]
-fn test_phase_fit() {
-    test_fit("./tests/data/phase_fit.json", 0.05, 2e-2);
+fn test_single_peak_fit_2d() {
+    test_fit_2d(8, 0, 0, 0.05, 0.02);
 }
+
+#[test]
+fn test_multiple_peak_fit_2d() {
+    test_fit_2d(16, 0, 0, 0.05, 0.02);
+}
+
+#[test]
+fn test_baseline_fit_2d() {
+    test_fit_2d(16, 4, 0, 0.05, 0.02);
+}
+
+#[test]
+fn test_phase_fit_2d() {
+    test_fit_2d(16, 4, 2, 0.05, 0.02);
+}
+
+
+

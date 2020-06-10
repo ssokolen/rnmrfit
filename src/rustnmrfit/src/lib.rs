@@ -1,6 +1,4 @@
-use nlopt::Algorithm;
-use nlopt::{Nlopt, SuccessState, FailState};
-use nlopt::Target;
+use nlopt::{Algorithm, Target, Nlopt, ObjFn, SuccessState, FailState};
 
 use ndarray::prelude::*;
 
@@ -18,7 +16,84 @@ use common::{NMRFitComponent, NMRFit};
 use constraint::Constraint;
 use lineshape::{Lineshape1D, Lineshape2D};
 use baseline::{Baseline1D, Baseline2D};
+use phase::{Phase1D, Phase2D};
 use fit::{Fit1D, Fit2D};
+
+//==============================================================================
+pub fn add_constraints<F: ObjFn<T>, T>(opt: &mut Nlopt<F, T>, lb: Array1<f64>, ub: Array1<f64>,
+                                       eq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
+                                       iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>) {
+
+    // Basic constraints
+    opt.set_maxeval(1000).unwrap();
+    opt.set_xtol_rel(1e-4).unwrap();
+
+    // Set simple bounds
+    let lb = lb.to_vec();
+    let ub = ub.to_vec();
+
+    opt.set_lower_bounds(&lb[..]).unwrap();
+    opt.set_upper_bounds(&ub[..]).unwrap();
+
+    // Add equality constraints
+    if eq.is_some() {
+        let eq = eq.unwrap();
+
+        for i in 0 .. eq.len() {
+        
+            let flag = eq[i].0;
+            let offset = eq[i].1;
+            let lhs = eq[i].2.clone();
+            let rhs = eq[i].3.clone();
+
+            let con = Constraint::new(lhs, rhs, offset);
+        
+            if flag == 0 {
+                opt.add_equality_constraint(Constraint::position, con, 1e-8).unwrap();
+            } else if flag == 1 {
+                opt.add_equality_constraint(Constraint::width, con, 1e-8).unwrap();
+            } else if flag == 2 {
+                opt.add_equality_constraint(Constraint::height, con, 1e-8).unwrap();
+            } else if flag == 3 {
+                opt.add_equality_constraint(Constraint::fraction, con, 1e-8).unwrap();
+            } else if flag == 4 {
+                opt.add_equality_constraint(Constraint::area, con, 1e-8).unwrap();
+            } else {
+                panic!("Constraint flag must be 0-4, inclusive, aborting.")
+            }
+        }
+    }
+
+    // Add inequality constraints
+    if iq.is_some() {
+        let iq = iq.unwrap();
+
+        for i in 0 .. iq.len() {
+        
+            let flag = iq[i].0;
+            let offset = iq[i].1;
+            let lhs = iq[i].2.clone();
+            let rhs = iq[i].3.clone();
+
+            let con = Constraint::new(lhs, rhs, offset);
+        
+            if flag == 0 {
+                opt.add_inequality_constraint(Constraint::position, con, 1e-8).unwrap();
+            } else if flag == 1 {
+                opt.add_inequality_constraint(Constraint::width, con, 1e-8).unwrap();
+            } else if flag == 2 {
+                opt.add_inequality_constraint(Constraint::height, con, 1e-8).unwrap();
+            } else if flag == 3 {
+                opt.add_inequality_constraint(Constraint::fraction, con, 1e-8).unwrap();
+            } else if flag == 4 {
+                opt.add_inequality_constraint(Constraint::area, con, 1e-8).unwrap();
+            } else {
+                panic!("Constraint flag must be 0-4, inclusive, aborting.")
+            }
+        }
+    }
+
+}
 
 //==============================================================================
 pub fn fit_1d(x: Array1<f64>, y: Array2<f64>, knots: Array1<f64>,
@@ -37,74 +112,8 @@ pub fn fit_1d(x: Array1<f64>, y: Array2<f64>, knots: Array1<f64>,
     let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit1D::obj, Target::Minimize, fit);
     //let mut opt = Nlopt::new(Algorithm::Cobyla, n_par, Fit1D::obj, Target::Minimize, fit);
 
-    // Fit requirements
-    opt.set_maxeval(1000).unwrap();
-    opt.set_xtol_rel(1e-4).unwrap();
-
-    // Set simple bounds
-    let lb = lb.to_vec();
-    let ub = ub.to_vec();
-
-    opt.set_lower_bounds(&lb[..]).unwrap();
-    opt.set_upper_bounds(&ub[..]).unwrap();
-
-    // Add equality constraints
-    if eq.is_some() {
-        let eq = eq.unwrap();
-
-        for i in 0 .. eq.len() {
-        
-            let flag = eq[i].0;
-            let offset = eq[i].1;
-            let lhs = eq[i].2.clone();
-            let rhs = eq[i].3.clone();
-
-            let con = Constraint::new(lhs, rhs, offset);
-        
-            if flag == 0 {
-                opt.add_equality_constraint(Constraint::position, con, 1e-8).unwrap();
-            } else if flag == 1 {
-                opt.add_equality_constraint(Constraint::width, con, 1e-8).unwrap();
-            } else if flag == 2 {
-                opt.add_equality_constraint(Constraint::height, con, 1e-8).unwrap();
-            } else if flag == 3 {
-                opt.add_equality_constraint(Constraint::fraction, con, 1e-8).unwrap();
-            } else if flag == 4 {
-                opt.add_equality_constraint(Constraint::area, con, 1e-8).unwrap();
-            } else {
-                panic!("Constraint flag must be 0-4, inclusive, aborting.")
-            }
-        }
-    }
-
-    // Add inequality constraints
-    if iq.is_some() {
-        let iq = iq.unwrap();
-
-        for i in 0 .. iq.len() {
-        
-            let flag = iq[i].0;
-            let offset = iq[i].1;
-            let lhs = iq[i].2.clone();
-            let rhs = iq[i].3.clone();
-
-            let con = Constraint::new(lhs, rhs, offset);
-        
-            if flag == 0 {
-                opt.add_inequality_constraint(Constraint::position, con, 1e-8).unwrap();
-            } else if flag == 1 {
-                opt.add_inequality_constraint(Constraint::width, con, 1e-8).unwrap();
-            } else if flag == 2 {
-                opt.add_inequality_constraint(Constraint::height, con, 1e-8).unwrap();
-            } else if flag == 3 {
-                opt.add_inequality_constraint(Constraint::fraction, con, 1e-8).unwrap();
-            } else if flag == 4 {
-                opt.add_inequality_constraint(Constraint::area, con, 1e-8).unwrap();
-            } else {
-                panic!("Constraint flag must be 0-4, inclusive, aborting.")
-            }
-        }
-    }
+    // Common nlopt setup
+    add_constraints(&mut opt, lb, ub, eq, iq);
 
     // Run the optimization
     let mut p = p.to_vec();
@@ -118,7 +127,7 @@ pub fn fit_1d(x: Array1<f64>, y: Array2<f64>, knots: Array1<f64>,
 
 //==============================================================================
 pub fn eval_1d(x: Array1<f64>, knots: Array1<f64>, p: Array1<f64>, 
-               nl: usize, nb: usize, _np: usize) 
+               nl: usize, nb: usize, np: usize) 
     -> Array2<f64> {
 
     let x = x.into_shared();
@@ -134,7 +143,14 @@ pub fn eval_1d(x: Array1<f64>, knots: Array1<f64>, p: Array1<f64>,
     baseline.eval(&p_slice);
 
     // Output is the sum of lineshape and baseline components
-    &lineshape.y + &baseline.y
+    let y = &lineshape.y + &baseline.y;
+
+    // Adding phase (only useful for simulating phase errors)
+    let mut phase = Phase1D::new(x.clone(), y, np);
+    let p_slice = p.slice(s![(nl + nb*2) .. (nl + nb*2 + np)]).to_vec(); 
+    phase.eval(&p_slice);
+
+    phase.y.clone() 
 }
 
 //==============================================================================
@@ -148,80 +164,27 @@ pub fn fit_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, y: Array2<f64>,
     -> (Array<f64, Ix1>, Result<(SuccessState, f64), (FailState, f64)>) {
 
     // Generate Fit object
-    let fit = Fit2D::new(x_direct, x_indirect, y, resonances, dimensions, knots, nl, nb, np);
+    let fit = Fit2D::new(x_direct, x_indirect, y, resonances.clone(), dimensions.clone(), knots, nl, nb, np);
 
     // Initializing nlopt object
     let n_par: usize = nl + nb*4 + np;
     let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit2D::obj, Target::Minimize, fit);
     //let mut opt = Nlopt::new(Algorithm::Cobyla, n_par, Fit1D::obj, Target::Minimize, fit);
 
-    // Fit requirements
-    opt.set_maxeval(1000).unwrap();
-    opt.set_xtol_rel(1e-4).unwrap();
+    // Common nlopt setup
+    add_constraints(&mut opt, lb, ub, eq, iq);
 
-    // Set simple bounds
-    let lb = lb.to_vec();
-    let ub = ub.to_vec();
+    // Fixing height of direct and indirect components 
+    let ranges = Lineshape2D::gen_ranges(resonances, dimensions);
 
-    opt.set_lower_bounds(&lb[..]).unwrap();
-    opt.set_upper_bounds(&ub[..]).unwrap();
-
-    // Add equality constraints
-    if eq.is_some() {
-        let eq = eq.unwrap();
-
-        for i in 0 .. eq.len() {
+    for i in 0 .. ranges.len() {
         
-            let flag = eq[i].0;
-            let offset = eq[i].1;
-            let lhs = eq[i].2.clone();
-            let rhs = eq[i].3.clone();
+        let lhs: usize = ranges[i][0].start; 
+        let rhs: usize = ranges[i][1].start; 
 
-            let con = Constraint::new(lhs, rhs, offset);
-        
-            if flag == 0 {
-                opt.add_equality_constraint(Constraint::position, con, 1e-8).unwrap();
-            } else if flag == 1 {
-                opt.add_equality_constraint(Constraint::width, con, 1e-8).unwrap();
-            } else if flag == 2 {
-                opt.add_equality_constraint(Constraint::height, con, 1e-8).unwrap();
-            } else if flag == 3 {
-                opt.add_equality_constraint(Constraint::fraction, con, 1e-8).unwrap();
-            } else if flag == 4 {
-                opt.add_equality_constraint(Constraint::area, con, 1e-8).unwrap();
-            } else {
-                panic!("Constraint flag must be 0-4, inclusive, aborting.")
-            }
-        }
-    }
+        let con = Constraint::new(vec![lhs/4], vec![rhs/4], p[lhs+2]/p[rhs+2]);
+        opt.add_equality_constraint(Constraint::height, con, 1e-8).unwrap();
 
-    // Add inequality constraints
-    if iq.is_some() {
-        let iq = iq.unwrap();
-
-        for i in 0 .. iq.len() {
-        
-            let flag = iq[i].0;
-            let offset = iq[i].1;
-            let lhs = iq[i].2.clone();
-            let rhs = iq[i].3.clone();
-
-            let con = Constraint::new(lhs, rhs, offset);
-        
-            if flag == 0 {
-                opt.add_inequality_constraint(Constraint::position, con, 1e-8).unwrap();
-            } else if flag == 1 {
-                opt.add_inequality_constraint(Constraint::width, con, 1e-8).unwrap();
-            } else if flag == 2 {
-                opt.add_inequality_constraint(Constraint::height, con, 1e-8).unwrap();
-            } else if flag == 3 {
-                opt.add_inequality_constraint(Constraint::fraction, con, 1e-8).unwrap();
-            } else if flag == 4 {
-                opt.add_inequality_constraint(Constraint::area, con, 1e-8).unwrap();
-            } else {
-                panic!("Constraint flag must be 0-4, inclusive, aborting.")
-            }
-        }
     }
 
     // Run the optimization
@@ -237,7 +200,7 @@ pub fn fit_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, y: Array2<f64>,
 //==============================================================================
 pub fn eval_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, 
                resonances: Array1<usize>, dimensions: Array1<usize>, knots: Array1<f64>,
-               p: Array1<f64>,  nl: usize, nb: usize, _np: usize)
+               p: Array1<f64>,  nl: usize, nb: usize, np: usize)
     -> Array2<f64> {
 
     let x_direct = x_direct.into_shared();
@@ -256,5 +219,12 @@ pub fn eval_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>,
     baseline.eval(&p_slice);
 
     // Output is the sum of lineshape and baseline components
-    &lineshape.y + &baseline.y
+    let y = &lineshape.y + &baseline.y;
+
+    // Adding phase (only useful for simulating phase errors)
+    let mut phase = Phase2D::new(x_direct.clone(), x_indirect.clone(), y, np);
+    let p_slice = p.slice(s![(nl + nb*4) .. (nl + nb*4 + np)]).to_vec(); 
+    phase.eval(&p_slice);
+
+    phase.y.clone() 
 }

@@ -251,7 +251,7 @@ impl Lineshape2D {
     }
 
     //--------------------------------------
-    fn gen_ranges(resonances: Array1<usize>, dimensions: Array1<usize>) 
+    pub fn gen_ranges(resonances: Array1<usize>, dimensions: Array1<usize>) 
         -> Vec<Vec<Range<usize>>> {
         
         let mut indexes: Vec<Vec<Vec<usize>>> = Vec::new();
