@@ -54,139 +54,19 @@ NMRFit1D <- setClass("NMRFit1D",
     knots = 'numeric',
     baseline = 'complex',
     phase = 'numeric',
-    bounds = 'list',
+    lower.bounds = 'list',
+    upper.bounds = 'list',
     time = 'numeric'
   ),
   prototype = prototype(
     knots = numeric(0), 
     baseline = complex(re = rep(0, 4), im = rep(0, 4)),
     phase = c(0),
-    bounds = list(lower = NULL, upper = NULL),
+    lower.bounds = NULL,
+    upper.bounds = NULL,
     time = c(0)
   )
 )
-
-
-
-#==============================================================================>
-#  Validation methods
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' NMRFit1D validity test
-#'
-validNMRFit1D <- function(object) {
-
-  nmrdata <- object@nmrdata
-  knots <- object@knots
-  baseline <- object@baseline
-  phase <- object@phase
-  bounds <- object@bounds
-
-  valid <- TRUE
-  err <- c()
-
-  #---------------------------------------
-  # Checking nmrdata
-  if ( (class(nmrdata) != 'NMRData1D') || (! validObject(nmrdata))  ) {
-
-      valid <- FALSE
-      new.err <- '"nmrdata" must be a valid NMRData1D object.'
-      err <- c(err, new.err)
-
-  }
-
-  #---------------------------------------
-  # Checking baseline length 
-  if ( (length(baseline) > 0) && (length(baseline) <= (length(knots)+1)) ) {
-
-      valid <- FALSE
-      new.err <- paste('"baseline" vector length must be greater than the',
-                       '"knots" vector length by at least 2 elements.')
-      err <- c(err, new.err)
-
-  }
-
-  #---------------------------------------
-  # Checking phase length 
-  if ( length(phase) > 2  ) {
-
-      valid <- FALSE
-      new.err <- 'The phase correction term must be of length 2 or smaller.'
-      err <- c(err, new.err)
-
-  }
-
-
-
-  #---------------------------------------
-  # Checking that lower bounds match slots 
-  valid.bounds <- c('baseline', 'phase')
-  if (! is.null(bounds$lower) ) {
-
-    logic <- identical(names(bounds$lower), valid.bounds)
-    if (! logic ) {
-      valid <- FALSE
-      new.err <- sprintf('"bounds$lower" must have the following elements: %s',
-                         paste(valid.bounds, collapse = ', '))
-      err <- c(err, new.err)
-    }
-
-    logic.1 <- length(bounds$lower$baseline) %in% c(0, 1)
-    logic.2 <- length(bounds$lower$phase) %in% c(0, 1) 
-    if (! (logic.1 && logic.2) ) {
-      valid <- FALSE
-      new.err <- paste('"bounds$lower$baseline" and "bounds$lower$phase must',
-                       'have a length of either zero or one, representing an',
-                       'overall bound on baseline or phase correction.')
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Checking that upper bounds match slots
-  if (! is.null(bounds$upper) ) {
-
-    logic <- identical(names(bounds$upper), valid.bounds)
-    if (! logic ) {
-      valid <- FALSE
-      new.err <- sprintf('"bounds$upper" must have the following elements: %s',
-                         paste(valid.bounds, collapse = ', '))
-      err <- c(err, new.err)
-    }
-
-    logic.1 <- length(bounds$upper$baseline) %in% c(0, 1)
-    logic.2 <- length(bounds$upper$phase) %in% c(0, 1) 
-    if (! (logic.1 && logic.2) ) {
-      valid <- FALSE
-      new.err <- paste('"bounds$upper$baseline" and "bounds$upper$phase must',
-                       'have a length of either zero or one, representing an',
-                       'overall bound on baseline or phase correction.')
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Checking the knots are all inside the boundaries
-  direct.shift <- range(nmrdata@processed$direct.shift)
-  if ( any((knots < direct.shift[1]) | (knots > direct.shift[2])) ) {
-
-      wrn <- paste('It is recommended to keep "knots" values inside the',
-                   'chemical shift range of the data.')
-      warning(wrn)
-
-  }
-
-  #---------------------------------------
-  # Output
-  if (valid) TRUE
-  else err
-}
-
-# Add the extended validity testing
-setValidity("NMRFit1D", validNMRFit1D)
 
 
 
@@ -199,27 +79,17 @@ setValidity("NMRFit1D", validNMRFit1D)
 #------------------------------------------------------------------------------
 #' Generate an NMRFit1D object
 #' 
-#' Generates an NMRFit1D object based on a list of NMRSpecies1D objects or
-#' other objects that can be converted to NMRSpecies1D objects. See
-#' ?nmrresonance_1d and ?nmrspecies_1d for more details about this conversion.
-#' Apart from providing peak definitions (via species argument) and data (via
-#' nmrdata argument), the main fit decisions are related to baseline and phase
-#' correction, as well as how to deal with peaks that are defined outside the
-#' range of the data. This latter decision is broken down into two arguments:
-#' exclusion.level and exclusion.notification. The exclusion.level parameter
-#' determines which part of the overall species to exclude if any of its peaks
-#' fall outside the data range: either 'species' for whole species, 'resonance'
-#' for just a subset of the species and 'peak' to ignore resonance/species
-#' blocks and exclude by specific peak alone. The exclusion.notification
-#' parameter determines how to report when peaks are found to be outside the
-#' data range: either 'none' to give no notice, 'message' to issue a message,
-#' 'warning' to issue a warning, or 'stop' to issue an error.
+#' Generates an NMRFit1D object based on an NMRMixture1D or a list of
+#' NMRSpecies1D objects. See ?nmrmixture_1d and ?nmrspecies_1d for more details
+#' about this conversion. It is important to note that all NMR objects defined
+#' in the species list must fall inside the provided data (although partial
+#' fitting may be implemented in the future).
 #' 
 #' @param species A list of NMRSpecies1D objects or other objects that can be
 #'                converted to NMRSpecies1D objects. See ?nmrresonance_1d and
 #'                ?nmrspecies_1d for more details about this conversion. If list
-#'                elements are named, these names will be use to replace
-#'                species ids.
+#'                elements are named, these names will be use to replace species
+#'                ids.
 #' @param nmrdata An NMRData1D object used to fit the supplied peaks.
 #'                automatically generated from the resonance names.
 #' @param baseline.order An integer specifying the order of the baseline spline
@@ -239,8 +109,8 @@ setValidity("NMRFit1D", validNMRFit1D)
 #'                  run manually using fit().
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 #'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf, but an override can be
-#'           provided here.
+#'           value using nmroptions$direct$sf, but an override can be provided
+#'           here.
 #' @param init An initialization, function that takes an NMRFit1D object and
 #'             returns a modified NMRFit1D object. Use the "identity" function
 #'             to override the default initialization in the
@@ -248,19 +118,8 @@ setValidity("NMRFit1D", validNMRFit1D)
 #'             fit() function are also passed on the init() function.
 #' @param opts A list of NLOPT fit options to override the default options in
 #'             the nmroptions$fit$opts.
-#' @param exclusion.level A string specifying what to do when peaks are found to
-#'                        fall outside of the data range: either 'species' to
-#'                        exclude the whole species to which the offending peak
-#'                        belongs, 'resonance' to exclude the resonance to which
-#'                        the offending peak belongs, or 'peak' to exclude just
-#'                        the peak itself.
-#' @param exclusion.notification A function specifying how to report when peaks
-#'                               are found to be outside the data range: 'none'
-#'                               to ignore, 'message' to issue a message,
-#'                               'warning' to issue a warning, or 'stop' to
-#'                               issue an error.
-#' @param ... Options passed to nmrspecies_1d if conversion has to be performed.
-#'            See ?nmrspecies_1d for more details.
+#' @param ... Options passed to nmrmixture_1d if conversion has to be performed.
+#'            See ?nmrmixture_1d for more details.
 #' 
 #' @return An NMRFit1D object.
 #' 
@@ -270,9 +129,7 @@ nmrfit_1d <- function(
   n.knots = nmroptions$direct$baseline$n.knots, 
   phase.order = nmroptions$direct$phase$order, 
   delay.fit = FALSE, sf = nmroptions$direct$sf,
-  init = nmroptions$fit$init, opts = nmroptions$fit$opts, 
-  exclusion.level = nmroptions$exclusion$level, 
-  exclusion.notification = nmroptions$exclusion$notification, ...) {
+  init = nmroptions$fit$init, opts = nmroptions$fit$opts, ...) {
 
   #---------------------------------------
   # Generating list of species 
@@ -285,6 +142,19 @@ nmrfit_1d <- function(
 
   if ( (class(nmrdata) != 'NMRData1D') || (! validObject(nmrdata)) ) {
     err <- '"nmrdata" must be a valid NMRData1D object.'
+    stop(err)
+  }
+
+  # Ensuring that positions don't fall outside data
+  d <- processed(nmrdata)
+  positions <- peaks(mixture)$position
+
+  logic <- ( positions < min(d$direct.shift) ) | 
+           ( positions > max(d$direct.shift) )
+
+  if ( any(logic) ) {
+    err <- "The following peak positions are outside data range: %s"
+    err <- sprintf(err, paste(positions[logic], collapse = ", "))
     stop(err)
   }
 
@@ -311,20 +181,19 @@ nmrfit_1d <- function(
   else phase <- rep(0, phase.order + 1)
 
   # Initializing bounds
-  bounds <- list(lower = list(baseline = complex(0), phase = numeric(0)),
-                 upper = list(baseline = complex(0), phase = numeric(0)))
+  lower_bounds = list(baseline = complex(0), phase = numeric(0))
+  upper_bounds = list(baseline = complex(0), phase = numeric(0))
 
   #---------------------------------------
   # Resulting fit object
   out <- new('NMRFit1D', mixture, nmrdata = nmrdata,
                          knots = knots, baseline = baseline, phase = phase,
-                         bounds = bounds)
+                         lower.bounds = lower_bounds, 
+                         upper.bounds = upper_bounds)
 
   # If the fit is delayed, then return current object, otherwise run fit first
   if ( delay.fit ) out
-  else fit(out, sf = sf, init = init, opts = opts, 
-           exclusion.level = exclusion.level, 
-           exclusion.notification = exclusion.notification)
+  else fit(out, sf = sf, init = init, opts = opts)
 
 }
 
@@ -429,7 +298,7 @@ setMethod("parse_constraints", "NMRMixture1D",
 
     # To ensure that individual leeway values are considered, looping through
     # each species/resonance one at a time
-    for ( specie in object@species ) {
+    for ( specie in object@children ) {
 
       # At the species level, constraints are based on overall area sums
       leeway <- abs(specie@connections.leeway)
@@ -460,7 +329,7 @@ setMethod("parse_constraints", "NMRMixture1D",
       }
 
       # Then looping through each specific resonance within each species
-      for ( resonance in specie@resonances ) {
+      for ( resonance in specie@children ) {
 
         # At the species level, constraints are based on overall area sums
         id <- resonance@id
@@ -548,18 +417,7 @@ setMethod("parse_constraints", "NMRMixture1D",
 #' Fit NMR data to peaks.
 #' 
 #' Given an NMRFit1D object, this function performs a least squares fit on the
-#' data and updates the peak parameters. One of the most important things to
-#' consider is that any peak found outside the data range of the NMRData1D
-#' objects is automatically dropped from the resulting object. Exactly how this
-#' happens can be modified using the exclusion.level and exclusion.notification
-#' arguments. The exclusion.level parameter determines which part of the
-#' overall species to exclude if any of its peaks fall outside the data range:
-#' either 'species' for whole species, 'resonance' for just a subset of the
-#' species and 'peak' to ignore resonance/species blocks and exclude by
-#' specific peak alone. The exclusion.notification parameter determines how to
-#' report when peaks are found to be outside the data range: either 'none' to
-#' give no notice, 'message' to issue a message, 'warning' to issue a warning,
-#' or 'stop' to issue an error.
+#' data and updates the peak parameters. 
 #' 
 #' @param object An NMRFit1D object.
 #' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
@@ -573,17 +431,6 @@ setMethod("parse_constraints", "NMRMixture1D",
 #'             fit() function are also passed on the init() function.
 #' @param opts A list of NLOPT fit options to override the default options in
 #'             the nmroptionsd$fit$opts.
-#' @param exclusion.level A string specifying what to do when peaks are found to
-#'                        fall outside of the data range: either 'species' to
-#'                        exclude the whole species to which the offending peak
-#'                        belongs, 'resonance' to exclude the resonance to which
-#'                        the offending peak belongs, or 'peak' to exclude just
-#'                        the peak itself.
-#' @param exclusion.notification A function specifying how to report when peaks
-#'                               are found to be outside the data range: 'none'
-#'                               to ignore, 'message' to issue a message,
-#'                               'warning' to issue a warning, or 'stop' to
-#'                               issue an error.
 #' 
 #' @name fit
 #' @export
@@ -597,176 +444,159 @@ setGeneric("fit",
 #' @export
 setMethod("fit", "NMRFit1D",
   function(object, sf = nmroptions$direct$sf, init = nmroptions$fit$init, 
-           opts = nmroptions$fit$opts, 
-           exclusion.level = nmroptions$exclusion$level,
-           exclusion.notification = nmroptions$exclusion$notification) {
+           opts = nmroptions$fit$opts) {
 
-    # First, run the initialization
-    object <- init(object, sf = sf, init = init, opts = opts, 
-                   exclusion.level = exclusion.level, 
-                   exclusion.notification = exclusion.notification)
+  # First, run the initialization
+  object <- init(object, sf = sf, init = init, opts = opts)
 
-    # Unpacking some of the NMR data
-    d <- processed(object@nmrdata)
-    x <- d$direct.shift
-    x.range <- range(x)
-    x.span <- x.range[2] - x.range[1]
-    y <- d$intensity
-    y.range <- range(Re(y))
+  # Unpacking some of the NMR data
+  d <- processed(object@nmrdata)
+  x <- d$direct.shift
+  x.range <- range(x)
+  x.span <- x.range[2] - x.range[1]
+  y <- d$intensity
+  y.range <- range(Re(y))
 
-    # Normalizing data
-    x <- (x - x.range[1])/x.span
-    y <- complex(re = Re(y), im = Im(y))
-    y <- y/y.range[2]
+  # Normalizing data
+  x <- (x - x.range[1])/x.span
+  y <- complex(re = Re(y), im = Im(y))
+  y <- y/y.range[2]
 
-    # Baseline knots have to be scaled along with 
+  # Scaling and unpacking all parameters
+  peaks <- peaks(object)
+  n.peaks <- nrow(peaks)
+  data.columns <- c('position', 'width', 'height', 'fraction.gauss')
 
-    # Exclude peaks in advance by tying into the update_peaks functions
-    # (to consider full resonance/fit exclusion)
-    peaks <- peaks(object)
-    logic <- (peaks$position > x.range[1]) & (peaks$position < x.range[2])
-    peaks <- peaks[logic, ]
+  peaks <- list(par = peaks[, data.columns], 
+                lb = bounds(object)$lower$peaks[, data.columns], 
+                ub = bounds(object)$upper$peaks[, data.columns])
 
-    object2 <- update_peaks(object, peaks, exclusion.level = exclusion.level,
-                            exclusion.notification = "none")
+  for (name in names(peaks)) {
+    peaks[[name]]$position <- (peaks[[name]]$position - x.range[1])/x.span
+    peaks[[name]]$width <- peaks[[name]]$width/sf/x.span
+    peaks[[name]]$height <- peaks[[name]]$height/y.range[2]
 
-    peaks <- peaks(object2)
-    n.peaks <- nrow(peaks)
+    peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
+  }
 
-    # Scaling and unpacking all parameters
-    data.columns <- c('position', 'width', 'height', 'fraction.gauss')
+  #---------------------------------------
+  # Scaling and unpacking baseline/phase terms
+  
+  # Scaling knots in line with x
+  knots <- knots(object)
+  knots <- (knots - x.range[1])/x.span
+  n.baseline <- length(baseline(object))
 
-    peaks <- list(par = peaks[, data.columns], 
-                  lb = bounds(object)$lower$peaks[, data.columns], 
-                  ub = bounds(object)$upper$peaks[, data.columns])
+  # y-scaling performed below for convenience
+  baseline <- list(par = baseline(object), 
+                   lb = rep(bounds(object)$lower$baseline, n.baseline),
+                   ub = rep(bounds(object)$upper$baseline, n.baseline))
 
-    for (name in names(peaks)) {
-      peaks[[name]]$position <- (peaks[[name]]$position - x.range[1])/x.span
-      peaks[[name]]$width <- peaks[[name]]$width/sf/x.span
-      peaks[[name]]$height <- peaks[[name]]$height/y.range[2]
+  # 1st order phase coefficients must be adapted to the local scale
+  # (although a 0 order correction remains constant)
+  phase <- phase(object)
+  n.phase <- length(phase)
+  if ( n.phase == 2 ) {
+    phase[1] <- phase[1] + phase[2]*x.range[1]
+    phase[2] <- (phase[2] - phase[1])*x.span
+  }
 
-      peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
-    }
+  # Adding simple bounds that are expanded to constraints for 1st order
+  # phase correction
+  phase <- list(par = phase, 
+                lb = rep(bounds(object)$lower$phase, n.phase),
+                ub = rep(bounds(object)$upper$phase, n.phase))
 
-    #---------------------------------------
-    # Scaling and unpacking baseline/phase terms
-    
-    # Scaling knots in line with x
-    knots <- knots(object)
-    knots <- (knots - x.range[1])/x.span
-    n.baseline <- length(baseline(object))
+  par <- list(par = NA, lb = NA, ub = NA)
+  for (name in names(par)) {
+    par[[name]] <- c(peaks[[name]], Re(baseline[[name]])/y.range[2], 
+                      Im(baseline[[name]])/y.range[2], phase[[name]])
+  }
 
-    # y-scaling performed below for convenience
-    baseline <- list(par = baseline(object), 
-                     lb = rep(bounds(object)$lower$baseline, n.baseline),
-                     ub = rep(bounds(object)$upper$baseline, n.baseline))
+  #---------------------------------------
+  # Generating constraint lists
 
-    # 1st order phase coefficients must be adapted to the local scale
-    # (although a 0 order correction remains constant)
-    phase <- phase(object)
-    n.phase <- length(phase)
+  # Comparing constraint code)
+  constraints <- parse_constraints(object, x.span)
+
+  eq.constraints <- constraints[[1]]
+  ineq.constraints <- constraints[[2]]
+
+  #---------------------------------------
+  # Performing the fit
+
+  # Adding boundary knots
+  knots <- sort(c(knots, c(0,1)))
+
+  # Flattening constraints
+  eq.constraints <- unlist(lapply(eq.constraints, function (x) c(x, NaN)))
+  eq.constraints <- eq.constraints[-length(eq.constraints)]
+
+  ineq.constraints <- unlist(lapply(ineq.constraints, function (x) c(x, NaN)))
+  ineq.constraints <- ineq.constraints[-length(ineq.constraints)]
+
+  start.time <- proc.time()
+  out <- .Call("fit_1d_wrapper", 
+    x = as.double(x), 
+    y = as.double(c(Re(y), Im(y))), 
+    knots = as.double(knots),
+    p = as.double(par$par), 
+    lb = as.double(par$lb), 
+    ub = as.double(par$ub), 
+    n = as.integer(length(x)),
+    nl = as.integer(n.peaks*4),
+    nb = as.integer(n.baseline),
+    np = as.integer(n.phase),
+    nk = as.integer(length(knots)),
+    eq = as.double(eq.constraints),
+    iq = as.double(ineq.constraints),
+    neq = as.integer(length(eq.constraints)),
+    niq = as.integer(length(ineq.constraints))
+  )
+  object@time <- as.numeric(proc.time() - start.time)[3]
+
+  par$par <- out
+
+  #---------------------------------------
+  # Unpacking and rescaling parameters
+  
+  # Starting with peaks
+  peaks <- peaks(object)
+  new.peaks <- matrix(par$par[1:(n.peaks*4)], ncol = 4, byrow = TRUE)
+  peaks[, data.columns] <- new.peaks
+
+  peaks$position <- peaks$position*x.span + x.range[1]
+  peaks$width <- peaks$width*sf*x.span
+  peaks$height <- peaks$height*y.range[2]
+
+  peaks(object) <- peaks
+
+  # Then baseline
+  index.re <- (n.peaks*4 + 1):(n.peaks*4 + n.baseline)
+  index.im <- index.re + n.baseline
+  if ( n.baseline > 0 ) {
+    object@baseline <- complex(re = par$par[index.re]*y.range[2],
+                               im = par$par[index.im]*y.range[2])
+  }
+
+  # And phase
+  index <- (n.peaks*4 + n.baseline*2 + 1):(n.peaks*4 + n.baseline*2 + n.phase)
+  if ( n.phase > 0 ) {
+    phase <- par$par[index]
+
+    # 1st order phase coefficients must be adapted back to the global scale
     if ( n.phase == 2 ) {
-      phase[1] <- phase[1] + phase[2]*x.range[1]
-      phase[2] <- (phase[2] - phase[1])*x.span
+      phase.left <- phase[1]
+      phase.right <- phase[1] + phase[2]
+      phase[2] <- (phase.right - phase.left)/x.span
+      phase[1] <- phase.left - phase[2]*x.range[1]
     }
 
-    # Adding simple bounds that are expanded to constraints for 1st order
-    # phase correction
-    phase <- list(par = phase, 
-                  lb = rep(bounds(object)$lower$phase, n.phase),
-                  ub = rep(bounds(object)$upper$phase, n.phase))
+    object@phase <- phase
+  }
 
-    par <- list(par = NA, lb = NA, ub = NA)
-    for (name in names(par)) {
-      par[[name]] <- c(peaks[[name]], Re(baseline[[name]])/y.range[2], 
-                        Im(baseline[[name]])/y.range[2], phase[[name]])
-    }
-
-    #---------------------------------------
-    # Generating constraint lists
-
-    # Comparing constraint code)
-    constraints <- parse_constraints(object, x.span)
-
-    eq.constraints <- constraints[[1]]
-    ineq.constraints <- constraints[[2]]
-
-    #---------------------------------------
-    # Performing the fit
-
-    # Adding boundary knots
-    knots <- sort(c(knots, c(0,1)))
-
-    # Flattening constraints
-    eq.constraints <- unlist(lapply(eq.constraints, function (x) c(x, NaN)))
-    eq.constraints <- eq.constraints[-length(eq.constraints)]
-
-    ineq.constraints <- unlist(lapply(ineq.constraints, function (x) c(x, NaN)))
-    ineq.constraints <- ineq.constraints[-length(ineq.constraints)]
-
-    start.time <- proc.time()
-    out <- .Call("fit_1d_wrapper", 
-      x = as.double(x), 
-      y = as.double(c(Re(y), Im(y))), 
-      knots = as.double(knots),
-      p = as.double(par$par), 
-      lb = as.double(par$lb), 
-      ub = as.double(par$ub), 
-      n = as.integer(length(x)),
-      nl = as.integer(n.peaks*4),
-      nb = as.integer(n.baseline),
-      np = as.integer(n.phase),
-      nk = as.integer(length(knots)),
-      eq = as.double(eq.constraints),
-      iq = as.double(ineq.constraints),
-      neq = as.integer(length(eq.constraints)),
-      niq = as.integer(length(ineq.constraints))
-    )
-    object@time <- as.numeric(proc.time() - start.time)[3]
-
-    par$par <- out
-
-    #---------------------------------------
-    # Unpacking and rescaling parameters
-    
-    # Starting with peaks
-    peaks <- peaks(object)
-    new.peaks <- matrix(par$par[1:(n.peaks*4)], ncol = 4, byrow = TRUE)
-    peaks[, data.columns] <- new.peaks
-
-    peaks$position <- peaks$position*x.span + x.range[1]
-    peaks$width <- peaks$width*sf*x.span
-    peaks$height <- peaks$height*y.range[2]
-
-    object <- update_peaks(object, peaks, exclusion.level = exclusion.level,
-                           exclusion.notification = exclusion.notification)
-
-    # Then baseline
-    index.re <- (n.peaks*4 + 1):(n.peaks*4 + n.baseline)
-    index.im <- index.re + n.baseline
-    if ( n.baseline > 0 ) {
-      object@baseline <- complex(re = par$par[index.re]*y.range[2],
-                                 im = par$par[index.im]*y.range[2])
-    }
-
-    # And phase
-    index <- (n.peaks*4 + n.baseline*2 + 1):(n.peaks*4 + n.baseline*2 + n.phase)
-    if ( n.phase > 0 ) {
-      phase <- par$par[index]
-
-      # 1st order phase coefficients must be adapted back to the global scale
-      if ( n.phase == 2 ) {
-        phase.left <- phase[1]
-        phase.right <- phase[1] + phase[2]
-        phase[2] <- (phase.right - phase.left)/x.span
-        phase[1] <- phase.left - phase[2]*x.range[1]
-      }
-
-      object@phase <- phase
-    }
-
-    object
-  })
+  object
+})
 
 
 
@@ -791,7 +621,8 @@ setMethod("show", "NMRFit1D",
     baseline <- baseline(object)
     knots <- knots(object)
     phase <- phase(object)
-    bounds <- bounds(object)
+    lower_bounds <- lower_bounds(object)
+    upper_bounds <- upper_bounds(object)
     couplings <- couplings(object)
 
     cat('An object of NMRFit1D class\n\n')
@@ -826,9 +657,6 @@ setMethod("show", "NMRFit1D",
 
     # Bounds
     columns <- c('position', 'width', 'height', 'fraction.gauss')
-
-    lower <- unlist(bounds$lower$peaks[ , columns])
-    upper <- unlist(bounds$upper$peaks[ , columns])
     
     range <- paste('(', lower, ', ', upper, ')', sep = '')
     peaks[ , columns] <- range
@@ -842,8 +670,8 @@ setMethod("show", "NMRFit1D",
 
     cat('Real baseline: ')
     if ( length(bounds$lower$baseline) > 0) {
-      lower <- round(Re(bounds$lower$baseline), 4)
-      upper <- round(Re(bounds$upper$baseline), 4)
+      lower <- round(Re(object@lower.bounds$baseline), 4)
+      upper <- round(Re(object@upper.bounds$baseline), 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
@@ -851,9 +679,9 @@ setMethod("show", "NMRFit1D",
     else cat('None\n')
 
     cat('Imaginary baseline: ')
-    if ( length(bounds$lower$baseline) > 0) {
-      lower <- round(Im(bounds$lower$baseline), 4)
-      upper <- round(Im(bounds$upper$baseline), 4)
+    if ( length(object@lower.bounds$baseline) > 0) {
+      lower <- round(Im(object@lower.bounds$baseline), 4)
+      upper <- round(Im(object@upper.bounds$baseline), 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
@@ -863,9 +691,9 @@ setMethod("show", "NMRFit1D",
     # Phase bounds
     cat('Phase (radians): ')
 
-    if ( length(bounds$lower$phase) > 0)  {
-      lower <- round(bounds$lower$phase, 4)
-      upper <- round(bounds$upper$phase, 4)
+    if ( length(object@lower.bounds$phase) > 0)  {
+      lower <- round(object@lower.bounds$phase, 4)
+      upper <- round(object@upper.bounds$phase, 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
@@ -901,19 +729,19 @@ setMethod("show", "NMRFit1D",
 setMethod("bounds", "NMRFit1D", 
   function(object) {
     # Extracting peak bounds from species using the NMRMixture1D signature
-    bounds <- selectMethod("bounds", signature="NMRMixture1D")(object)
+    bounds <- selectMethod("bounds", signature="NMRScaffold1D")(object)
 
     # Baseline and phase
-    lower.baseline <- object@bounds$lower$baseline
+    lower.baseline <- object@lower.bounds$baseline
     lower.baseline <- ifelse(length(lower.baseline) == 0, 
                              complex(re = -Inf, im = -Inf), lower.baseline)
-    upper.baseline <- object@bounds$upper$baseline
+    upper.baseline <- object@upper.bounds$baseline
     upper.baseline <- ifelse(length(upper.baseline) == 0, 
                              complex(re = Inf, im = Inf), upper.baseline)   
 
-    lower.phase <- object@bounds$lower$phase
+    lower.phase <- object@lower.bounds$phase
     lower.phase <- ifelse(length(lower.phase) == 0, -Inf, lower.phase)   
-    upper.phase <- object@bounds$upper$phase
+    upper.phase <- object@upper.bounds$phase
     upper.phase <- ifelse(length(upper.phase) == 0, Inf, upper.phase)   
 
     # Outputting
@@ -949,42 +777,6 @@ setMethod("baseline", "NMRFit1D",
   function(object) object@baseline
 )
 
-#---------------------------------------
-#' Set object baseline
-#' 
-#' Generic convenience method to set the baseline definition of an NMRFit1D
-#' object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param value A vector of spectra intensity values used to construct the
-#'              baseline b-spline. The order of the baseline spline function is
-#'              calculated automatically based on the length of the "knots" slot
-#'              and the length of the baseline vector, where order =
-#'              legnth(baseline) - length(knots).
-#' 
-#' @name baseline-set
-#' @export
-setGeneric("baseline<-", 
-  function(object, value) standardGeneric("baseline<-")
-)
-
-#' @rdname baseline-set
-#' @export
-setReplaceMethod("baseline", "NMRFit1D",
-  function(object, value) {
-
-    if ( class(value) == 'numeric' ) {
-      wrn <- paste('Applying the same baseline parameters to both real and',
-                   'imaginary components.')
-      warning(wrn)
-      value <- complex(re = value, im = value)
-    }
-
-    object@baseline <- value
-    validObject(object)
-    object 
-  })
-
 
 
 #------------------------------------------------------------------------------
@@ -1011,61 +803,6 @@ setMethod("knots", "NMRFit1D",
   function(object) object@knots
 )
 
-#---------------------------------------
-#' Set object baseline knots
-#' 
-#' Generic convenience method to set the baseline knots definition of an
-#' NMRFit1D object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param value A vector of chemical shifts used to designate the internal
-#'              baseline b-spline knots. Note that the number of internal knots
-#'              impacts the length of the baseline and if the length of knots is
-#'              changed, current baseline values may not feasible with the new
-#'              knots.
-#' 
-#' @name knots-set
-#' @export
-setGeneric("knots<-", 
-  function(object, value) standardGeneric("knots<-"))
-
-#' @rdname knots-set
-#' @export
-setReplaceMethod("knots", "NMRFit1D",
-  function(object, value) {
-
-    # If the knot length changes, baseline parameters have to change
-    if ( length(object@knots) != length(value) ) {
-      
-      # Generating y values from current baseline parameters
-      x <- object@nmrdata@processed$direct.shift
-      k1 <- object@knots
-      b1 <- object@baseline
-      n1 <- length(b1) - length(k1)
-      X1 <- bs(x, degree = n1, knots = k1)
-      y1 <- X1 %*% b1
-
-      # Generating new baseline values from new basis
-      k2 <- value
-      X2 <- bs(x, degree = n1, knots = k2)
-      b2 <- solve(t(X2) %*% X2) %*% t(X2) %*% y1
-      y2 <- X2 %*% b2
-
-      # If the resulting change in baseline parameters resulted in a change
-      # to baseline values, issue a warning to that effect
-      wrn <- paste('New knot values can not be used to represent current',
-                   'baseline. New baseline parameters will be generated using',
-                   'a least-squares fit.')
-      if ( any( ( Re(y2-y1) > 1e-6 ) | ( Im(y2-y1) > 1e-6) ) ) warning(wrn)
-
-      object@baseline <- as.vector(b2)
-    }
-
-    object@knots <- value
-    validObject(object)
-    object 
-  })
-
 
 
 #------------------------------------------------------------------------------
@@ -1091,182 +828,6 @@ setGeneric("phase",
 setMethod("phase", "NMRFit1D", 
   function(object) object@phase
 )
-
-#---------------------------------------
-#' Set object phase
-#' 
-#' Generic convenience method to set the phase definition of an NMRFit1D
-#' object.
-#' 
-#' @param object An NMRFit1D object.
-#' @param value A vector of phase polynomial values in increasing order (in
-#'              radians). So c(pi/4, pi/8) represents a 0 order phase correction
-#'              of 45 degrees and a 1st order correction of 22.5 degrees
-#'              (referenced to 0 ppm).
-#' 
-#' @name phase-set
-#' @export
-setGeneric("phase<-", 
-  function(object, value) standardGeneric("phase<-"))
-
-#' @rdname phase-set
-#' @export
-setReplaceMethod("phase", "NMRFit1D",
-  function(object, value) {
-    object@phase <- value
-    validObject(object)
-    object 
-  })
-
-
-
-#==============================================================================>
-#  Bounds
-#==============================================================================>
-
-
-#------------------------------------------------------------------------------
-#' @rdname set_general_bounds
-#' @export
-setMethod("set_general_bounds", "NMRFit1D",
-  function(object, ..., nmrdata = NULL, widen = FALSE,
-           baseline = NULL, phase = NULL) {
-  
-  # First, propagating bounds to component species
-  object@species <- lapply(object@species, set_general_bounds, ...,
-                           nmrdata = nmrdata, widen = widen)
-
-  #---------------------------------------
-  # Then dealing with baseline and phase
-
-  # Temporarily splitting real and imaginary baselines into two different values 
-  if ( class(baseline) == 'numeric' ) {
-    re.baseline <- baseline
-    im.baseline <- NULL
-  }
-  else if ( class(baseline) == 'complex' ) {
-    re.baseline <- Re(baseline)
-    im.baseline <- Im(baseline)
-  }
-  else {
-    re.baseline <- NULL
-    im.baseline <- NULL
-  }
-
-  # Scaling baseline if nmrdata provided
-  if (! is.null(nmrdata) ) {
-    processed <- nmrdata@processed
-    re.y.range <- max(Re(processed$intensity)) - min(Re(processed$intensity))
-    im.y.range <- max(Im(processed$intensity)) - min(Im(processed$intensity))
-
-    re.baseline <- re.baseline * re.y.range
-    im.baseline <- im.baseline * im.y.range
-  }
-
-  # Defining a bound check function
-  .check_bounds <- function(bounds) {
-
-    if ( length(bounds) != 2 ) {
-      err <- paste("All bounds must be vectors of two elements consisting",
-                   "of a lower and upper bound.")
-      stop(err)
-    }
-
-    if ( bounds[1] > bounds[2] ) {
-      err <- paste("Lower bound must be smaller than upper bound.",
-                   "Proceeding with current constraints will result in a",
-                   "fit error.")
-      warning(err)
-    }
-
-  }
-
-  # Applying
-  lower <- bounds(object)$lower
-  upper <- bounds(object)$upper
-
-  lower$re.baseline <- Re(lower$baseline)
-  lower$im.baseline <- Im(lower$baseline)
-
-  upper$re.baseline <- Re(upper$baseline)
-  upper$im.baseline <- Im(upper$baseline)
-
-  bounds = list(re.baseline = re.baseline, im.baseline = im.baseline,
-                phase = phase)
-
-  for ( parameter in names(bounds) ) {
-    if ( length(bounds[[parameter]]) > 0 ) {
-      .check_bounds(bounds[[parameter]])
-
-      new <- bounds[[parameter]][1]
-      if ( (new > lower[[parameter]]) || widen ) lower[[parameter]] <- new
-
-      new <- bounds[[parameter]][2]
-      if ( (new < upper[[parameter]]) || widen ) upper[[parameter]] <- new
-    }
-  }
-
-  lower$baseline <- complex(re = lower$re.baseline, im = lower$im.baseline)
-  upper$baseline <- complex(re = upper$re.baseline, im = upper$im.baseline)
-
-  object@bounds$lower <- lower[c('baseline', 'phase')]
-  object@bounds$upper <- upper[c('baseline', 'phase')]
-
-  validObject(object)
-  object
-  })
-
-
-
-#------------------------------------------------------------------------------
-#' @rdname set_offset_bounds
-#' @export
-setMethod("set_offset_bounds", "NMRFit1D",
-  function(object, ...) {
-    object@species <- lapply(object@species, set_offset_bounds, ...)
-    object
-  })
-
-
-
-#------------------------------------------------------------------------------
-#' @rdname set_conservative_bounds
-#' @export
-setMethod("set_conservative_bounds", "NMRFit1D",
-  function(object,  ..., nmrdata = NULL, widen = FALSE,
-           baseline = TRUE, phase = TRUE) {
-  
-  # First, propagating bounds to component species
-  object@species <- lapply(object@species, set_conservative_bounds, ...,
-                           nmrdata = nmrdata, widen = widen)
-
-  #---------------------------------------
-  # Then dealing with baseline and phase
-
-  # Adding baseline constraint if nmrdata is provided
-  if ( (! is.null(nmrdata)) && baseline ) {
-    object <- set_general_bounds(object, baseline = c(-0.5, 0.5),
-                                 nmrdata = nmrdata, widen = widen)
-  }
-
-  # Phase constrain is applied regardless of nmrdata
-  if ( phase ) {
-    object <- set_general_bounds(object, phase = c(-pi/2, pi/2), widen = widen)
-  }
-
-  object
-})
-
-
-
-#------------------------------------------------------------------------------
-#' @rdname set_peak_type
-#' @export
-setMethod("set_peak_type", "NMRFit1D",
-  function(object, ...) {
-    object@species <- lapply(object@species, set_peak_type, ...)
-    object
-  })
 
 
 

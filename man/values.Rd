@@ -46,8 +46,7 @@ single set of values, FALSE to output a data frame of values
 that correspond to individual peaks.}
 
 \item{sum.baseline}{TRUE to add baseline to every peak, if one is defined.
-FALSE to exclude baseline. that correspond to individual
-peaks.}
+FALSE to exclude baseline.}
 
 \item{include.id}{TRUE to include id as outer column if outputting data
 frame.}

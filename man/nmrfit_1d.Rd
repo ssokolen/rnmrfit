@@ -14,8 +14,6 @@ nmrfit_1d(
   sf = nmroptions$direct$sf,
   init = nmroptions$fit$init,
   opts = nmroptions$fit$opts,
-  exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification,
   ...
 )
 }
@@ -23,8 +21,8 @@ nmrfit_1d(
 \item{species}{A list of NMRSpecies1D objects or other objects that can be
 converted to NMRSpecies1D objects. See ?nmrresonance_1d and
 ?nmrspecies_1d for more details about this conversion. If list
-elements are named, these names will be use to replace
-species ids.}
+elements are named, these names will be use to replace species
+ids.}
 
 \item{nmrdata}{An NMRData1D object used to fit the supplied peaks.
 automatically generated from the resonance names.}
@@ -50,8 +48,8 @@ run manually using fit().}
 
 \item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 to ppm. In most cases, it is recommended to set a single default
-value using nmroptions$direct$sf, but an override can be
-provided here.}
+value using nmroptions$direct$sf, but an override can be provided
+here.}
 
 \item{init}{An initialization, function that takes an NMRFit1D object and
 returns a modified NMRFit1D object. Use the "identity" function
@@ -62,39 +60,16 @@ fit() function are also passed on the init() function.}
 \item{opts}{A list of NLOPT fit options to override the default options in
 the nmroptions$fit$opts.}
 
-\item{exclusion.level}{A string specifying what to do when peaks are found to
-fall outside of the data range: either 'species' to
-exclude the whole species to which the offending peak
-belongs, 'resonance' to exclude the resonance to which
-the offending peak belongs, or 'peak' to exclude just
-the peak itself.}
-
-\item{exclusion.notification}{A function specifying how to report when peaks
-are found to be outside the data range: 'none'
-to ignore, 'message' to issue a message,
-'warning' to issue a warning, or 'stop' to
-issue an error.}
-
-\item{...}{Options passed to nmrspecies_1d if conversion has to be performed.
-See ?nmrspecies_1d for more details.}
+\item{...}{Options passed to nmrmixture_1d if conversion has to be performed.
+See ?nmrmixture_1d for more details.}
 }
 \value{
 An NMRFit1D object.
 }
 \description{
-Generates an NMRFit1D object based on a list of NMRSpecies1D objects or
-other objects that can be converted to NMRSpecies1D objects. See
-?nmrresonance_1d and ?nmrspecies_1d for more details about this conversion.
-Apart from providing peak definitions (via species argument) and data (via
-nmrdata argument), the main fit decisions are related to baseline and phase
-correction, as well as how to deal with peaks that are defined outside the
-range of the data. This latter decision is broken down into two arguments:
-exclusion.level and exclusion.notification. The exclusion.level parameter
-determines which part of the overall species to exclude if any of its peaks
-fall outside the data range: either 'species' for whole species, 'resonance'
-for just a subset of the species and 'peak' to ignore resonance/species
-blocks and exclude by specific peak alone. The exclusion.notification
-parameter determines how to report when peaks are found to be outside the
-data range: either 'none' to give no notice, 'message' to issue a message,
-'warning' to issue a warning, or 'stop' to issue an error.
+Generates an NMRFit1D object based on an NMRMixture1D or a list of
+NMRSpecies1D objects. See ?nmrmixture_1d and ?nmrspecies_1d for more details
+about this conversion. It is important to note that all NMR objects defined
+in the species list must fall inside the provided data (although partial
+fitting may be implemented in the future).
 }

@@ -12,9 +12,7 @@ fit(object, ...)
   object,
   sf = nmroptions$direct$sf,
   init = nmroptions$fit$init,
-  opts = nmroptions$fit$opts,
-  exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
+  opts = nmroptions$fit$opts
 )
 
 \S4method{fit}{NMRFit2D}(
@@ -42,32 +40,8 @@ fit() function are also passed on the init() function.}
 
 \item{opts}{A list of NLOPT fit options to override the default options in
 the nmroptionsd$fit$opts.}
-
-\item{exclusion.level}{A string specifying what to do when peaks are found to
-fall outside of the data range: either 'species' to
-exclude the whole species to which the offending peak
-belongs, 'resonance' to exclude the resonance to which
-the offending peak belongs, or 'peak' to exclude just
-the peak itself.}
-
-\item{exclusion.notification}{A function specifying how to report when peaks
-are found to be outside the data range: 'none'
-to ignore, 'message' to issue a message,
-'warning' to issue a warning, or 'stop' to
-issue an error.}
 }
 \description{
 Given an NMRFit1D object, this function performs a least squares fit on the
-data and updates the peak parameters. One of the most important things to
-consider is that any peak found outside the data range of the NMRData1D
-objects is automatically dropped from the resulting object. Exactly how this
-happens can be modified using the exclusion.level and exclusion.notification
-arguments. The exclusion.level parameter determines which part of the
-overall species to exclude if any of its peaks fall outside the data range:
-either 'species' for whole species, 'resonance' for just a subset of the
-species and 'peak' to ignore resonance/species blocks and exclude by
-specific peak alone. The exclusion.notification parameter determines how to
-report when peaks are found to be outside the data range: either 'none' to
-give no notice, 'message' to issue a message, 'warning' to issue a warning,
-or 'stop' to issue an error.
+data and updates the peak parameters.
 }

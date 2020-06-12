@@ -7,12 +7,7 @@
 \usage{
 initialize_heights(object, ...)
 
-\S4method{initialize_heights}{NMRScaffold1D}(
-  object,
-  nmrdata,
-  exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
-)
+\S4method{initialize_heights}{NMRScaffold1D}(object, nmrdata)
 }
 \arguments{
 \item{object}{An NMRScaffold1D object.}
@@ -20,19 +15,6 @@ initialize_heights(object, ...)
 \item{...}{Additional arguments passed to inheriting methods.}
 
 \item{nmrdata}{An NMRData1D object.}
-
-\item{exclusion.level}{A string specifying what to do when peaks are found to
-fall outside of the data range: either 'species' to
-exclude the whole species to which the offending peak
-belongs, 'resonance' to exclude the resonance to which
-the offending peak belongs, or 'peak' to exclude just
-the peak itself.}
-
-\item{exclusion.notification}{A function specifying how to report when peaks
-are found to be outside the data range: 'none'
-to ignore, 'message' to issue a message,
-'warning' to issue a warning, and 'stop' to
-issue an error.}
 }
 \value{
 A new object with modified peak heights.

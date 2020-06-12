@@ -37,136 +37,24 @@
 NMRResonance1D <- setClass("NMRResonance1D",
   contains = 'NMRScaffold1D',
   slots = c(
+    name = 'character',
     id = 'character',
     peaks = 'data.frame',
     couplings = 'data.frame',
     couplings.leeway = 'list',
-    bounds = 'list'
+    lower.bounds = 'data.frame',
+    upper.bounds = 'data.frame'
   ),
   prototype = prototype(
+    name = 'resonance',
     id = 'resonance',
     couplings = data.frame(),
     couplings.leeway = list(position = 0, width = 0, 
                             fraction.gauss = 0, area = 0),
-    bounds = list(lower = NULL, upper = NULL)
+    lower.bounds = data.frame(),
+    upper.bounds = data.frame()
   )
 )
-
-
-
-#==============================================================================>
-#  Validation methods
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' NMRResonance1D validity test
-#'
-validNMRResonance1D <- function(object) {
-
-  id <- object@id
-  peaks <- object@peaks
-  couplings <- object@couplings
-  couplings.leeway <- object@couplings.leeway
-  bounds <- object@bounds
-
-  valid <- TRUE
-  err <- c()
-
-  #---------------------------------------
-  # Checking name
-  if ( length(id) != 1 ) {
-    valid <- FALSE
-    new.err <- '"name" must be a character vector of length 1.'
-    err <- c(err, new.err)
-  }
-
-  #---------------------------------------
-  # Checking peak column names
-  valid.columns <- c('peak', 'position', 'width', 'height', 'fraction.gauss')
-
-  if (! identical(colnames(peaks), valid.columns) ) {
-    valid <- FALSE
-    new.err <- sprintf('"peaks" must have the following columns: %s',
-                       paste(valid.columns, collapse = ', '))
-    err <- c(err, new.err)
-  }
-
-  #---------------------------------------
-  # Checking that lower bounds match peaks
-  if (! is.null(bounds$lower) ) {
-
-    logic <- identical(colnames(bounds$lower), valid.columns)
-    if (! logic ) {
-      valid <- FALSE
-      new.err <- sprintf('"bounds$lower" must have the following columns: %s',
-                         paste(valid.columns, collapse = ', '))
-      err <- c(err, new.err)
-    }
-
-    logic <- identical(as.numeric(bounds$lower$peak), 
-                       as.numeric(peaks$peak))
-    if (! logic ) {
-      valid <- FALSE
-      new.err <- '"bounds$lower" peak column must match "peaks"'
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Checking that upper bounds match peaks
-  if (! is.null(bounds$upper) ) {
-
-    logic <- identical(colnames(bounds$upper), valid.columns)
-    if (! logic ) {
-      valid <- FALSE
-      new.err <- sprintf('"bounds$upper" must have the following columns: %s',
-                         paste(valid.columns, collapse = ', '))
-      err <- c(err, new.err)
-    }
-
-    logic <- identical(as.numeric(bounds$upper$peak), 
-                       as.numeric(peaks$peak))
-    if (! logic ) {
-      valid <- FALSE
-      new.err <- '"bounds$upper" peak column must match "peaks"'
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Checking couplings
-  if ( nrow(couplings) > 0 ) {
-
-    valid.columns <- c('peak.1', 'peak.2', 'position.difference', 'area.ratio')
-    if (! identical(colnames(couplings), valid.columns) ) {
-      valid <- FALSE
-      new.err <- sprintf('"couplings" must have the following columns: %s',
-                         paste(valid.columns, collapse = ', '))
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Checking area and width leeways
-  for ( leeway in names(couplings.leeway) ) {
-    if ( (couplings.leeway[leeway] < 0) || (couplings.leeway[leeway] >= 1) ) {
-      new.err <- sprintf('"couplings.leeway$%s" must be in the range [0, 1).',
-                         leeway)
-      valid <- FALSE
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Output
-  if (valid) TRUE
-  else err
-}
-
-# Add the extended validity testing
-setValidity("NMRResonance1D", validNMRResonance1D)
 
 
 
@@ -297,7 +185,7 @@ parse_peaks_1d <- function(coupling.string) {
 #' 
 #' @param peaks A peaks data.frame from NMRResonance1D object.
 #' @param number The number of output peaks per input peak.
-#' @param constant The coupling constant of the split.
+#' @param constant The coupling constant of the split (in ppm).
 #' 
 #' @return A modified data.frame suitable for NMRResonance1D object.
 #' 
@@ -356,9 +244,6 @@ enforce_couplings_1d <- function(nmrresonance, peaks = NULL) {
   if ( class(nmrresonance) != 'NMRResonance1D' ) {
     err <- '"nmrresonance" must be a valid NMRResonance1D object.'
     stop(err)
-  }
-  else {
-    validObject(nmrresonance)
   }
 
   # Filtering peaks
@@ -510,515 +395,35 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
                           fraction.gauss.leeway = fraction.gauss.leeway, 
                           area = area.leeway)
 
+  #---------------------------------------
+  # Adding infinite bounds
+
+  # Handling bounds if they exist
+  bounds <- list(lower = NULL, upper = NULL)
+
+  # Selecting default values
+  values <- list(lower = -Inf, upper = +Inf)
+  columns <- c('position', 'width', 'height', 'fraction.gauss')
+
+  for ( name in names(bounds) ) {
+    peaks.copy <- peaks
+    peaks.copy[ , columns] <- values[[name]]
+
+    bounds[[name]] <- peaks.copy
+  }
+
+  # Fraction gauss must stay within 0-1
+  bounds$lower$fraction.gauss <- 0
+  bounds$upper$fraction.gauss <- 1
+
   nmrresonance = new('NMRResonance1D', id = id, peaks = peaks, 
                                        couplings = couplings, 
-                                       couplings.leeway = couplings.leeway)
+                                       couplings.leeway = couplings.leeway,
+                                       lower.bounds = bounds$lower,
+                                       upper.bounds = bounds$upper)
 
   # And then updating if necessary
   if ( add.couplings ) enforce_couplings_1d(nmrresonance)
   else nmrresonance
 
 }
-
-
-
-#==============================================================================>
-# Basic setter and getter functions
-#==============================================================================>
-
-
-
-#' @rdname id
-#' @export
-setMethod("id", "NMRResonance1D", 
-  function(object) object@id
-)
-
-
-
-#' @rdname id-set
-#' @export
-setReplaceMethod("id", "NMRResonance1D",
-  function(object, value) {
-    object@id <- as.character(value)
-    validObject(object)
-    object 
-  })
-
-
-
-#------------------------------------------------------------------------------
-# Peaks
-
-
-
-#' @rdname peaks
-#' @export
-setMethod("peaks", "NMRResonance1D", 
-  function(object, include.id = FALSE) {
-    peaks <- object@peaks
-    if ( include.id && (nrow(peaks) > 0) ) {
-      cbind(resonance = object@id, peaks)
-    }
-    else peaks
-  })
-
-
-
-#' @rdname peaks-set
-#' @export
-setReplaceMethod("peaks", "NMRResonance1D",
-  function(object, value) {
-    object@peaks <- value
-    validObject(object)
-    object 
-  })
-
-
-
-#' @rdname update_peaks
-setMethod("update_peaks", "NMRResonance1D",
-  function(object, peaks, exclusion.level = nmroptions$exclusion$level,
-           exclusion.notification = nmroptions$exclusion$notification) {
-
-  # Check that columns match before continuing
-  current.peaks <- peaks(object)
-  err <- '"peaks" columns must match those of current peaks data.frame.'
-  if (! all(colnames(peaks) %in% colnames(current.peaks))) stop(err)
-
-  # Check for missing peaks
-  if ( exclusion.level %in% c('resonance', 'species') ) {
-    logic <- rep(TRUE, nrow(current.peaks) )
-  }
-  else {
-    current.ids <- current.peaks$peak
-    new.ids <- peaks$peak
-    logic <- ! current.ids %in% new.ids
-  }
-
-  if ( any(logic) ) {
-
-    msg <- paste('The following peaks were found outside the data range',
-                 'and were therefore excluded:\n',
-                  paste(current.ids[logic], collapse = ', '))
-
-    # Issue notification as requested
-    f.error <- function(x) {
-      msg <- paste('"exclusion.notification" must be one "none", "message",',
-                   '"warning", or "stop"')
-      stop(msg)
-    }
-
-    f.notification = switch(exclusion.notification, none = identity,
-                            message = message, warning = warning, stop = stop,
-                            f.error)
-    f.notification(msg)
-  } 
-
-  # Setting peaks
-  object@peaks <- peaks
-
-  # Updating bounds to make sure they still relate to peaks
-  bounds <- object@bounds
-  bounds$lower <- bounds$lower[!logic, ]
-  bounds$upper <- bounds$upper[!logic, ]
-  object@bounds <- bounds
-
-  object
-})
-
-
-
-#------------------------------------------------------------------------------
-# Couplings
-
-
-
-#' @rdname couplings
-#' @export
-setMethod("couplings", "NMRResonance1D", 
-  function(object, include.id = FALSE) {
-    couplings <- object@couplings
-    if ( include.id && (nrow(couplings) > 0) ) {
-      cbind(resonance.1 = object@id, resonance.2 = object@id, couplings)
-    }
-    else couplings
-  })
-
-
-
-#' @rdname couplings-set
-#' @export
-setReplaceMethod("couplings", "NMRResonance1D",
-  function(object, value) {
-    object@couplings <- value
-    validObject(object)
-    object 
-  })
-
-
-
-#------------------------------------------------------------------------------
-# Bounds
-
-#---------------------------------------
-#' Initialize empty set of bounds
-#' 
-#' Initalize lower and upper bounds with the correct dimensions, but set to
-#' -Inf and +Inf respectively
-#' 
-#' @param object NMRResonance1D object
-#' @param overwrite TRUE to overwrite existing bounds (to reset them), FALSE to
-#'                  quietly ignore any existing bounds.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @return Modified NMRResonance1D object.
-#' @name initialize_bounds
-setGeneric(".initialize_bounds", 
- function(object,  ...) {
-   standardGeneric(".initialize_bounds")
- })
-
-#' @rdname initialize_bounds
-setMethod(".initialize_bounds", "NMRResonance1D", 
-  function(object, overwrite = FALSE) {
-
-    # Handling bounds if they exist
-    bounds <- list(lower = object@bounds$lower, 
-                   upper = object@bounds$upper)
-
-    # Selecting default values
-    values <- list(lower = -Inf, upper = +Inf)
-    columns <- c('position', 'width', 'height', 'fraction.gauss')
-
-    for ( name in names(bounds) ) {
-      if ( is.null(bounds[[name]]) || overwrite ) {
-
-        peaks <- object@peaks
-        peaks[ , columns] <- values[[name]]
-
-        bounds[[name]] <- peaks
-      }
-    }
-
-    object@bounds$lower <- bounds$lower
-    object@bounds$upper <- bounds$upper
-
-    object
-  })
-
-
-
-#' @rdname bounds
-#' @export
-setMethod("bounds", "NMRResonance1D", 
-  function(object, include.id = FALSE) {
-    bounds <- .initialize_bounds(object)@bounds
-
-    lower <- bounds$lower
-    upper <- bounds$upper
-
-    if ( include.id ) {
-      if ( nrow(lower) > 0 ) {
-        bounds$lower <- cbind(resonance = object@id, lower)
-      }
-
-      if ( nrow(upper) > 0 ) {
-        bounds$upper <- cbind(resonance = object@id, upper)
-      }
-    }
-    bounds
-  })
-
-
-
-#' @rdname bounds-set
-#' @export
-setReplaceMethod("bounds", "NMRResonance1D",
-  function(object, value) {
-    object@bounds <- value
-    validObject(object)
-    object 
-  })
-
-
-
-#==============================================================================>
-#  Bounds
-#==============================================================================>
-
-
-
-#' @rdname set_general_bounds
-#' @export
-setMethod("set_general_bounds", "NMRResonance1D",
-  function(object, position = NULL, height = NULL, width = NULL,
-           fraction.gauss = NULL, nmrdata = NULL, widen = FALSE) {
-  
-  # Initializing bounds
-  object <- .initialize_bounds(object)
-  lower <- object@bounds$lower
-  upper <- object@bounds$upper
-
-  #---------------------------------------
-  # Scaling all bounds if nmrdata has been provided
-  if (! is.null(nmrdata) ) {
-
-    if ( class(nmrdata) != 'NMRData1D' ) {
-      err <- '"nmrdata" must be a valid NMRData1D object.'
-      stop(err)
-    }
-    else {
-      validObject(nmrdata)
-    }
-
-    processed <- nmrdata@processed
-    y.range <- max(Re(processed$intensity)) - min(Re(processed$intensity))
-    x.range <- max(processed$direct.shift) - min(processed$direct.shift)
-
-    position <- position * x.range + min(processed$direct.shift)
-    height <- height * y.range
-
-    sfo1 <- get_parameter(nmrdata, 'sfo1', 'procs')
-    width <- width * (x.range[2] - x.range[1]) * sfo1
-  }
-
-  #---------------------------------------
-  # Defining a bound check function
-  .check_bounds <- function(bounds) {
-
-    if ( length(bounds) != 2 ) {
-      err <- paste("All bounds must be vectors of two elements consisting",
-                   "of a lower and upper bound.")
-      stop(err)
-    }
-
-    if ( bounds[1] > bounds[2] ) {
-      err <- paste("Lower bound must be smaller than upper bound.",
-                   "Proceeding with current constraints will result in a",
-                   "fit error.")
-      warning(err)
-    }
-
-  }
-
-  #---------------------------------------
-  # Creating a list of bounds to loop through each in term
-  bounds = list(position = position, height = height, width = width,
-                fraction.gauss = fraction.gauss)
-
-  for ( parameter in names(bounds) ) {
-    if ( length(bounds[[parameter]]) > 0 ) {
-      .check_bounds(bounds[[parameter]])
-      lower[[parameter]] <- bounds[[parameter]][1]
-      upper[[parameter]] <- bounds[[parameter]][2]
-    }
-  }
-
-  # Fraction gauss is a little different because it must be 0-1
-  lower$fraction.gauss[lower$fraction.gauss < 0] <- 0
-  upper$fraction.gauss[upper$fraction.gauss > 0] <- 1
-
-  # Ensuring that parameters are only widened if desired
-  columns <- c('position', 'width', 'height', 'fraction.gauss')
-
-  new.lower <- unlist(lower[ , columns])
-  old.lower <- unlist(object@bounds$lower[ , columns])
-
-  new.upper <- unlist(upper[ , columns])
-  old.upper <- unlist(object@bounds$upper[ , columns])
-  
-  if (! widen ) {
-    new.lower <- ifelse(new.lower < old.lower, old.lower, new.lower)
-    new.upper <- ifelse(new.upper > old.upper, old.upper, new.upper)
-  }
-
-  object@bounds$lower[ , columns] <- new.lower
-  object@bounds$upper[ , columns] <- new.upper
-
-  validObject(object)
-  object
-})
-
-
-
-#' @rdname set_offset_bounds
-#' @export
-setMethod("set_offset_bounds", "NMRResonance1D",
-  function(object, position = NULL, height = NULL, width = NULL, 
-           relative = FALSE, widen = FALSE) {
-
-  # Initializing bounds
-  object <- .initialize_bounds(object)
-  peaks <- object@peaks
-  lower <- object@bounds$lower
-  upper <- object@bounds$upper
-
-  #---------------------------------------
-  # Defining a bound check function
-  .check_bounds <- function(bounds) {
-
-    if ( length(bounds) != 2 ) {
-      err <- paste("All bounds must be vectors of two elements consisting",
-                   "of a lower and upper bound.")
-      stop(err)
-    }
-
-    err2 <- "Proceeding with current constraints will result in a fit error."
-
-    if ( bounds[1] > 0 ) {
-      err <- paste("Lower offsets must be negative so that resulting bounds",
-                   "include initial values.", err2)
-      stop(err)
-    }
-
-    if ( bounds[2] < 0 ) {
-      err <- paste("Upper offsets must be positive so that resulting bounds",
-                   "include initial values.", err2)
-      stop(err)
-    }
-
-    if ( bounds[1] > bounds[2] ) {
-      err <- paste("Lower bound must be smaller than upper bound.", err2)
-      warning(err)
-    }
-
-  }
-
-  #---------------------------------------
-  # Creating a list of bounds to loop through each in term
-  bounds = list(position = position, height = height, width = width)
-
-  for ( parameter in names(bounds) ) {
-    if ( length(bounds[[parameter]]) > 0 ) {
-      .check_bounds(bounds[[parameter]])
-
-      lower.offset <- bounds[[parameter]][1]
-      upper.offset <- bounds[[parameter]][2]
-      
-     if ( relative ) {
-        lower.offset <- lower.offset*peaks[[parameter]]
-        upper.offset <- upper.offset*peaks[[parameter]]
-      } 
-
-      lower[[parameter]] <- peaks[[parameter]] + lower.offset
-      upper[[parameter]] <- peaks[[parameter]] + upper.offset
-    }
-  }
-
-  # Ensuring that parameters are only widened if desired
-  columns <- c('position', 'width', 'height', 'fraction.gauss')
-
-  new.lower <- unlist(lower[ , columns])
-  old.lower <- unlist(object@bounds$lower[ , columns])
-
-  new.upper <- unlist(upper[ , columns])
-  old.upper <- unlist(object@bounds$upper[ , columns])
-  
-  if (! widen ) {
-    new.lower <- ifelse(new.lower < old.lower, old.lower, new.lower)
-    new.upper <- ifelse(new.upper > old.upper, old.upper, new.upper)
-  }
-
-  object@bounds$lower[ , columns] <- new.lower
-  object@bounds$upper[ , columns] <- new.upper
-
-  validObject(object)
-  object
-})
-
-
-
-#' @rdname set_conservative_bounds
-#' @export
-setMethod("set_conservative_bounds", "NMRResonance1D",
-  function(object, position = TRUE,  height = TRUE, width = TRUE, 
-           nmrdata = NULL, widen = FALSE) { 
-
-  # First, do a single pass over general bounds with no reference
-  if ( height )  gen.height <- c(0, Inf)
-  else gen.height <- NULL
-
-  if ( width ) gen.width <- c(0.003, 3)
-  else gen.width <- NULL
-
-  object <- set_general_bounds(object, height = gen.height, width = gen.width,
-                               widen = widen)
-
-  # Adding position offsets
-  if ( position ) {
-    object <- set_offset_bounds(object, position = c(-0.1, 0.1), widen = widen)
-  }
-
-  # If nmrdata is provided, add further constraints  
-  if (! is.null(nmrdata) ) {
-    
-    if ( class(nmrdata) != 'NMRData1D' ) {
-      err <- '"nmrdata" must be a valid NMRData1D object.'
-      stop(err)
-    } else {
-      validObject(nmrdata)
-    }
-
-    if ( position )  gen.position <- c(0, 1)
-    else gen.position <- NULL
-
-    if ( height ) gen.height <- c(0, 1.5)
-    else gen.height <- NULL
-
-    if ( width ) gen.width <- c(0, 0.2)
-    else gen.width <- NULL
-
-    object <- set_general_bounds(object, position = gen.position, 
-                                 height = gen.height, width = gen.width,
-                                 nmrdata = nmrdata, widen = widen)
-  }
-
-  object
-  })
-
-
-
-#' @rdname set_peak_type
-#' @export
-setMethod("set_peak_type", "NMRResonance1D",
-  function(object, peak.type) {
-
-    # Initializing bounds
-    object <- .initialize_bounds(object)
-    peaks <- object@peaks
-    lower <- object@bounds$lower
-    upper <- object@bounds$upper
-
-    # Getting rid of empty spaces and capitals
-    peak.type <- tolower(gsub('\\s', '', peak.type))
-    peak.types <- c('lorentz', 'voigt', 'gauss', 'any')
-    peak.type <- pmatch(peak.type, peak.types, nomatch = -1)
-
-    if ( peak.type == 1 ) {
-      lower$fraction.gauss <- 0
-      upper$fraction.gauss <- 0
-      peaks$fraction.gauss <- 0
-    } else if ( peak.type == 2 ) {
-      lower$fraction.gauss <- 1e-6
-      upper$fraction.gauss <- 1 - 1e-6
-      peaks$fraction.gauss <- 0.5
-    } else if ( peak.type == 3 ) {
-      lower$fraction.gauss <- 1
-      upper$fraction.gauss <- 1
-      peaks$fraction.gauss <- 1
-    } else if ( peak.type == 4 ) {
-      lower$fraction.gauss <- 0
-      upper$fraction.gauss <- 1
-    } else {
-      peak.types <- paste(peak.types, collapse = ', ')
-      err <- sprintf('Peak type must be one of %s', peak.types)
-      stop(err)
-    }
-
-    object@bounds <- list(lower = lower, upper = upper)
-    object@peaks <- peaks
-
-    object
-})
-

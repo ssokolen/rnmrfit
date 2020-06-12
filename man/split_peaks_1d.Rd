@@ -11,7 +11,7 @@ split_peaks_1d(peaks, number, constant)
 
 \item{number}{The number of output peaks per input peak.}
 
-\item{constant}{The coupling constant of the split.}
+\item{constant}{The coupling constant of the split (in ppm).}
 }
 \value{
 A modified data.frame suitable for NMRResonance1D object.

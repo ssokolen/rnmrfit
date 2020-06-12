@@ -286,15 +286,6 @@ setMethod("id", "NMRSpecies2D",
 
 
 
-#' @rdname id-set
-#' @export
-setReplaceMethod("id", "NMRSpecies2D",
-  function(object, value) {
-    object@id <- as.character(value)
-    validObject(object)
-    object 
-  })
-
 
 
 #------------------------------------------------------------------------------
@@ -314,111 +305,6 @@ setMethod("peaks", "NMRSpecies2D",
 
 
 
-#' @rdname peaks-set
-#' @export
-setReplaceMethod("peaks", "NMRSpecies2D",
-  function(object, value) {
-
-    # Check that data.frame has a resonance column
-    err <- 'New peaks data.frame must value a "resonance" column.'
-    if (! 'resonance' %in% colnames(value) ) stop(err)
-
-    # Check that new resonances match current resonances
-    new.names <- unique(value$resonance)
-    old.names <- unlist(lapply(object@resonances, id))
-    logic <- ! new.names %in% old.names
-    wrn <- sprintf('The following resonances are not defined, ignoring: %s',
-                   paste(new.names[logic], collapse = ', '))
-
-    if ( any(logic) ) warning(wrn)
-
-    # Splitting up new values and assigning
-    new.peaks <- by(value, value$resonance, function(d) select(d, -resonance))
-    indexes <- which(old.names %in% new.names)
-
-    for ( i in indexes ) {
-      resonance <- object@resonances[[i]]
-      peaks(resonance) <- new.peaks[[old.names[i]]]
-      object@resonances[[i]] <- resonance
-    }
-
-    validObject(object)
-    object 
-  })
-
-
-
-#' @rdname update_peaks
-setMethod("update_peaks", "NMRSpecies2D",
-  function(object, peaks, exclusion.level = nmroptions$exclusion$level,
-           exclusion.notification = nmroptions$exclusion$notification) {
-
-  # Check that columns match before continuing
-  current.peaks <- peaks(object)
-  err <- '"peaks" columns must match those of current peaks data.frame.'
-  if (! all(colnames(peaks) %in% colnames(current.peaks))) stop(err)
-
-  # Check for missing peaks
-  current.ids <- apply(current.peaks[, c('resonance', 'peak')], 1, 
-                       paste, collapse = '-')
-
-  new.ids <- apply(peaks[, c('resonance', 'peak')], 1, 
-                   paste, collapse = '-')
-  logic <- ! current.ids %in% new.ids
-
-  if ( any(logic) ) {
-
-    msg <- paste('The following peaks were found outside the data range',
-                 'and were therefore excluded:\n',
-                  paste(current.ids[logic], collapse = ', '))
-
-    # Expanding message based on level
-    if ( exclusion.level %in% c('resonance', 'species') ) {
-      removed.resonances <- unique(current.peaks$resonance[logic])
-
-      msg <- paste(msg, 
-                   '\nBased on the current exclusion.level, the following',
-                   'resonances were further excluded:\n',
-                   paste(removed.resonances, collapse = ', '))
-
-      # Removing resonances from updated peaks
-      peaks <- filter(peaks, ! resonance %in% removed.resonances)
-    }
-
-    # Issue notification as requested
-    f.error <- function(x) {
-      msg <- paste('"exclusion.notification" must be one "none", "message",',
-                   '"warning", or "stop"')
-      stop(msg)
-    }
-
-    f.notification = switch(exclusion.notification, none = identity,
-                            message = message, warning = warning, stop = stop,
-                            f.error)
-    f.notification(msg)
-  }
-
-  # Initializing removal index
-  indexes <- c()
-
-  # Updating peaks
-  for ( i in 1:length(object@resonances) ) {
-    resonance <- object@resonances[[i]]
-    id <- id(resonance) 
-    sub.peaks <- peaks %>% filter(resonance == id) %>% select(-resonance)
-
-    if ( nrow(sub.peaks) == 0 ) indexes <- c(indexes, i) 
-
-    resonance <- update_peaks(resonance, sub.peaks,
-                              exclusion.level = exclusion.level,
-                              exclusion.notification = 'none')
-    object@resonances[[i]] <- resonance
-  }
-
-  if ( length(indexes) > 0 ) object@resonances <- object@resonances[-indexes]
-
-  object
-})
 
 
 #------------------------------------------------------------------------------

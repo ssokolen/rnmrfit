@@ -31,27 +31,11 @@ opts <- list(
     } 
   ),
 
-  "exclusion" = list(
-    .value = list(level = 'peak', notification = 'warning'),
-    .length = 2,
-    .class = "list",
-    .validate = function (x) {
-      all(names(x) %in% c('level', 'notification')) &&
-      ( x[['level']] %in% c('peak', 'resonance', 'species') ) &&
-      ( x[['notification']] %in% c('none', 'message', 'warning', 'stop') )
-    }
-  ),
-
   "fit" = list(
     .value = list(
       opts = list(),
       init = function (object, ...) {
-
-        args <- list(...)[c('exclusion.level', 'exclusion.notification')]
-        args$nmrdata <- object@nmrdata
-        args <- c(list(object = object), args)
-
-        object <- do.call(initialize_heights, args)
+        object <- initialize_heights(object, nmrdata = object@nmrdata)
         object <- set_conservative_bounds(object, nmrdata = object@nmrdata)
         object
       }

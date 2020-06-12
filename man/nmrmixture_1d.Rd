@@ -4,18 +4,21 @@
 \alias{nmrmixture_1d}
 \title{Generate an NMRMixture1D object}
 \usage{
-nmrmixture_1d(species, ...)
+nmrmixture_1d(species, id = "mixture", ...)
 }
 \arguments{
 \item{species}{A list of NMRSpecies1D objects or other objects that can be
 converted to NMRSpecies1D objects. See ?nmrresonance_1d and
 ?nmrspecies_1d for more details about this conversion. If list
-elements are named, these names will be use to replace
-species ids.}
+elements are named, these names will be use to replace species
+ids.}
 
-\item{...}{Options passed to nmrspecies_1d if resonances are being
-converted from character/numeric vectors. See ?nmrresonance_1d for
-more details.}
+\item{id}{An optional string specifying mixture name. If left empty, the
+mixture name is left as the default "mixture"}
+
+\item{...}{Options passed to nmrspecies_1d if resonances are being converted
+from character/numeric vectors. See ?nmrresonance_1d for more
+details.}
 }
 \value{
 An NMRMixture1D object.

@@ -282,16 +282,7 @@ setMethod("id", "NMRResonance2D",
 
 
 
-#' @rdname id-set
-#' @export
-setReplaceMethod("id", "NMRResonance2D",
-  function(object, value) {
-    id <- as.character(value)
-    object@direct@id <- id
-    object@indirect@id <- id
-    validObject(object)
-    object 
-  })
+
 
 
 
@@ -335,16 +326,7 @@ setMethod("id", "NMRResonance2D",
 
 
 
-#' @rdname id-set
-#' @export
-setReplaceMethod("id", "NMRResonance2D",
-  function(object, value) {
-    id <- as.character(value)
-    object@direct@id <- id
-    object@indirect@id <- id
-    validObject(object)
-    object 
-  })
+
 
 
 
@@ -362,22 +344,7 @@ setMethod("peaks", "NMRResonance2D",
 
 
 
-#' @rdname peaks-set
-#' @export
-setReplaceMethod("peaks", "NMRResonance2D",
-  function(object, value) {
-    split_dimensions(object, `peaks<-`, value)
-})
 
-
-
-#' @rdname update_peaks
-setMethod("update_peaks", "NMRResonance2D",
-  function(object, peaks, exclusion.level = nmroptions$exclusion$level,
-           exclusion.notification = nmroptions$exclusion$notification) {
-    split_dimensions(object, update_peaks, peaks, 
-                     exclusion.level, exclusion.notification)
-})
 
 
 
