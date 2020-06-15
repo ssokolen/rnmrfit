@@ -335,8 +335,8 @@ setMethod("apply_phase", "NMRData1D",
   im <- Im(processed$intensity)
   re <- Re(processed$intensity)
 
-  intensity <- cmplx1(r = re * cos(phase.total) + im * sin(phase.total),
-                      i= im * cos(phase.total) - re * sin(phase.total))
+  intensity <- cmplx1(r =  re * cos(phase.total) + im * sin(phase.total),
+                      i = -re * sin(phase.total) + im * cos(phase.total))
 
   processed$intensity <- intensity
   object@processed <- processed

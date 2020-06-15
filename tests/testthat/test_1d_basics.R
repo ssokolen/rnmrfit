@@ -18,18 +18,6 @@ test_that("1d resonance construction works", {
   expect_true(all(couplings(resonance, TRUE)[,"resonance.1"] == id)) 
   expect_true(all(couplings(resonance, TRUE)[,"resonance.2"] == id)) 
 
-  # Checking absolute general bounds
-  resonance <- set_general_bounds(resonance, 
-    position = c(0, 5), width = c(0, 5), height = c(0, 5), 
-  )
-  expect_true(all(lower_bounds(resonance)$position == 0))
-  expect_true(all(lower_bounds(resonance)$width == 0))
-  expect_true(all(lower_bounds(resonance)$heigft == 0))
-
-  expect_true(all(upper_bounds(resonance)$position == 5))
-  expect_true(all(upper_bounds(resonance)$width == 5))
-  expect_true(all(upper_bounds(resonance)$heigft == 5))
-
 })
 
 #==============================================================================>
@@ -63,14 +51,6 @@ test_that("1d species construction works", {
   expect_warning(peaks(species) <- rbind(peaks(r1, TRUE), peaks(r3, TRUE)),
                  "The following resonance is not defined, ignoring: R3")
 
-  # Checking bounds
-  species <- set_general_bounds(species, 
-    position = c(0, 5), width = c(0, 5), height = c(0, 5), 
-  )
-  expect_true(all(lower_bounds(species)$position == 0))
-  expect_true(all(lower_bounds(species)$width == 0))
-  expect_true(all(lower_bounds(species)$heigft == 0))
-
 })
 
 #==============================================================================>
@@ -84,7 +64,7 @@ test_that("1d fit construction works", {
 
   n <- 200
   x <- seq(0, 1, length.out = n)
-  y <- values(r_ideal, x) %>% add_noise(0.02)
+  y <- values(r_ideal, x)
   p <- tibble(direct.shift = x,
               intensity = y)
 
@@ -96,17 +76,8 @@ test_that("1d fit construction works", {
   r <- nmrresonance_1d('0.485 s')
   fit <- nmrfit_1d(r, d, delay = TRUE)
 
-  # Checking absolute general bounds
-  fit <- set_general_bounds(fit, 
-    position = c(0, 5), width = c(0, 5), height = c(0, 5), 
-  )
-  expect_true(all(lower_bounds(fit)$position == 0))
-  expect_true(all(lower_bounds(fit)$width == 0))
-  expect_true(all(lower_bounds(fit)$heigft == 0))
-
-  expect_true(all(upper_bounds(fit)$position == 5))
-  expect_true(all(upper_bounds(fit)$width == 5))
-  expect_true(all(upper_bounds(fit)$heigft == 5))
+  # Checking getters
+  expect_equal(peaks(r)$position, peaks(fit)$position)
 
 })
 

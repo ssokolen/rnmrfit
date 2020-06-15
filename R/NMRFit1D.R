@@ -462,6 +462,12 @@ setMethod("fit", "NMRFit1D",
   y <- complex(re = Re(y), im = Im(y))
   y <- y/y.range[2]
 
+  # It's helpful for phasing for x to go left to right
+  if ( x.range[1] > x.range[2] ) {
+    x <- rev(x)
+    y <- rev(y)
+  }
+
   # Scaling and unpacking all parameters
   peaks <- peaks(object)
   n.peaks <- nrow(peaks)
@@ -621,8 +627,8 @@ setMethod("show", "NMRFit1D",
     baseline <- baseline(object)
     knots <- knots(object)
     phase <- phase(object)
-    lower_bounds <- lower_bounds(object)
-    upper_bounds <- upper_bounds(object)
+    lower <- lower_bounds(object)
+    upper <- upper_bounds(object)
     couplings <- couplings(object)
 
     cat('An object of NMRFit1D class\n\n')
@@ -657,9 +663,11 @@ setMethod("show", "NMRFit1D",
 
     # Bounds
     columns <- c('position', 'width', 'height', 'fraction.gauss')
-    
-    range <- paste('(', lower, ', ', upper, ')', sep = '')
-    peaks[ , columns] <- range
+    for ( column in columns ) {
+      range <- paste('(', lower[, column], ', ', 
+                          upper[, column], ')', sep = '')
+      peaks[, column] <- range
+    }
 
     cat('Bounds (lower, upper):\n\n')
     print(peaks)
@@ -669,7 +677,7 @@ setMethod("show", "NMRFit1D",
     cat('Baseline and phase correction bounds:\n\n')
 
     cat('Real baseline: ')
-    if ( length(bounds$lower$baseline) > 0) {
+    if ( length(object@lower.bounds$baseline) > 0) {
       lower <- round(Re(object@lower.bounds$baseline), 4)
       upper <- round(Re(object@upper.bounds$baseline), 4)
       
@@ -945,7 +953,7 @@ plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,
   y.data <- d$intensity
 
   # The overall fit
-  sf <- get_parameter(x@nmrdata, 'sfo1', 'acqus')
+  sf <- get_parameter(x@nmrdata, 'sfo1', 'acqus', error = TRUE)
   if ( is.null(sf) ) sf <- nmroptions$direct$sf
 
   f <- f_lineshape(x, sf = sf, sum.peaks = TRUE)

@@ -57,9 +57,11 @@ setMethod("show", "NMRScaffold1D",
 
   # Bounds
   columns <- c('position', 'width', 'height', 'fraction.gauss')
-
-  range <- paste('(', lower, ', ', upper, ')', sep = '')
-  peaks[ , columns] <- range
+  for ( column in columns ) {
+    range <- paste('(', lower[, column], ', ', 
+                        upper[, column], ')', sep = '')
+    peaks[, column] <- range
+  }
 
   cat('Bounds (lower, upper):\n\n')
   print(peaks)
@@ -511,7 +513,8 @@ setMethod("set_general_bounds", "NMRScaffold1D",
   if ( "children" %in% slotNames(object) ) {
 
     object@children <- lapply(object@children, set_general_bounds, 
-      position, height, width, fraction.gauss, nmrdata, widen
+      position = position, height = height, width = width, 
+      fraction.gauss = fraction.gauss, nmrdata = nmrdata, widen = widen
     )
     return(object)
   }
@@ -537,8 +540,8 @@ setMethod("set_general_bounds", "NMRScaffold1D",
     position <- position * x.range + min(processed$direct.shift)
     height <- height * y.range
 
-    sfo1 <- get_parameter(nmrdata, 'sfo1', 'procs')
-    width <- width * x.range * sfo1
+    sfo1 <- get_parameter(nmrdata, 'sfo1', 'acqus', error = TRUE)
+    width <- width * (x.range * sfo1)
   }
 
   #---------------------------------------
@@ -573,7 +576,7 @@ setMethod("set_general_bounds", "NMRScaffold1D",
 
   # Fraction gauss is a little different because it must be 0-1
   lower$fraction.gauss[lower$fraction.gauss < 0] <- 0
-  upper$fraction.gauss[upper$fraction.gauss > 0] <- 1
+  upper$fraction.gauss[upper$fraction.gauss > 1] <- 1
 
   # Ensuring that parameters are only widened if desired
   update_bounds(object, lower, upper, widen)
@@ -750,7 +753,7 @@ setMethod("set_conservative_bounds", "NMRScaffold1D",
   if ( height )  gen.height <- c(0, Inf)
   else gen.height <- NULL
 
-  if ( width ) gen.width <- c(0.003, 3)
+  if ( width ) gen.width <- c(0.003, 5)
   else gen.width <- NULL
 
   object <- set_general_bounds(object, height = gen.height, width = gen.width,
