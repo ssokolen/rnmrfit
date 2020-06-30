@@ -274,91 +274,96 @@ obj_sum.NMRData2D <- function(x) format(x)
 
 
 #------------------------------------------------------------------------------
-# Direct
+# Projection
 
 #---------------------------------------
-#' Get 1D projection of direct dimension
+#' Get 1D projection of dimension
 #' 
 #' Warning: this is currently a convenience method to facilitate internal data
 #' manipulation, so the conversion may drop important data. When applied to a
-#' an NMRScaffold2D object, the indirect components are simply dropped, and
-#' when applied to an NMRData2D object, the indirect components are summed
-#' together to give a 1D projection. No normalization is performed so non-
-#' uniform sampling may result in distorted results.
+#' an NMRScaffold2D object, non-selected components are simply dropped, and
+#' when applied to an NMRData2D object, the non-selected are summed together to
+#' give a 1D projection. No normalization is performed so non-uniform sampling
+#' may result in distorted results. The functions direct(object) and
+#' indirect(object) are provided as shortcuts to projection(object, "direct")
+#' and projection(object, "indirect").
 #' 
 #' @param object An NMRData2D or NMRScaffold2D object.
+#' @param dimension Currently limited to either "direct" or "indirect"
+#' @param ... Additional arguments passed to inheriting methods.
 #' 
-#' @name direct
-setGeneric("direct", 
-  function(object) standardGeneric("direct")
+#' @name project
+setGeneric("projection", 
+  function(object, dimension, ...) standardGeneric("projection")
 )
 
-#' @rdname direct
+#' @rdname projection
 #' @export
-setMethod("direct", "NMRData2D",
-  function(object) {
+setMethod("projection", "NMRData2D",
+  function(object, dimension) {
+
+  # Double checking if dimension exists
+  if ( dimension == "direct" ) {
+    r <- "rr"
+    i <- "ir"
+  } else if ( dimension == "indirect" ) {
+    r <- "rr"
+    i <- "ri"
+  } else {
+    err <- sprintf('Dimension "%s" not found', dimension)
+    stop(err)
+  }
+
+  x <- paste(c(dimension, "shift"), sep = ".")
+
+  # Parameters
+  procs = object@procs[[dimension]]
+  acqus = object@acqus[[dimension]]
 
   # Handling processed data
   d <- object@processed %>%
-    mutate(r = intensity$rr,  i = intensity$ir) %>%
+    mutate(r = intensity[[r]],  i = intensity[[i]]) %>%
     select(-intensity) %>%
-    group_by(direct.shift) %>%
+    group_by( {{ x }} ) %>%
     summarize(r = sum(r), i = sum(i)) %>%
     ungroup()
 
-  d <- tibble(direct.shift = d$direct.shift, 
-              intensity = cmplx1(r = d$r, i = d$i))
-
-  # Parameters
-  procs = object@procs$direct
-  acqus = object@acqus$direct
+  d <- tibble(direct.shift = d[[x]], intensity = cmplx1(r = d$r, i = d$i))
 
   new("NMRData1D", processed = d, procs = procs, acqus = acqus)
+
 })
 
 
 
-#------------------------------------------------------------------------------
-# Indirect
+#' @rdname projection
+#' @export
+setGeneric("direct", 
+  function(object) standardGeneric("direct")
+)
 
-#---------------------------------------
-#' Get 1D projection of indirect dimension
-#' 
-#' Warning: this is currently a convenience method to facilitate internal data
-#' manipulation, so the conversion may drop important data. When applied to a
-#' an NMRScaffold2D object, the direct components are simply dropped, and
-#' when applied to an NMRData2D object, the direct components are summed
-#' together to give a 1D projection. No normalization is performed so non-
-#' uniform sampling may result in distorted results.
-#' 
-#' @param object An NMRData2D or NMRScaffold2D object.
-#' 
-#' @name indirect
+#' @rdname projection
+#' @export
+setMethod("direct", "NMRData2D",
+  function(object) {
+  
+  projection(object, "direct")
+})
+
+
+
+#' @rdname projection
+#' @export
 setGeneric("indirect", 
   function(object) standardGeneric("indirect")
 )
 
-#' @rdname indirect
+#' @rdname projection
 #' @export
 setMethod("indirect", "NMRData2D",
   function(object) {
-
-  # Handling processed data
-  d <- object@processed %>%
-    mutate(r = intensity$rr,  i = intensity$ri) %>%
-    select(-intensity) %>%
-    group_by(indirect.shift) %>%
-    summarize(r = sum(r), i = sum(i)) %>%
-    ungroup()
-
-  d <- tibble(direct.shift = d$indirect.shift, 
-              intensity = cmplx1(r = d$r, i = d$i))
-
-  # Parameters
-  procs = object@procs$indirect
-  acqus = object@acqus$indirect
-
-  new("NMRData1D", processed = d, procs = procs, acqus = acqus)
+  
+  projection(object, "indirect")
 })
 
 

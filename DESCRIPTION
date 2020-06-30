@@ -23,6 +23,7 @@ Collate:
     'NMRData.R'
     'NMRData1D.R'
     'NMRData2D.R'
+    'NMRScaffold.R'
     'NMRScaffold1D.R'
     'NMRScaffold2D.R'
     'NMRResonance1D.R'

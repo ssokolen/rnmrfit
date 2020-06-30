@@ -6,9 +6,8 @@
 \alias{NMRScaffold1D}
 \title{Super-class for all 1D peak descriptions.}
 \description{
-This class is not meant to be used directly. Instead, it provides a common
-framework for methods around visualization and inspection of NMRResonance1D,
-NMRSpecies1D, NMRMixture1D, and NMRFit1D objects. As such, it has no slots
-and all of its methods are meant to be inherited by the objects listed
-above.
+This class is not meant to be used directly. Instead, it provides a set of
+common methods for NMRResonance1D, NMRSpecies1D, NMRMixture1D, and NMRFit1D
+objects. As such, it has no slots and all of its methods are meant to be
+inherited by the objects listed above.
 }

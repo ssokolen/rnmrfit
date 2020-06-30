@@ -11,19 +11,16 @@
 #------------------------------------------------------------------------------
 #' Super-class for all 2D peak descriptions.
 #' 
-#' This class is not meant to be used directly. Instead, it provides a common
-#' framework for methods around visualization and inspection of NMRScaffold2D,
-#' NMRSpecies2D, NMRMixture2D, and NMRFit2D objects. Essentially, all of the 2D
-#' methods merely wrap around their 1D counterparts, meaning that the same
-#' basic approach can be used for all of them.
-#'
-#' @slot direct An NMRScaffold1D object.
-#' @slot indirect An NMRScaffold1D object.
+#' This class is not meant to be used directly. Instead, it provides a set of
+#' common methods for NMRResonance2D, NMRSpecies2D, NMRMixture2D, and NMRFit2D
+#' objects. Essentially, all of the 2D methods merely wrap around their 1D
+#' counterparts, meaning that the same basic approach can be used for all of
+#' them.
 #' 
 #' @name NMRScaffold2D-class
 #' @export
 NMRScaffold2D <- setClass("NMRScaffold2D",
-  contains = "VIRTUAL",
+  contains = "NMRScaffold",
 )
 
 
@@ -45,7 +42,7 @@ setMethod("show", "NMRScaffold2D",
 
     direct <- direct(object)
     indirect <- indirect(object)
-    id <- ifelse( 'id' %in% slotNames(object), sprintf('(%s)', id(object)), '')
+    id <- id(object)
 
     cat('\n\n')
     msg <- sprintf('\nAn object of %s class (%s)\n\n', class(object), id)
@@ -63,6 +60,146 @@ setMethod("show", "NMRScaffold2D",
     cat('--------------------------\n\n')
     show(indirect)
 
+})
+
+
+
+#==============================================================================>
+#  Helper functions
+#==============================================================================>
+
+
+
+#---------------------------------------
+#' Combine direct and indirect dimensions
+#' 
+#' This is an internal function used for all getter functions that output a
+#' data.frame object. Essentially, the getter is passed on to the direct and
+#' indirect components, a dimension column is added and the resulting objects
+#' are stitched together.
+#' 
+#' @param object An NMRScaffold2D object.
+#' @param getter Getter function.
+#' @param ... Additional arguments passed to inheriting methods.
+#' 
+#' @name combine_dimensions
+setGeneric("combine_dimensions", 
+  function(object, ...) standardGeneric("combine_dimensions")
+)
+
+#' @rdname combine_dimensions
+setMethod("combine_dimensions", "NMRScaffold2D", 
+  function(object, getter, ...) {
+    out <- map(object@dimensions, getter, ...)
+    bind_rows(out, .id = "dimension") 
+})
+
+
+
+#---------------------------------------
+#' Split direct and indirect dimensions
+#' 
+#' This is an internal function used for all setter functions that input a
+#' data.frame object. Essentially, the input value is first split based on a
+#' "dimension" column, with the setter being passed on to the direct and
+#' indirect components.
+#' 
+#' @param object An NMRScaffold2D object.
+#' @param setter Setter function.
+#' @param value Value stored in specified slot.
+#' @param ... Additional arguments passed to inheriting methods.
+#' 
+#' @name split_dimensions
+setGeneric("split_dimensions", 
+  function(object, setter, value) standardGeneric("split_dimensions")
+)
+
+#' @rdname split_dimensions
+#' @export
+setMethod("split_dimensions", "NMRScaffold2D", 
+  function(object, setter, value) {
+
+    # First the input must be a data.frame of some sort
+    err <- 'Input value must be a data.frame type object.'
+    if (! 'data.frame' %in% class(value) ) stop(err)
+
+    # Second the input must have "dimension" column
+    err <- 'Input data.frame must have a "dimension" column.'
+    if (! 'dimension' %in% colnames(value) ) stop(err)
+
+    # Third, the dimension column must only contain direct and indirect values
+    err <- 'The "dimension" column must contain "direct" and "indirect".'
+    entries <- sort(unique(as.character(value$dimension)))
+    if (! identical(entries, c('direct', 'indirect')) ) stop(err)
+
+    # If all of the above is met, then split components
+    direct <- filter(value, dimension == 'direct') %>% select(-dimension)
+    object@dimensions$direct <- setter(object@dimensions$direct, direct)
+
+    indirect <- filter(value, dimension == 'indirect') %>% select(-dimension)
+    object@dimensions$indirect <- setter(object@dimensions$indirect, indirect)
+    
+    validObject(object)
+    object
+})
+
+
+
+#------------------------------------------------------------------------------
+# Projection
+
+
+
+#' @rdname projection
+#' @export
+setMethod("projection", "NMRScaffold2D",
+  function(object, dimension) {
+
+  slot.names <- slotNames(object)
+
+  # If the object has a dimensions slot, produce contents
+  if ( "dimensions" %in% slot.names ) {
+    if (! dimension %in% names(object@dimensions) ) {
+      err <- sprintf('Dimension "%s" not found', dimension)
+      stop(err)
+    }
+
+    return(object@dimensions[[dimension]])
+  }
+
+  # Otherwise, necessary to construct a new object
+  projection <- class(object) %>% str_replace("2", "1")
+
+  # All properties are conserved except children
+  f <- function(x) slot(object, x)
+  slot.values <- map(slot.names, f) %>%
+    set_names(slot.names)
+
+  f <- function(...) new(projection, ...)
+  projection <- do.call(f, slot.values)
+
+  # The projection is then propogated down to children
+  f <- function(x) projection(x, dimension)
+  projection@children <- map(projection@children, f) %>%
+    set_names(names(projection@children))
+
+  return(projection)
+})
+
+#' @rdname projection
+#' @export
+setMethod("direct", "NMRScaffold2D",
+  function(object) {
+  
+  projection(object, "direct")
+})
+
+#' @rdname projection
+#' @export
+setMethod("indirect", "NMRScaffold2D",
+  function(object) {
+  
+  projection(object, "indirect")
 })
 
 

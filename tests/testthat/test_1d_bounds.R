@@ -15,6 +15,7 @@ check_general_bounds <- function(object, par_in, par_out, tolerance) {
 
   for ( par in names(par_out) ) {
     if ( par %in% c("position", "width", "height", "fraction.gauss")) {
+
       expect_equal(lower_bounds(object)[[par]], 
                    rep(par_out[[par]][[1]], n))
       expect_equal(upper_bounds(object)[[par]], 

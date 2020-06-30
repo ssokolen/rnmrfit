@@ -14,7 +14,7 @@
 #' Essentially, this class is used to collect and define volume relations
 #' between multiple resonances as part of a single species.
 #' 
-#' @slot resonances A list of NMRResonance2D objects.
+#' @slot children A list of NMRResonance2D objects.
 #' @slot connections A data.frame relating the volumes of the resonances.
 #' @slot connections.leeway A value specifying how tightly enforced the
 #'                          connection constraints on resonance volumes should
@@ -28,90 +28,20 @@
 NMRSpecies2D <- setClass("NMRSpecies2D",
   contains = 'NMRScaffold2D',
   slots = c(
+    name = 'character',
     id = 'character',
-    resonances = 'list',
+    children = 'list',
     connections = 'data.frame',
     connections.leeway = 'numeric'
   ),
   prototype = prototype(
-    id = 'species',
-    resonances = list(),
+    name = "species",
+    id = "species",
+    children = list(),
     connections = data.frame(),
     connections.leeway = 0
   )
 )
-
-
-
-#==============================================================================>
-#  Validation methods
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' NMRSpecies2D validity test
-#'
-validNMRSpecies2D <- function(object) {
-
-  resonances <- object@resonances
-  connections <- object@connections 
-  connections.leeway <- object@connections.leeway
-
-  valid <- TRUE
-  err <- c()
-
-  #---------------------------------------
-  # Checking name
-  if ( length(id) != 1 ) {
-    valid <- FALSE
-    new.err <- '"name" must be a character vector of length 1.'
-    err <- c(err, new.err)
-  }
-
-  #---------------------------------------
-  # Checking that all resonance list items are valid
-  for ( resonance in resonances ) {
-    logic1 <- class(resonance) != 'NMRResonance2D'
-    logic2 <- ! validObject(resonance)
-    if ( logic1 || logic2 ) {
-      valid <- FALSE
-      new.err <- paste('All elements of "resonances" list must be valid',
-                       'NMRResonance2D objects')
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Checking connections 
-  if ( nrow(connections) > 0 ) {
-
-    valid.columns <- c('resonance.1', 'resonance.2', 'volume.ratio')
-    if (! identical(colnames(connections), valid.columns) ) {
-      valid <- FALSE
-      new.err <- sprintf('"connections" must have the following columns: %s',
-                         paste(valid.columns, collapse = ', '))
-      err <- c(err, new.err)
-    }
-
-  }
-
-  #---------------------------------------
-  # Checking connections leeway
-  if ( (connections.leeway < 0) || (connections.leeway >= 1) ) {
-    new.err <- '"connections.leeway" must be in the range [0, 1).'
-    valid <- FALSE
-    err <- c(err, new.err)
-  }
-
-  #---------------------------------------
-  # Output
-  if (valid) TRUE
-  else err
-}
-
-# Add the extended validity testing
-setValidity("NMRSpecies2D", validNMRSpecies2D)
 
 
 
@@ -217,110 +147,10 @@ nmrspecies_2d <- function(resonances, volumes = NULL, id = NULL,
   # Generating id if it doesn't exist
   if ( is.null(id) ) id <- paste(valid.ids, collapse = '-')
 
-  new('NMRSpecies2D', id = id, resonances = resonances.list, 
+  new('NMRSpecies2D', id = id, children = resonances.list, 
                       connections = connections, 
                       connections.leeway = connections.leeway)
 }
-
-
-
-#==============================================================================>
-# Basic setter and getter functions
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-# Direct and indirect components
-
-
-
-#' @rdname direct
-#' @export
-setMethod("direct", "NMRSpecies2D", 
-  function(object) {
-    direct.list <- lapply(object@resonances, direct)
-    out <- nmrspecies_1d(direct.list, id = id(object))
-    
-    if ( nrow(object@connections) > 0 ) {
-      connections <- object@connections %>%
-        mutate(area.ratio = sqrt(volume.ratio)) %>%
-        select(-volume.ratio)
-      out@connections <- connections
-    }
-
-    out
-  })
-
-
-
-#' @rdname indirect
-#' @export
-setMethod("indirect", "NMRSpecies2D", 
-  function(object) {
-    indirect.list <- lapply(object@resonances, indirect)
-    out <- nmrspecies_1d(indirect.list, id = id(object))
-
-    if ( nrow(object@connections) > 0 ) {
-      connections <-object@connections %>%
-        mutate(area.ratio = sqrt(volume.ratio)) %>%
-        select(-volume.ratio)
-      out@connections <- connections
-    }
-
-    out
-  })
-
-
-
-#------------------------------------------------------------------------------
-# Id
-
-
-
-#' @rdname id
-#' @export
-setMethod("id", "NMRSpecies2D", 
-  function(object) object@id
-  ) 
-
-
-
-
-
-#------------------------------------------------------------------------------
-# Peaks
-
-
-
-#' @rdname peaks
-#' @export
-setMethod("peaks", "NMRSpecies2D", 
-  function(object, include.id = FALSE) {
-    peaks.list <- lapply(object@resonances, peaks, include.id = TRUE)
-    peaks <- do.call(rbind, peaks.list)
-    if ( include.id && (nrow(peaks) > 0) ) cbind(species = object@id, peaks)
-    else peaks
-  })
-
-
-
-
-
-#------------------------------------------------------------------------------
-# Couplings
-
-#' @rdname couplings
-#' @export
-setMethod("couplings", "NMRSpecies2D", 
-  function(object, include.id = FALSE) {
-    couplings.list <- lapply(object@resonances, couplings, include.id = TRUE)
-    couplings <- do.call(rbind, couplings.list)
-    if ( include.id && (nrow(couplings) > 0) ) {
-      cbind(species.1 = object@id, species.2 = object@id, couplings)
-    }
-    else couplings
-  })
 
 
 

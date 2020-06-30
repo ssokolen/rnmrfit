@@ -18,59 +18,22 @@
 #' a collection of 1D resonances in the direct and indirect dimension with
 #' separate set of coupling constraints.
 #' 
-#' @slot dimensions An NMRResonance1D object.
-#' @slot indirect An NMRResonance1D object.
+#' @slot dimensions A list of NMRResonance1D object.
 #' 
 #' @name NMRResonance2D-class
 #' @export
 NMRResonance2D <- setClass("NMRResonance2D",
-  contains = 'NMRScaffold2D',
+  contains = "NMRScaffold2D",
   slots = c(
-    direct = 'NMRResonance1D',
-    indirect = 'NMRResonance1D'
+    name = "character",
+    id = "character",
+    dimensions = "list"
+  ),
+  prototype = prototype(
+    name = 'resonance',
+    id = 'resonance'
   )
 )
-
-
-
-#==============================================================================>
-#  Validation methods
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' NMRResonance2D validity test
-#'
-validNMRResonance2D <- function(object) {
-
-  direct <- direct(object)
-  indirect <- indirect(object)
-
-  valid <- TRUE
-  err <- c()
-
-  #---------------------------------------
-  # Both direct and indirect objects must be NMRResonance1D objects
-  logic1 <- class(direct) == 'NMRResonance1D'
-  logic2 <- class(indirect) == 'NMRResonance1D'
-
-  if (! (logic1 && logic2) ) {
-
-    valid <- FALSE
-    new.err <- paste('"direct" and "indirect" components must be valid',
-                     'NMRResonance1D objects.')
-    err <- c(err, new.err)
-  }   
-  
-  #---------------------------------------
-  # Output
-  if (valid) TRUE
-  else err
-}
-
-# Add the extended validity testing
-setValidity("NMRResonance2D", validNMRResonance2D)
 
 
 
@@ -169,182 +132,22 @@ nmrresonance_2d <- function(direct.peaks, indirect.peaks,
   #---------------------------------------
   # Aligning the ids
 
-  # If an id is provided apply it directly to both components
-  if (! is.null(id) ) {
-    direct@id <- id
-    indirect@id <- id
+  # If an id is not provided, generate one
+  if ( is.null(id) ) {
+
+    if ( direct@id != indirect@id ) {
+      id <- paste(direct@id, indirect@id, sep = ' / ')
+    } else {
+      id <- direct@id
   }
-  # If the id is not provided, and individual ids are different, combine them.
-  else if ( direct@id != indirect@id ) {
-    id <- paste(direct@id, indirect@id, sep = ' / ')
-    direct@id <- id
-    indirect@id <- id
 }
 
   #---------------------------------------
   # Generate object
 
-  new('NMRResonance2D', direct = direct, indirect = indirect)
+  dimensions <- list(direct = direct, indirect = indirect)
+  new('NMRResonance2D', id = id, dimensions = dimensions)
 }
-
-
-
-#==============================================================================>
-#  Helper functions
-#==============================================================================>
-
-
-
-#---------------------------------------
-#' Combine direct and indirect dimensions
-#' 
-#' This is an internal function used for all getter functions that output a
-#' data.frame object. Essentially, the getter is passed on to the direct and
-#' indirect components, a dimension column is added and the resulting objects
-#' are stitched together.
-#' 
-#' @param object An NMRResonance2D object.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @name combine_dimensions
-setGeneric("combine_dimensions", 
-  function(object, ...) standardGeneric("combine_dimensions")
-)
-
-#' @rdname combine_dimensions
-setMethod("combine_dimensions", "NMRResonance2D", 
-  function(object, getter, ...) {
-    direct <- data.frame(dimension = "direct", 
-                         getter(object@direct, ...))
-    indirect <- data.frame(dimension = "indirect", 
-                           getter(object@indirect, ...))
-    rbind(direct, indirect)
-})
-
-#---------------------------------------
-#' Split direct and indirect dimensions
-#' 
-#' This is an internal function used for all setter functions that input a
-#' data.frame object. Essentially, the input value is first split based on a
-#' "dimension" column, with the setter being passed on to the direct and
-#' indirect components.
-#' 
-#' @param object An NMRResonance2D object.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @name split_dimensions
-setGeneric("split_dimensions", 
-  function(object, setter, value) standardGeneric("split_dimensions")
-)
-
-#' @rdname split_dimensions
-#' @export
-setMethod("split_dimensions", "NMRResonance2D", 
-  function(object, setter, value) {
-
-    # First the input must be a data.frame of some sort
-    err <- 'Input value must be a data.frame type object.'
-    if (! 'data.frame' %in% class(value) ) stop(err)
-
-    # Second the input must have "dimension" column
-    err <- 'Input data.frame must have a "dimension" column.'
-    if (! 'dimension' %in% colnames(value) ) stop(err)
-
-    # Third, the dimension column must only contain direct and indirect values
-    err <- 'The "dimension" column must only contain "direct" or "indirect".'
-    entries <- sort(unique(as.character(value$dimension)))
-    if (! identical(entries, c('direct', 'indirect')) ) stop(err)
-
-    # If all of the above is met, then split components
-    direct <- filter(value, dimension == 'direct') %>% select(-dimension)
-    object@direct <- setter(object@direct, direct)
-
-    indirect <- filter(value, dimension == 'indirect') %>% select(-dimension)
-    object@indirect <- setter(object@indirect, indirect)
-    
-    validObject(object)
-    object
-})
-
-
-
-#==============================================================================>
-# Basic setter and getter functions
-#==============================================================================>
-
-
-
-#' @rdname id
-#' @export
-setMethod("id", "NMRResonance2D", 
-  function(object) object@direct@id
-)
-
-
-
-
-
-
-
-#==============================================================================>
-# Basic setter and getter functions
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-# Direct and indirect components
-
-
-
-#' @rdname direct
-#' @export
-setMethod("direct", "NMRResonance2D", 
-  function(object) object@direct
-)
-
-
-
-#' @rdname indirect
-#' @export
-setMethod("indirect", "NMRResonance2D", 
-  function(object) object@indirect
-)
-
-
-
-#------------------------------------------------------------------------------
-# Id
-
-
-
-#' @rdname id
-#' @export
-setMethod("id", "NMRResonance2D", 
-  function(object) object@direct@id
-)
-
-
-
-
-
-
-
-#------------------------------------------------------------------------------
-# Peaks
-
-
-
-#' @rdname peaks
-#' @export
-setMethod("peaks", "NMRResonance2D", 
-  function(object, include.id = FALSE) {
-    combine_dimensions(object, peaks, include.id = include.id)
-})
-
-
-
-
 
 
 

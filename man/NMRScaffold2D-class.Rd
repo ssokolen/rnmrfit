@@ -6,17 +6,9 @@
 \alias{NMRScaffold2D}
 \title{Super-class for all 2D peak descriptions.}
 \description{
-This class is not meant to be used directly. Instead, it provides a common
-framework for methods around visualization and inspection of NMRScaffold2D,
-NMRSpecies2D, NMRMixture2D, and NMRFit2D objects. Essentially, all of the 2D
-methods merely wrap around their 1D counterparts, meaning that the same
-basic approach can be used for all of them.
+This class is not meant to be used directly. Instead, it provides a set of
+common methods for NMRResonance2D, NMRSpecies2D, NMRMixture2D, and NMRFit2D
+objects. Essentially, all of the 2D methods merely wrap around their 1D
+counterparts, meaning that the same basic approach can be used for all of
+them.
 }
-\section{Slots}{
-
-\describe{
-\item{\code{direct}}{An NMRScaffold1D object.}
-
-\item{\code{indirect}}{An NMRScaffold1D object.}
-}}
-

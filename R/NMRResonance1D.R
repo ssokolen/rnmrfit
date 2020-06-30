@@ -353,12 +353,7 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
     if ( any(coupling$number > 1) ) {
 
       # Checking to make sure that sweep frequency is defined
-      err <- '"sf" must be provided as input or set using nmroptions$direct$sf'
-
-      # Error message is different if the 1D code is actually called by 2D
-      if ( grepl('nmrresonance_2d', deparse(sys.calls()[[sys.nframe()-1]])) ) {
-        err <- paste(err, '(and nmroptions$indirect$sf for 2D fitting)')
-      }
+      err <- '"sf" must be provided as input or set using nmroptions'
 
       if ( is.null(sf) ) stop(err)
 
@@ -376,7 +371,7 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
     add.couplings <- TRUE
   }
   # Otherwise, build peaks directly from singlets
-  else {
+  else if ( is.numeric(peaks) ) {
     add.constraints <- FALSE
     middle <- (max(peaks) + min(peaks))/2 
     range <- paste(min(peaks), '..', max(peaks), sep = '')
@@ -384,6 +379,9 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
     peaks <- data.frame(peak = 1:length(peaks), 
                         position = peaks, width = width, height = 1, 
                         fraction.gauss = fraction.gauss)
+  } else {
+    err <- '"peaks" are defined from strings or numeric singlet ppm values.'
+    stop(err)
   }
 
   #---------------------------------------
