@@ -40,7 +40,9 @@ NMRScaffold2D <- setClass("NMRScaffold2D",
 setMethod("show", "NMRScaffold2D", 
   function(object) {
 
+    print(1)
     direct <- direct(object)
+    print(2)
     indirect <- indirect(object)
     id <- id(object)
 
@@ -223,75 +225,109 @@ setMethod("f_lineshape", "NMRScaffold2D",
 
     if ( length(sf) == 1 ) sf <- c(sf, sf)
 
-    # Defining which components to return
-    components <- rev(sort(strsplit(components, '[^ri]+', perl = TRUE)[[1]]))
-
-    # Checking 2D components
-    err <- paste('"component" argument must consist of two-character codes',
-                 'and possibly a separator, e.g., "rr/ii" or "rr ri ir ii"')
-    if ( any(! components %in% c('rr', 'ri', 'ir', 'ii')) ) stop(err)
-
-    f_out <- function(y) {
-      print(head(y))
-      d <- as_tibble(y)[, components]
-      if ( length(components) == 1 ) {
-        d[[components]]
-      } else if ( length(components) == 2 ) { 
-        colnames(d) <- c('r', 'i')
-        cmplx1(r = d$r, i = d$i)
-      } else {
-        cmplx2(rr = d$rr, ri = d$ri, ir = d$ir, ii = d$ii )
-      }
-    }
-
     columns <- c('position', 'width', 'height', 'fraction.gauss')
-
     peaks <- peaks(object, include.id = include.id)
     parameters <- as.matrix(peaks[, columns])
+
+    columns <- c("mixture", "species", "resonance")
+    descriptors <- as.matrix(peaks[, which(colnames(peaks) %in% columns)])
+    descriptors <- apply(descriptors, 1, paste, collapse = "-")
+
+    i.res <- as.integer(factor(descriptors)) - 1
+    i.res <- rep(i.res, each = 4)
+
+    i.dim <- as.integer(factor(peaks$dimension, 
+                               levels = c('direct', 'indirect'))) - 1
+    i.dim <- rep(i.dim, each = 4)
 
     # Converting peak width to ppm
     logic <- peaks$dimension == 'direct'
     parameters[logic, 2] <- parameters[logic, 2]/sf[1]
     parameters[!logic, 2] <- parameters[!logic, 2]/sf[2]
+    
+    # The overall function is compose of two parts -- the Rust wrapper that
+    # calculates values for all dimension and then the R formatter that 
+    # selects which of these dimensions to output
 
-    # Defining function generator based on arbitrary subset of parameters
-    f_gen <- function(p) {
-      force(p)
-      function(x1, x2) {
-        # Determining unique values
-        x.direct <- sort(unique(x1))
-        xi.direct <- as.integer(factor(x1), levels = x.direct) - 1
+    #---------------------------------------
+    # First, defining how to format the output 
 
-        x.indirect <- sort(unique(x2))
-        xi.indirect <- as.integer(factor(x2), levels = x.indirect) - 1
+    components <- rev(sort(strsplit(components, '[^ri]+', perl = TRUE)[[1]]))
+    err <- paste('"component" argument must consist of two-character codes',
+                 'and possibly a separator, e.g., "rr/ii" or "rr ri ir ii"')
+    if ( any(! components %in% c('rr', 'ri', 'ir', 'ii')) ) stop(err)
 
-        p <- as.vector(t(parameters))
-        y <- matrix(0, nrow = length(x1), ncol = 4)
-
-        i.res <- as.integer(factor(peaks$resonance)) - 1
-        i.dim <- as.integer(factor(peaks$dimension, 
-                                   levels = c('direct', 'indirect'))) - 1
-
-        .Call('_rnmrfit_lineshape_2d', PACKAGE = 'rnmrfit', 
-              x.direct, x.indirect, xi.direct, xi.indirect, y, p, i.res, i.dim)
-        f_out(cmplx2(rr = y[,1], ri = y[,2], ir = y[,3], ii = y[,4]))
+    if ( length(components) == 1 ) {
+      f_out <- function(y) {
+        d <- as_tibble(y)[, components]
+        d[[components]]
+      }
+    } else if ( length(components) == 2 ) {
+      f_out <- function(y) {
+        d <- as_tibble(y)[, components]
+        cmplx1(r = d[, 1], i = d[, 2])
+      }
+    } else {
+      f_out <- function(y) {
+        d <- as_tibble(y)[, components]
+        cmplx2(rr = d$rr, ri = d$ri, ir = d$ir, ii = d$ii )
       }
     }
 
-    # If peaks are to be summed, just feed all parameters into the Rcpp function
+    #---------------------------------------
+    # Then, defining wrapper to incorporate the formatting
+
+    f_gen <- function(p, i.res, i.dim) {
+      force(p)
+      function(x1, x2) {
+
+        n <- as.integer(length(x1))
+
+        y <- .Call("eval_2d_wrapper",        
+          x_direct = as.double(x1),
+          x_indirect = as.double(x2),
+          y = as.double(rep(0, n*4)),
+          resonances = as.integer(i.res),
+          dimensions = as.integer(i.dim),
+          knots = as.double(0),
+          p = as.double(as.vector(t(parameters))),
+          n = n,
+          nl = as.integer(length(parameters)),
+          nb = as.integer(0),
+          np = as.integer(0),
+          nk = as.integer(0)
+        )
+
+        f_out(cmplx2(rr = y[1:n], ri = y[(n+1):(2*n)], 
+                     ir = y[(2*n+1):(3*n)], ii = y[(3*n+1):(4*n)]))
+      }
+    }
+
+    #---------------------------------------
+    # Finally, output either a single function or a tibble split by resonances
+
     if ( sum.peaks ) {
       p <- as.vector(t(parameters))
-      out <- f_gen(p)
+      out <- f_gen(p, i.res, i.dim)
     } 
     # Otherwise, generate a tbl_df data frame
     else {
-      out <- as_tibble(peaks[, which(! colnames(peaks) %in% columns)])
-      parameters <- split(parameters, 1:nrow(parameters))
-      
+      columns <- c("mixture", "species", "resonance")
+      out <- peaks[, which(colnames(peaks) %in% columns)]
+      out <- out[!duplicated(descriptors), ]
+      out <- as_tibble(out)
+
+      # The split is by unique resonance rather than row
+      par <- split(parameters, i.res)
+      res <- split(i.res, i.res)
+      dim <- split(i.dim, i.res)
+
       # Generating a list of functions, each with their parameters enclosed
-      functions <- lapply(parameters, function (p) {
-        p <- as.vector(t(p))
-        f_gen(p)
+      functions <- pmap(list(par, res, dim), function (p, r, d) {
+        # Split on matrix flattens parameters by column rather than row,
+        # so re-formatting it here
+        p <- as.vector(t(matrix(p, ncol = 4)))
+        f_gen(p, rep(0, length(r)), d)
       })
 
       # Adding functions as a column
@@ -338,7 +374,7 @@ setMethod("values", "NMRScaffold2D",
     f <- function(g) {
       tibble(direct.shift = direct.shift,
              indirect.shift = indirect.shift,
-             intensity = (g[[1]](direct.shift)) + baseline) %>%
+             intensity = g[[1]](direct.shift, indirect.shift) + baseline) %>%
       unpack('intensity')
     }
 
@@ -346,7 +382,7 @@ setMethod("values", "NMRScaffold2D",
     
     # And apply them to every peak
     d %>%
-      group_by_if(function(x) {!is.list(x)}) %>% 
+      group_by_if(~ ! is.list(.)) %>% 
       do(f(.$f) ) %>% 
       pack('intensity')
   }

@@ -95,3 +95,57 @@ test_that("2d projection works", {
   expect_equal(peaks(indirect(species)), peaks(species.indirect))
 
 })
+
+#==============================================================================>
+test_that("2d lineshape works", {
+
+  nmroptions$sf <- 500
+
+  id <- "R1"
+  r1.direct <- nmrresonance_1d("0.5 d 20", id = id)
+  r1.indirect <- nmrresonance_1d("0.7 d 20", id = id)
+  r1 <- nmrresonance_2d(r1.direct, r1.indirect)
+
+  id <- "R2"
+  r2.direct <- nmrresonance_1d("0.2 s", id = id)
+  r2.indirect <- nmrresonance_1d("0.3 d 20", id = id)
+  r2 <- nmrresonance_2d(r2.direct, r2.indirect)
+
+  id <- "S1"
+  species <- nmrspecies_2d(list(r1, r2), id = id)
+
+  # Generating 2D data
+  x1 <- seq(0, 1, length.out = 50)
+  x2 <- seq(0, 1, length.out = 50)
+  p <- expand.grid(x1 = x1, x2 = x2)
+
+  intensity <- values(species, p$x1, p$x2, components = 'rr/ri/ir/ii')
+
+  p <- tibble(direct.shift = p$x1, indirect.shift = p$x2,
+              intensity = intensity)
+
+  d <- new("NMRData2D")
+  d@processed <- p
+
+  p <- plot(d)
+  htmlwidgets::saveWidget(p, "2d_data.htm")
+
+  direct.2d <- direct(d)@processed$intensity
+  indirect.2d <- indirect(d)@processed$intensity
+
+  # Generating 1D data
+  species <- nmrspecies_1d(list(r1.direct, r2.direct), id = id)
+  direct.1d <- values(species, x1)
+
+  species <- nmrspecies_1d(list(r1.indirect, r2.indirect), id = id)
+  indirect.1d <- values(species, x2)
+
+  # Comparing
+  expect_equal(direct.2d/max(Re(direct.1d)), 
+               direct.2d/max(Re(direct.1d)))
+  expect_equal(indirect.2d/max(Re(indirect.1d)), 
+               indirect.2d/max(Re(indirect.1d)))
+
+})
+
+

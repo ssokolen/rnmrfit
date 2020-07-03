@@ -455,6 +455,8 @@ setMethod("update_bounds", "NMRScaffold",
 #' @param nmrdata An optional NMRData1D object that can serve as a reference
 #'                point for the bounds.
 #' @param widen FALSE to prevent new bounds from widening existing bounds.
+#' @dimension Bounds are projected to all dimensions by default. Specific
+#'                   dimensions can be specified as "direct" or "indirect".
 #' @param ... Additional arguments passed to inheriting methods.
 #' 
 #' @return A new object with modified bounds.
@@ -469,7 +471,8 @@ setGeneric("set_general_bounds",
 #' @export
 setMethod("set_general_bounds", "NMRScaffold",
   function(object, position = NULL, height = NULL, width = NULL, 
-           fraction.gauss = NULL, nmrdata = NULL, widen = FALSE) {
+           fraction.gauss = NULL, nmrdata = NULL, widen = FALSE,
+           dimensions = NULL) {
     
   # If object has children, just apply function recursively
   if ( "children" %in% slotNames(object) ) {
@@ -478,6 +481,33 @@ setMethod("set_general_bounds", "NMRScaffold",
       position = position, height = height, width = width, 
       fraction.gauss = fraction.gauss, nmrdata = nmrdata, widen = widen
     )
+    return(object)
+  }
+
+  # If object has dimensions, propagate as necessary
+  if ( "dimensions" %in% slotNames(object) ) {
+
+    valid.dimensions <- c("direct", "indirect")
+    if ( is.null(dimensions) ) dimensions <- valid.dimensions
+
+    if (! all(dimensions %in% valid.dimensions) ) {
+      err <- paste('"dimensions" must be one of', 
+                   paste(dimensions, collapse = ", "))
+      stop(err)
+    }
+
+    f_bounds <- function(child, dimension) {
+      if (! is.null(nmrdata) ) {
+        nmrdata <- projection(nmrdata, dimension)
+      }
+      set_general_bounds(child, position, height, width,
+                         fraction.gauss, nmrdata, widen)
+    }
+    
+    for ( name in dimensions ) {
+      object@dimensions[[name]] <- f_bounds(object@dimensions[[name]], name)
+    }
+
     return(object)
   }
 

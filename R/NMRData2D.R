@@ -302,27 +302,32 @@ setGeneric("projection",
 setMethod("projection", "NMRData2D",
   function(object, dimension) {
 
+  intensity <- as_tibble(object@processed$intensity)
+
   # Double checking if dimension exists
   if ( dimension == "direct" ) {
-    r <- "rr"
-    i <- "ir"
+    r.col <- pull(intensity, "rr")
+    i.col <- pull(intensity, "ir")
   } else if ( dimension == "indirect" ) {
-    r <- "rr"
-    i <- "ri"
+    r.col <- pull(intensity, "rr")
+    i.col <- pull(intensity, "ri")
   } else {
     err <- sprintf('Dimension "%s" not found', dimension)
     stop(err)
   }
 
-  x <- paste(c(dimension, "shift"), sep = ".")
+  x <- paste(dimension, "shift", sep = ".")
 
   # Parameters
   procs = object@procs[[dimension]]
   acqus = object@acqus[[dimension]]
 
+  d <- object@processed
+  d$r <- r.col
+  d$i <- i.col
+
   # Handling processed data
-  d <- object@processed %>%
-    mutate(r = intensity[[r]],  i = intensity[[i]]) %>%
+  d <- d %>%
     select(-intensity) %>%
     group_by( {{ x }} ) %>%
     summarize(r = sum(r), i = sum(i)) %>%

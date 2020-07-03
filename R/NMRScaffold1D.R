@@ -198,7 +198,20 @@ setMethod("f_lineshape", "NMRScaffold1D",
     err <- '"sf" must be provided as input or set using nmroptions$direct$sf'
     if ( is.null(sf) ) stop(err)
 
-    # Defining which components to return
+    columns <- c('position', 'width', 'height', 'fraction.gauss')
+    peaks <- peaks(object)
+    parameters <- as.matrix(peaks[, columns])
+
+    # Converting peak width to ppm
+    parameters[, 2] <- parameters[, 2]/sf
+
+    # The overall function is compose of two parts -- the Rust wrapper that
+    # calculates values for all dimension and then the R formatter that 
+    # selects which of these dimensions to output
+
+    #---------------------------------------
+    # First, defining how to format the output 
+
     return.r <- grepl('r', tolower(components))
     return.i <- grepl('i', tolower(components))
 
@@ -208,65 +221,44 @@ setMethod("f_lineshape", "NMRScaffold1D",
     else if ( return.i ) f_out <- function(y) {Im(y)}
     else stop(err)
 
-    columns <- c('position', 'width', 'height', 'fraction.gauss')
-    peaks <- peaks(object)
-    parameters <- as.matrix(peaks[, columns])
+    #---------------------------------------
+    # Then, defining wrapper to incorporate the formatting
 
-    # Converting peak width to ppm
-    parameters[, 2] <- parameters[, 2]/sf
-
-    # If peaks are to be summed, just feed all parameters into the Rcpp function
-    if ( sum.peaks ) {
-      out <- function(x) {
-        
+    f_gen <- function(p) {
+      force(p)
+      function(x) {
         n <- as.integer(length(x))
         y <- .Call("eval_1d_wrapper",        
           x = as.double(x),
           y = as.double(rep(0, n*2)),
           knots = as.double(0),
-          p = as.double(as.vector(t(parameters))),
+          p = as.double(as.vector(p)),
           n = n,
-          nl = as.integer(length(parameters)),
+          nl = as.integer(length(p)),
           nb = as.integer(0),
           np = as.integer(0),
           nk = as.integer(0)
         )
 
-        f_out(cmplx1(r = y[1:n], i = y[(n+1):(n*2)]))
+        f_out(cmplx1(r = y[1:n], i = y[(n+1):(2*n)]))
       }
+    }
+
+    #---------------------------------------
+    # Finally, output either a single function or a tibble split by peaks
+
+    if ( sum.peaks ) {
+      p <- as.vector(t(parameters))
+      out <- f_gen(p)
     } 
     # Otherwise, generate a tbl_df data frame
     else {
       out <- as_tibble(peaks[, which(! colnames(peaks) %in% columns)])
-      if ( include.id && (nrow(out) > 0) ) {
-        if ( 'resonance' %in% colnames(out) ) {
-          out <- cbind(species = object@id, out)
-        }
-        else {
-          out <- cbind(resonance = object@id, out)
-        }
-      }
-
       parameters <- split(parameters, 1:nrow(parameters))
       
       # Generating a list of functions, each with their parameters enclosed
-      functions <- lapply(parameters, function (p) {
-        function(x) {
-          n <- as.integer(length(x))
-          y <- .Call("eval_1d_wrapper",        
-            x = as.double(x),
-            y = as.double(rep(0, n*2)),
-            knots = as.double(0),
-            p = as.double(as.vector(p)),
-            n = n,
-            nl = as.integer(length(p)),
-            nb = as.integer(0),
-            np = as.integer(0),
-            nk = as.integer(0)
-          )
-
-          f_out(cmplx1(r = y[1:n], i = y[(n+1):(n*2)]))
-        }
+      functions <- map(parameters, function (p) {
+        f_gen(p)
       })
 
       # Adding functions as a column
@@ -336,17 +328,18 @@ setMethod("values", "NMRScaffold1D",
     d <- f_lineshape(object, sf, sum.peaks, include.id, components)
 
     # Defining function that generates necessary data frame
-    f <- function(d) {
-      intensity <- d$f[[1]](direct.shift) + baseline
+    f <- function(g) {
+      intensity <- g[[1]](direct.shift) + baseline
       data.frame(direct.shift = direct.shift, 
                  intensity = vec_cast(intensity, complex())) 
     }
 
+    # Note that the unpack/pack functions are used to avoid bind_row errors
+
     # And apply it for every peak
-    descriptors <- colnames(d)[1:(ncol(d)-1)]
     d %>% 
-      group_by_at(descriptors) %>% 
-      do( f(.) ) %>%
+      group_by_if(~ ! is.list(.)) %>% 
+      do( f(.$f) ) %>%
       ungroup()
   }
 })

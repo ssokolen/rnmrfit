@@ -157,62 +157,6 @@ nmrresonance_2d <- function(direct.peaks, indirect.peaks,
 
 
 
-#' @rdname set_general_bounds
-#' @export
-setMethod("set_general_bounds", "NMRResonance2D",
-  function(object, dimension = "both", position = NULL, height = NULL, 
-           width = NULL, fraction.gauss = NULL, nmrdata = NULL, widen = FALSE) {
-
-  # Checking dimension argument
-  err <- 'dimension must be one of "direct", "indirect", or "both"'
-  if (! dimension %in% c("direct", "indirect", "both") ) stop(err)
-
-  # Checking data
-  if (! is.null(nmrdata) ) {
-
-    if ( class(nmrdata) != 'NMRData2D' ) {
-      err <- '"nmrdata" must be a valid NMRData2D object.'
-      stop(err)
-    }
-    else {
-      validObject(nmrdata)
-    }
-  }
-
-  # Adding direct dimension bounds, if necessary
-  if ( dimension %in% c('direct', 'both') ) {
-
-    if (! is.null(nmrdata) ) {
-      columns <- c('direct.shift', 'intensity')
-      d <- new("NMRData1D", processed = processed(nmrdata)[, columns])
-    } else {
-      d <- NULL
-    }
-
-    object@direct <- set_general_bounds(object@direct, position, height,
-                                        width, fraction.gauss, d, widen)
-  }
-
-  # And then the indirect
-  if ( dimension %in% c('indirect', 'both') ) {
-
-    if (! is.null(nmrdata) ) {
-      columns <- c('indirect.shift', 'intensity')
-      d <- new("NMRData1D", processed = processed(nmrdata)[, columns])
-    } else {
-      d <- NULL
-    }
-
-    object@indirect <- set_general_bounds(object@indirect, position, height,
-                                          width, fraction.gauss, d, widen)
-  }
-
-  validObject(object)
-  object
-})
-
-
-
 #' @rdname set_offset_bounds
 #' @export
 setMethod("set_offset_bounds", "NMRResonance2D",
