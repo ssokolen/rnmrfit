@@ -177,6 +177,11 @@ setMethod("projection", "NMRScaffold2D",
   slot.values <- map(slot.names, f) %>%
     set_names(slot.names)
 
+  # nmrdata also has to be projected
+  if ( "nmrdata" %in% slot.names ) {
+    slot.values$nmrdata <- projection(slot.values$nmrdata, dimension)
+  }
+
   f <- function(...) new(projection, ...)
   projection <- do.call(f, slot.values)
 

@@ -23,10 +23,14 @@
 NMRMixture2D <- setClass("NMRMixture2D",
   contains = 'NMRScaffold2D',
   slots = c(
-    species = 'list'
+    name = 'character',
+    id = 'character',
+    children = 'list'
   ),
   prototype = prototype(
-    species = list()
+    name = 'mixture',
+    id = 'mixture',
+    children = list()
   )
 )
 
@@ -35,40 +39,6 @@ NMRMixture2D <- setClass("NMRMixture2D",
 #==============================================================================>
 #  Validation methods
 #==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' NMRMixture2D validity test
-#'
-validNMRMixture2D <- function(object) {
-
-  species <- object@species
-
-  valid <- TRUE
-  err <- c()
-
-  #---------------------------------------
-  # Checking that all species list items are valid
-  for ( specie in species ) {
-    logic1 <- class(specie) != 'NMRSpecies2D'
-    logic2 <- ! validObject(specie)
-    if ( logic1 || logic2 ) {
-      valid <- FALSE
-      new.err <- paste('All elements of "species" list must be valid',
-                       'NMRSpecies2D objects.')
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Output
-  if (valid) TRUE
-  else err
-}
-
-# Add the extended validity testing
-setValidity("NMRMixture2D", validNMRMixture2D)
 
 
 
@@ -86,12 +56,14 @@ setValidity("NMRMixture2D", validNMRMixture2D)
 #' 
 #' @param species A list of NMRSpecies2D objects. If list elements are named,
 #'                these names will be use to replace species ids.
+#' @param id An optional string specifying mixture name. If left empty, the
+#'           mixture name is left as the default "mixture"
 #' @param ... Currently ignored.
 #' 
 #' @return An NMRMixture2D object.
 #' 
 #' @export
-nmrmixture_2d <- function(species, ...) {
+nmrmixture_2d <- function(species, id = "mixture", ...) {
 
   #---------------------------------------
   # Generating list of species 
@@ -122,136 +94,5 @@ nmrmixture_2d <- function(species, ...) {
 
   #---------------------------------------
   # Resulting mixture object
-  out <- new('NMRMixture2D', species = species.list)
+  out <- new('NMRMixture2D', id = id, children = species.list)
 }
-
-
-
-#==============================================================================>
-# Basic setter and getter functions
-#==============================================================================>
-
-
-
-
-#------------------------------------------------------------------------------
-# Direct and indirect components
-
-
-
-#' @rdname direct
-#' @export
-setMethod("direct", "NMRMixture2D", 
-  function(object) {
-    direct.list <- lapply(object@species, direct)
-    nmrmixture_1d(direct.list)
-  })
-
-
-
-#' @rdname indirect
-#' @export
-setMethod("indirect", "NMRMixture2D", 
-  function(object) {
-    indirect.list <- lapply(object@species, indirect)
-    nmrmixture_1d(indirect.list)
-  })
-
-
-
-
-#------------------------------------------------------------------------------
-# Peaks
-
-#' @rdname peaks
-#' @export
-setMethod("peaks", "NMRMixture2D", 
-  function(object, ...) {
-    peaks.list <- lapply(object@species, peaks, include.id = TRUE)
-    do.call(rbind, peaks.list)
-  })
-
-
-
-#------------------------------------------------------------------------------
-# Couplings
-
-#' @rdname couplings
-#' @export
-setMethod("couplings", "NMRMixture2D", 
-  function(object) {
-    couplings.list <- lapply(object@species, couplings, include.id = TRUE)
-    do.call(rbind, couplings.list)
-  })
-
-
-
-#------------------------------------------------------------------------------
-# Bounds
-
-#' @rdname bounds
-#' @export
-setMethod("bounds", "NMRMixture2D", 
-  function(object, include.id = FALSE) {
-    f <- function(o, sublist) bounds(o, include.id = TRUE)[[sublist]]
-    lower.list <- lapply(object@species, f, sublist = 'lower')
-    upper.list <- lapply(object@species, f, sublist = 'upper')
-
-    lower <- do.call(rbind, lower.list)
-    upper <- do.call(rbind, upper.list)
-
-    if ( include.id ) {
-      if ( nrow(lower) > 0 ) lower <- cbind(species = object@id, lower)
-      if ( nrow(upper) > 0 ) upper <- cbind(species = object@id, upper)
-    }
-
-    list(lower = lower, upper = upper)
-})
-
-
-
-#==============================================================================>
-#  Bounds
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' @rdname set_general_bounds
-#' @export
-setMethod("set_general_bounds", "NMRMixture2D",
-  function(object, ...) {
-    object@species <- lapply(object@species, set_general_bounds, ...)
-    object
-  })
-
-
-
-#------------------------------------------------------------------------------
-#' @rdname set_offset_bounds
-#' @export
-setMethod("set_offset_bounds", "NMRMixture2D",
-  function(object, ...) {
-    object@species <- lapply(object@species, set_general_bounds, ...)
-    object
-  })
-
-
-
-#------------------------------------------------------------------------------
-#' @rdname set_conservative_bounds
-#' @export
-setMethod("set_conservative_bounds", "NMRMixture2D",
-  function(object, ...) {
-    object@species <- lapply(object@species, set_general_bounds, ...)
-    object
-  })
-
-#------------------------------------------------------------------------------
-#' @rdname set_peak_type
-#' @export
-setMethod("set_peak_type", "NMRMixture2D",
-  function(object, ...) {
-    object@species <- lapply(object@species, set_general_bounds, ...)
-    object
-  })

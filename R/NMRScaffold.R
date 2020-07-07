@@ -455,7 +455,7 @@ setMethod("update_bounds", "NMRScaffold",
 #' @param nmrdata An optional NMRData1D object that can serve as a reference
 #'                point for the bounds.
 #' @param widen FALSE to prevent new bounds from widening existing bounds.
-#' @dimension Bounds are projected to all dimensions by default. Specific
+#' @param dimensions Bounds are projected to all dimensions by default. Specific
 #'                   dimensions can be specified as "direct" or "indirect".
 #' @param ... Additional arguments passed to inheriting methods.
 #' 
@@ -609,6 +609,8 @@ setMethod("set_general_bounds", "NMRScaffold",
 #' @param relative TRUE to treat values as relative fractions, FALSE to apply
 #'                 them directly.
 #' @param widen FALSE to prevent new bounds from widening existing bounds.
+#' @param dimensions Bounds are projected to all dimensions by default. Specific
+#'                   dimensions can be specified as "direct" or "indirect".
 #' @param ... Additional arguments passed to inheriting methods.
 #' 
 #' @return A new object with modified bounds.
@@ -623,7 +625,7 @@ setGeneric("set_offset_bounds",
 #' @export
 setMethod("set_offset_bounds", "NMRScaffold",
   function(object, position = NULL, height = NULL, width = NULL, 
-           relative = FALSE, widen = FALSE) {
+           relative = FALSE, widen = FALSE, dimensions = NULL) {
     
   # If object has children, just apply function recursively
   if ( "children" %in% slotNames(object) ) {
@@ -632,6 +634,31 @@ setMethod("set_offset_bounds", "NMRScaffold",
     )
     return(object)
   }
+
+  # If object has dimensions, propagate as necessary
+  if ( "dimensions" %in% slotNames(object) ) {
+
+    valid.dimensions <- c("direct", "indirect")
+    if ( is.null(dimensions) ) dimensions <- valid.dimensions
+
+    if (! all(dimensions %in% valid.dimensions) ) {
+      err <- paste('"dimensions" must be one of', 
+                   paste(dimensions, collapse = ", "))
+      stop(err)
+    }
+
+    f_bounds <- function(child, dimension) {
+      set_offset_bounds(child, position, height, width,
+                        relative, widen)
+    }
+    
+    for ( name in dimensions ) {
+      object@dimensions[[name]] <- f_bounds(object@dimensions[[name]], name)
+    }
+
+    return(object)
+  }
+
 
   # Otherwise, continue
 
@@ -759,7 +786,7 @@ setMethod("set_conservative_bounds", "NMRScaffold",
   # If nmrdata is provided, add further constraints  
   if (! is.null(nmrdata) ) {
     
-    if ( class(nmrdata) != 'NMRData1D' ) {
+    if (! class(nmrdata) %in% c('NMRData1D', 'NMRData2D') ) {
       err <- '"nmrdata" must be a valid NMRData1D object.'
       stop(err)
     } 
@@ -814,6 +841,29 @@ setMethod("set_peak_type", "NMRScaffold",
   # If object has children, just apply function recursively
   if ( "children" %in% slotNames(object) ) {
     object@children <- lapply(object@children, set_peak_type, peak.type) 
+    return(object)
+  }
+
+  # If object has dimensions, propagate as necessary
+  if ( "dimensions" %in% slotNames(object) ) {
+
+    valid.dimensions <- c("direct", "indirect")
+    if ( is.null(dimensions) ) dimensions <- valid.dimensions
+
+    if (! all(dimensions %in% valid.dimensions) ) {
+      err <- paste('"dimensions" must be one of', 
+                   paste(dimensions, collapse = ", "))
+      stop(err)
+    }
+
+    f_bounds <- function(child, dimension) {
+      set_peak_type(child, peak.type)
+    }
+    
+    for ( name in dimensions ) {
+      object@dimensions[[name]] <- f_bounds(object@dimensions[[name]], name)
+    }
+
     return(object)
   }
 

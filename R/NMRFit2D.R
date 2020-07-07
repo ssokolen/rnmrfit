@@ -54,139 +54,19 @@ NMRFit2D <- setClass("NMRFit2D",
     knots = 'numeric',
     baseline = 'complex',
     phase = 'numeric',
-    bounds = 'list',
+    lower.bounds = 'list',
+    upper.bounds = 'list',
     time = 'numeric'
   ),
   prototype = prototype(
     knots = numeric(0), 
     baseline = complex(re = rep(0, 4), im = rep(0, 4)),
     phase = c(0),
-    bounds = list(lower = NULL, upper = NULL),
+    lower.bounds = NULL, 
+    upper.bounds = NULL,
     time = c(0)
   )
 )
-
-
-
-#==============================================================================>
-#  Validation methods
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' NMRFit2D validity test
-#'
-validNMRFit2D <- function(object) {
-
-  nmrdata <- object@nmrdata
-  knots <- object@knots
-  baseline <- object@baseline
-  phase <- object@phase
-  bounds <- object@bounds
-
-  valid <- TRUE
-  err <- c()
-
-  #---------------------------------------
-  # Checking nmrdata
-  if ( (class(nmrdata) != 'NMRData2D') || (! validObject(nmrdata))  ) {
-
-      valid <- FALSE
-      new.err <- '"nmrdata" must be a valid NMRData2D object.'
-      err <- c(err, new.err)
-
-  }
-
-  #---------------------------------------
-  # Checking baseline length 
-  if ( (length(baseline) > 0) && (length(baseline) <= (length(knots)+1)) ) {
-
-      valid <- FALSE
-      new.err <- paste('"baseline" vector length must be greater than the',
-                       '"knots" vector length by at least 2 elements.')
-      err <- c(err, new.err)
-
-  }
-
-  #---------------------------------------
-  # Checking phase length 
-  if ( length(phase) > 2  ) {
-
-      valid <- FALSE
-      new.err <- 'The phase correction term must be of length 2 or smaller.'
-      err <- c(err, new.err)
-
-  }
-
-
-
-  #---------------------------------------
-  # Checking that lower bounds match slots 
-  valid.bounds <- c('baseline', 'phase')
-  if (! is.null(bounds$lower) ) {
-
-    logic <- identical(names(bounds$lower), valid.bounds)
-    if (! logic ) {
-      valid <- FALSE
-      new.err <- sprintf('"bounds$lower" must have the following elements: %s',
-                         paste(valid.bounds, collapse = ', '))
-      err <- c(err, new.err)
-    }
-
-    logic.1 <- length(bounds$lower$baseline) %in% c(0, 1)
-    logic.2 <- length(bounds$lower$phase) %in% c(0, 1) 
-    if (! (logic.1 && logic.2) ) {
-      valid <- FALSE
-      new.err <- paste('"bounds$lower$baseline" and "bounds$lower$phase must',
-                       'have a length of either zero or one, representing an',
-                       'overall bound on baseline or phase correction.')
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Checking that upper bounds match slots
-  if (! is.null(bounds$upper) ) {
-
-    logic <- identical(names(bounds$upper), valid.bounds)
-    if (! logic ) {
-      valid <- FALSE
-      new.err <- sprintf('"bounds$upper" must have the following elements: %s',
-                         paste(valid.bounds, collapse = ', '))
-      err <- c(err, new.err)
-    }
-
-    logic.1 <- length(bounds$upper$baseline) %in% c(0, 1)
-    logic.2 <- length(bounds$upper$phase) %in% c(0, 1) 
-    if (! (logic.1 && logic.2) ) {
-      valid <- FALSE
-      new.err <- paste('"bounds$upper$baseline" and "bounds$upper$phase must',
-                       'have a length of either zero or one, representing an',
-                       'overall bound on baseline or phase correction.')
-      err <- c(err, new.err)
-    }
-  }
-
-  #---------------------------------------
-  # Checking the knots are all inside the boundaries
-  direct.shift <- range(nmrdata@processed$direct.shift)
-  if ( any((knots < direct.shift[1]) | (knots > direct.shift[2])) ) {
-
-      wrn <- paste('It is recommended to keep "knots" values inside the',
-                   'chemical shift range of the data.')
-      warning(wrn)
-
-  }
-
-  #---------------------------------------
-  # Output
-  if (valid) TRUE
-  else err
-}
-
-# Add the extended validity testing
-setValidity("NMRFit2D", validNMRFit2D)
 
 
 
@@ -318,7 +198,8 @@ nmrfit_2d <- function(
   # Resulting fit object
   out <- new('NMRFit2D', mixture, nmrdata = nmrdata,
                          knots = knots, baseline = baseline, phase = phase,
-                         bounds = bounds)
+                         lower.bounds = bounds$lower,
+                         upper.bounds = bounds$upper)
 
   # If the fit is delayed, then return current object, otherwise run fit first
   if ( delay.fit ) out
@@ -690,7 +571,8 @@ setMethod("show", "NMRFit2D",
     baseline <- baseline(object)
     knots <- knots(object)
     phase <- phase(object)
-    bounds <- bounds(object)
+    lower <- lower_bounds(object)
+    upper <- upper_bounds(object)
     couplings <- couplings(object)
 
     cat('An object of NMRFit2D class\n\n')
@@ -725,12 +607,11 @@ setMethod("show", "NMRFit2D",
 
     # Bounds
     columns <- c('position', 'width', 'height', 'fraction.gauss')
-
-    lower <- unlist(bounds$lower$peaks[ , columns])
-    upper <- unlist(bounds$upper$peaks[ , columns])
-    
-    range <- paste('(', lower, ', ', upper, ')', sep = '')
-    peaks[ , columns] <- range
+    for ( column in columns ) {
+      range <- paste('(', lower[, column], ', ', 
+                          upper[, column], ')', sep = '')
+      peaks[, column] <- range
+    }
 
     cat('Bounds (lower, upper):\n\n')
     print(peaks)
@@ -740,9 +621,9 @@ setMethod("show", "NMRFit2D",
     cat('Baseline and phase correction bounds:\n\n')
 
     cat('Real baseline: ')
-    if ( length(bounds$lower$baseline) > 0) {
-      lower <- round(Re(bounds$lower$baseline), 4)
-      upper <- round(Re(bounds$upper$baseline), 4)
+    if ( length(object@lower.bounds$baseline) > 0) {
+      lower <- round(Re(object@lower.bounds$baseline), 4)
+      upper <- round(Re(object@upper.bounds$baseline), 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
@@ -750,9 +631,9 @@ setMethod("show", "NMRFit2D",
     else cat('None\n')
 
     cat('Imaginary baseline: ')
-    if ( length(bounds$lower$baseline) > 0) {
-      lower <- round(Im(bounds$lower$baseline), 4)
-      upper <- round(Im(bounds$upper$baseline), 4)
+    if ( length(object@lower.bounds$baseline) > 0) {
+      lower <- round(Im(object@lower.bounds$baseline), 4)
+      upper <- round(Im(object@upper.bounds$baseline), 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
@@ -762,15 +643,16 @@ setMethod("show", "NMRFit2D",
     # Phase bounds
     cat('Phase (radians): ')
 
-    if ( length(bounds$lower$phase) > 0)  {
-      lower <- round(bounds$lower$phase, 4)
-      upper <- round(bounds$upper$phase, 4)
+    if ( length(object@lower.bounds$phase) > 0)  {
+      lower <- round(object@lower.bounds$phase, 4)
+      upper <- round(object@upper.bounds$phase, 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
     }
     else cat('None\n')
     cat('\n')
+
 
     # Couplings
     if ( nrow(couplings) > 0 ) {

@@ -318,9 +318,12 @@ setMethod("projection", "NMRData2D",
 
   x <- paste(dimension, "shift", sep = ".")
 
-  # Parameters
-  procs = object@procs[[dimension]]
-  acqus = object@acqus[[dimension]]
+  # Parameters (revisit and cross-reference NMRData)
+  procs <- list(direct = list())#, indirect = list())
+  procs$direct <- object@procs[[dimension]]
+
+  acqus <- list(direct = list())#, indirect = list())
+  acqus$direct <- object@acqus[[dimension]]
 
   d <- object@processed
   d$r <- r.col
@@ -329,7 +332,7 @@ setMethod("projection", "NMRData2D",
   # Handling processed data
   d <- d %>%
     select(-intensity) %>%
-    group_by( {{ x }} ) %>%
+    group_by(across(matches(x))) %>%
     summarize(r = sum(r), i = sum(i)) %>%
     ungroup()
 
