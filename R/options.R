@@ -60,9 +60,10 @@ nmroptions <- do.call(set_opt, opts)
 
 
 #---------------------------------------
-# Introducing direct and indirect sublists for sf, baseline, and phase
+# Introducing direct and indirect sublists for sf
+# (which may be expanded later as needed)
 
-named.opts <- c('sf', 'baseline', 'phase')
+named.opts <- c('sf')
 child_opts <- opts[named.opts]
 
 for ( entry in named.opts ) {

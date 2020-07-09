@@ -51,6 +51,18 @@ test_that("1d species construction works", {
   expect_warning(peaks(species) <- rbind(peaks(r1, TRUE), peaks(r3, TRUE)),
                  "The following resonance is not defined, ignoring: R3")
 
+  # Checking conformity checks
+  p <- tibble(direct.shift = c(-1, 1), intensity = complex(re=c(-1, 1)))
+  d <- new("NMRData1D")
+  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
+  d@processed <- p
+  expect_true(check_conformity(species, d))
+
+  p <- tibble(direct.shift = c(-1, 0), intensity = complex(re=c(-1, 1)))
+  d@processed <- p
+  expect_error(check_conformity(species, d),
+               "Some peaks fall outside the data's chemical shift")
+
 })
 
 #==============================================================================>

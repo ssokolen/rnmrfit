@@ -355,6 +355,36 @@ setMethod("upper_bounds", "NMRScaffold",
 
 
 #==============================================================================>
+# Validation methods 
+#==============================================================================>
+
+
+
+#---------------------------------------
+#' Check data conformity
+#' 
+#' This is intended to a primarily internal function used to check whether
+#' provided data conforms to the scaffold. The check is currently limited to
+#' ensuring the correct number of dimensions and that data covers the chemical
+#' shift of specific positions
+#' 
+#' @param object An NMRScaffold object.
+#' @param nmrdata An NMRData object.
+#' @param error True to issue an error message, otherwise, return message as
+#'              string.
+#' @param ... Additional arguments passed to inheriting methods.
+#'
+#' @return TRUE if data conforms, FALSE otherwise.
+#' 
+#' @name check_conformity
+#' @export
+setGeneric("check_conformity", 
+  function(object, ...) standardGeneric("check_conformity")
+)
+
+
+
+#==============================================================================>
 # Convenience methods for bounds
 #==============================================================================>
 
@@ -904,4 +934,256 @@ setMethod("set_peak_type", "NMRScaffold",
   object@peaks <- peaks
 
   object
+})
+
+
+
+#==============================================================================>
+# Fit Methods
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------------
+#' Parse constraints for fitting
+#' 
+#' This is an internal function used to parse equality and inequality
+#' constraints into a form that can be used for lower level fit code.
+#' Essentially, each constraint is defined as a vector with a variable number
+#' of elements codified as follows: 1) Code of either 0 (position), 1 (width),
+#' 2 (height), 3 (fraction.gauss), 4 (area); 2) The equality or inequality
+#' target value; 3+) Integers corresponding to peak indexes in the overall
+#' parameter vector. Positive vs negative values are treated differently
+#' depending on the code. For positions, parameters with negative indexes are
+#' subtracted while for width and area, all parameters with negative indexes
+#' are added up before dividing the positive ones.
+#' 
+#' @param object An NMRScaffold object.
+#' @param direct.span The ppm range of the fit used to scale position
+#'                    differences in the direct dimension.
+#' @param indirect.span The ppm range of the fit used to scale position
+#'                      differences in the indirect dimension.
+#' 
+#' @name parse_constraints
+setGeneric("parse_constraints", 
+  function(object, ...) {
+    standardGeneric("parse_constraints")
+})
+
+#' @rdname parse_constraints
+#' @export
+setMethod("parse_constraints", "NMRScaffold",
+  function(object, direct.span = 1, indirect.span = 1) {
+
+    #---------------------------------------
+    # Defining separate functions for dealing with the 5 different constraints.
+    
+    # Differences in peak position
+    f_position <- function(leeway, difference, indexes) {
+      if ( leeway == 0 ) {
+        list(c(0, difference, indexes))
+      } else {
+        list(c(0, difference*(1+leeway), indexes),
+             c(0, -difference*(1-leeway), -indexes))
+      }
+    }
+
+    # height currently ignored
+
+    # Ratios of peak width (fixed at equal)
+    f_width <- function(leeway, indexes) {
+      if ( leeway == 0 ) {
+        list(c(1, 1, indexes))
+      } else {
+        list(c(1, (1+leeway), indexes),
+             c(1, 1/(1-leeway), -indexes))
+      }
+    }
+
+    # Differences of fraction.gauss (fixed at equal)
+    f_fraction <- function(leeway, indexes) {
+      if ( leeway == 0 ) {
+        list(c(3, 0, indexes))
+      } else {
+        list(c(3, leeway, indexes),
+             c(3, leeway, -indexes))
+      }
+    }
+
+    # Ratios of area
+    f_area <- function(leeway, ratio, indexes) {
+      if ( leeway == 0 ) {
+        list(c(4, ratio, indexes))
+      } else {
+        # All ratios are converted to be greater than 1 to allow for
+        # standardized lower and upper bounds
+        if ( ratio < 1 ) {
+          ratio <- 1/ratio
+          indexes <- -indexes
+        }
+
+        list(c(4, ratio*(1+leeway),  indexes),
+             c(4, 1/(ratio*(1-leeway)), -indexes))
+      }
+    }
+
+    #---------------------------------------
+    # Applying the constraints
+
+    eq.constraints <- list()
+    ineq.constraints <- list()
+
+    #---------------------------------------
+    # Normalizing data
+    # (technically, the following should only be applied to mixture
+    # objects, but it's pretty straightforward to generate a trivial mixture
+    # from resonance/species -- not tested yet, but should work)
+
+    if ( class(object) %in% c("NMRResonance1D", "NMRSpecies1D") ) {
+      object <- nmrmixture_1d(object)
+    } else if ( class(object) %in% c("NMRResonance2D", "NMRSpecies2D") ) {
+      object <- nmrmixture_2d(object)
+    }
+    
+    peaks <- peaks(object)
+    peaks$resonance <- as.character(peaks$resonance)
+
+    # If we are dealing with 1D data, add placeholder dimension column
+    if (! "dimension" %in% colnames(peaks) ) {
+      peaks$dimensions = "direct"
+    }
+    
+    # Combine direct and indirect span
+    x.span <- list(direct = direct.span, indirect = indirect.span)
+
+    #---------------------------------------
+    # Generating constraints
+
+    # To ensure that individual leeway values are considered, looping through
+    # each species/resonance one at a time
+    for ( specie in object@children ) {
+
+      # At the species level, constraints are based on overall area sums
+      # (only handled in the direct dimensions with the indirect dimension
+      # being automatically handled by a more general constraint on height)
+      leeway <- abs(specie@connections.leeway)
+
+      # First dealing with conenctions between resonances
+      connections <- specie@connections
+      
+      if ( nrow(connections) > 0 ) {
+        
+        for ( i in 1:nrow(connections) ) {
+
+          resonance.1 <- connections$resonance.1[i]
+          resonance.2 <- connections$resonance.2[i]
+          ratio <- connections$area.ratio[i]
+
+          logic <- specie@id == peaks$species &
+                   (peaks$dimension == "direct")
+          logic.1 <- logic & (resonance.1 == peaks$resonance)
+          logic.2 <- logic & (resonance.2 == peaks$resonance)
+          indexes <- c(which(logic.2), -which(logic.1))
+
+          if ( leeway == 0 ) {
+            eq.constraints <- c(eq.constraints, 
+                                f_area(leeway, ratio, indexes))
+          } else {
+            ineq.constraints <- c(ineq.constraints, 
+                                f_area(leeway, ratio, indexes))
+          }
+          
+        }
+      }
+
+      # Then looping through each specific resonance within each species
+      for ( resonance in specie@children ) {
+
+        # If dealing with 2D data, use dimensions list, otherwise fake one
+        if ( "dimensions" %in% slotNames(object) ) {
+          dimensions <- resonance@dimensions
+        } else {
+          dimensions <- list(direct = resonance)
+        }
+
+        # Loop over dimensions
+        for ( dimension in names(dimensions) ) {
+
+          # At the species level, constraints are based on overall area sums
+          id <- dimensions[[dimension]]@id
+          couplings.leeway <- dimensions[[dimension]]@couplings.leeway
+
+          position.leeway <- abs(couplings.leeway$position)
+          width.leeway <- abs(couplings.leeway$width)
+          fraction.leeway <- abs(couplings.leeway$fraction.gauss)
+          area.leeway <- abs(couplings.leeway$area)
+
+          # Only continue if there are couplings defined
+          couplings <- dimensions[[dimension]]@couplings
+
+          if ( nrow(couplings) > 0 ) {
+            
+            for ( i in 1:nrow(couplings) ) {
+              peak.1 <- couplings$peak.1[i]
+              peak.2 <- couplings$peak.2[i]
+              diff <- couplings$position.difference[i]/x.span[[dimension]]
+              ratio <- couplings$area.ratio[i]
+
+              logic <- (specie@id == peaks$species) & 
+                       (resonance@id == peaks$resonance) &
+                       (dimension == peaks$dimension)
+
+              logic.1 <- logic & (peak.1 == peaks$peak)
+              logic.2 <- logic & (peak.2 == peaks$peak)
+              indexes <- c(which(logic.2), -which(logic.1))
+
+              # Each coupling constraint includes position, width, and area
+
+              # First, the position
+              leeway <- position.leeway
+              if ( leeway == 0 ) {
+                eq.constraints <- c(eq.constraints, 
+                                    f_position(leeway, diff, indexes))
+              } else {
+                ineq.constraints <- c(ineq.constraints, 
+                                    f_position(leeway, diff, indexes))
+              }
+
+              # Then, the width (same by default)
+              leeway <- width.leeway
+              if ( leeway == 0 ) {
+                eq.constraints <- c(eq.constraints, 
+                                    f_width(leeway, indexes))
+              } else {
+                ineq.constraints <- c(ineq.constraints, 
+                                    f_width(leeway, indexes))
+              }
+
+              # Then, the fraction Gauss (same by default)
+              leeway <- fraction.leeway
+              if ( leeway == 0 ) {
+                eq.constraints <- c(eq.constraints, 
+                                    f_fraction(leeway, indexes))
+              } else {
+                ineq.constraints <- c(ineq.constraints, 
+                                    f_fraction(leeway, indexes))
+              }
+
+              # Finally, the area
+              leeway <- area.leeway
+              if ( leeway == 0 ) {
+                eq.constraints <- c(eq.constraints, 
+                                    f_area(leeway, ratio, indexes))
+              } else {
+                ineq.constraints <- c(ineq.constraints, 
+                                    f_area(leeway, ratio, indexes))
+              }
+            }
+          }
+        }
+      }
+    }
+
+    # Returning list of constraints
+    list(eq.constraints, ineq.constraints)
 })

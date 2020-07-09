@@ -81,6 +81,45 @@ setMethod("show", "NMRScaffold1D",
 
 
 #==============================================================================>
+# Validation methods 
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------------
+#' @rdname conforms
+#' @export
+setMethod("check_conformity", "NMRScaffold1D",
+  function(object, nmrdata, error = TRUE) {
+
+  out <- TRUE
+
+  # Checking nmrdata
+  if ( class(nmrdata) != 'NMRData1D' ) {
+    err <- '"nmrdata" must be a valid NMRData1D object.'
+    if ( error ) stop(err)
+    out <- FALSE
+  }
+
+  # Checking that data captures all defined peaks
+  d <- processed(nmrdata)
+  peaks <- peaks(object) 
+
+  logic <- (peaks$position < min(d$direct.shift)) | 
+           (peaks$position > max(d$direct.shift))
+
+  if ( any(logic) ) {
+    err <- "Some peaks fall outside the data's chemical shift"
+    if ( error ) (stop(err))
+    out <- FALSE
+  }
+
+  out
+})
+
+
+
+#==============================================================================>
 #  Initialization functions (generating parameter estimates based on data)
 #==============================================================================>
 
@@ -119,23 +158,10 @@ setMethod("initialize_heights", "NMRScaffold1D",
   function(object, nmrdata) {
 
   # Checking nmrdata
-  if ( class(nmrdata) != 'NMRData1D' ) {
-    err <- '"nmrdata" must be a valid NMRData1D object.'
-    stop(err)
-  }
+  check_conformity(object, nmrdata)
 
-  # Checking that data captures all defined peaks
   d <- processed(nmrdata)
   peaks <- peaks(object) 
-
-  logic <- (peaks$position < min(d$direct.shift)) | 
-           (peaks$position > max(d$direct.shift))
-
-  if ( any(logic) ) {
-    err <- "nmrdata must span all peak positions (%s are out of bounds)"
-    err <- sprintf(err, paste(peaks$id[logic], collapse = ", "))
-    stop(err)
-  }
 
   # Building an interpolating function betwewn chemical shift and intensity
   f <- approxfun(d$direct.shift, Re(d$intensity))

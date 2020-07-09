@@ -52,7 +52,7 @@ NMRFit2D <- setClass("NMRFit2D",
   slots = c(
     nmrdata = 'NMRData2D',
     knots = 'numeric',
-    baseline = 'complex',
+    baseline = 'vctrs_cmplx2',
     phase = 'numeric',
     lower.bounds = 'list',
     upper.bounds = 'list',
@@ -60,7 +60,8 @@ NMRFit2D <- setClass("NMRFit2D",
   ),
   prototype = prototype(
     knots = numeric(0), 
-    baseline = complex(re = rep(0, 4), im = rep(0, 4)),
+    #baseline = cmplx2(rr = rep(0, 4), ri = rep(0, 4),
+    #                  ir = rep(0, 4), ii = rep(0, 4)),
     phase = c(0),
     lower.bounds = NULL, 
     upper.bounds = NULL,
@@ -111,8 +112,7 @@ NMRFit2D <- setClass("NMRFit2D",
 #'                knots() function. To modify initial values of the baseline,
 #'                use baseline() function.
 #' @param phase.order An integer specifying the order of the phase correction
-#'                    polynomial. Only 0 and 1st order terms are typically used
-#'                    in practice, but a higher order correction is possible.
+#'                    polynomial -- may be 0 or 1 (-1 to disable).
 #' @param delay.fit FALSE to immediately run least squares optimization after
 #'                  the NMRFit2D object is initialized, TRUE to skip the
 #'                  optimization, enabling more customization. The fit can be
@@ -128,17 +128,6 @@ NMRFit2D <- setClass("NMRFit2D",
 #'             fit() function are also passed on the init() function.
 #' @param opts A list of NLOPT fit options to override the default options in
 #'             the nmroptions$fit$opts.
-#' @param exclusion.level A string specifying what to do when peaks are found to
-#'                        fall outside of the data range: either 'species' to
-#'                        exclude the whole species to which the offending peak
-#'                        belongs, 'resonance' to exclude the resonance to which
-#'                        the offending peak belongs, or 'peak' to exclude just
-#'                        the peak itself.
-#' @param exclusion.notification A function specifying how to report when peaks
-#'                               are found to be outside the data range: 'none'
-#'                               to ignore, 'message' to issue a message,
-#'                               'warning' to issue a warning, or 'stop' to
-#'                               issue an error.
 #' @param ... Options passed to nmrspecies_2d if conversion has to be performed.
 #'            See ?nmrspecies_2d for more details.
 #' 
@@ -146,13 +135,11 @@ NMRFit2D <- setClass("NMRFit2D",
 #' 
 #' @export
 nmrfit_2d <- function(
-  species, nmrdata, baseline.order = nmroptions$direct$baseline$order,
-  n.knots = nmroptions$direct$baseline$n.knots, 
-  phase.order = nmroptions$direct$phase$order, 
+  species, nmrdata, baseline.order = nmroptions$baseline$order,
+  n.knots = nmroptions$baseline$n.knots, 
+  phase.order = nmroptions$phase$order, 
   delay.fit = FALSE, sf = nmroptions$direct$sf,
-  init = nmroptions$fit$init, opts = nmroptions$fit$opts, 
-  exclusion.level = nmroptions$exclusion$level, 
-  exclusion.notification = nmroptions$exclusion$notification, ...) {
+  init = nmroptions$fit$init, opts = nmroptions$fit$opts, ...) {
 
   #---------------------------------------
   # Generating list of species 
@@ -163,36 +150,44 @@ nmrfit_2d <- function(
   #---------------------------------------
   # Checking nmrdata
 
-  if ( (class(nmrdata) != 'NMRData2D') || (! validObject(nmrdata)) ) {
-    err <- '"nmrdata" must be a valid NMRData2D object.'
-    stop(err)
-  }
+  check_conformity(mixture, nmrdata)
 
   #---------------------------------------
   # Baseline and phase
 
   # The initial value for the baseline is just the median of nmrdata intensity
   if ( baseline.order == -1 ) {
-    baseline <- complex(0)
+    baseline <- cmplx2(0)
     knots <- numeric(0)
   }
   else {
     n <- baseline.order + n.knots + 1
-    baseline <- complex(re = rep(median(Re(nmrdata@processed$intensity)), n),
-                        im = rep(median(Im(nmrdata@processed$intensity)), n))
+    baseline <- cmplx2(rr = rep(median(nmrdata@processed$intensity$rr), n),
+                       ri = rep(median(nmrdata@processed$intensity$ri), n),
+                       ir = rep(median(nmrdata@processed$intensity$ir), n),
+                       ii = rep(median(nmrdata@processed$intensity$ii), n))
 
     # Knots are initialized to fall evenly between the chemical shift data
-    direct.shift <- range(nmrdata@processed$direct.shift)
-    knots <- seq(direct.shift[1], direct.shift[2], length.out = n.knots)
+    if ( n.knots > 0 ) {
+      knots <- seq(0, 1, length.out = n.knots + 2)
+      knots <- knots[2:(n.knots + 1)]
+    } else {
+      knots <- numeric(0)
+    }
   }
 
   # The initial value for the phase is always 0
   if ( phase.order == -1 ) phase <- numeric(0)
-  else phase <- rep(0, phase.order + 1)
+  else if ( phase.order == 0 ) phase <- rep(0, 2)
+  else if ( phase.order == 1 ) phase <- rep(0, 3)
+  else {
+    err <- "Phase order must be 0 or 1 (or -1 to disable phase correction)"
+    stop(err)
+  }
 
   # Initializing bounds
-  bounds <- list(lower = list(baseline = complex(0), phase = numeric(0)),
-                 upper = list(baseline = complex(0), phase = numeric(0)))
+  bounds <- list(lower = list(baseline = cmplx2(0), phase = numeric(0)),
+                 upper = list(baseline = cmplx2(0), phase = numeric(0)))
 
   #---------------------------------------
   # Resulting fit object
@@ -203,10 +198,7 @@ nmrfit_2d <- function(
 
   # If the fit is delayed, then return current object, otherwise run fit first
   if ( delay.fit ) out
-  else fit(out, sf = sf, init = init, opts = opts, 
-           exclusion.level = exclusion.level, 
-           exclusion.notification = exclusion.notification)
-
+  else fit(out, sf = sf, init = init, opts = opts)
 }
 
 
@@ -221,332 +213,185 @@ nmrfit_2d <- function(
 #' @export
 setMethod("fit", "NMRFit2D",
   function(object, sf = nmroptions$direct$sf, init = nmroptions$fit$init, 
-           opts = nmroptions$fit$opts, 
-           exclusion.level = nmroptions$exclusion$level,
-           exclusion.notification = nmroptions$exclusion$notification) {
+           opts = nmroptions$fit$opts) {
 
-    # First, run the initialization
-    object <- init(object, sf = sf, init = init, opts = opts, 
-                   exclusion.level = exclusion.level, 
-                   exclusion.notification = exclusion.notification)
+  # First, run the initialization
+  object <- init(object, sf = sf, init = init, opts = opts)
 
-    # Unpacking some of the NMR data
-    d <- processed(object@nmrdata)
-    x <- d$direct.shift
-    x.range <- range(x)
-    x.span <- x.range[2] - x.range[1]
-    y <- d$intensity
-    y.range <- range(Re(y))
+  # Ensuring consistent order
+  d <- processed(object@nmrdata)
+  d <- d[order(d$direct.shift, d$indirect.shift), ]
 
-    # Normalizing data
-    x <- (x - x.range[1])/x.span
-    y <- complex(re = Re(y), im = Im(y))
-    y <- y/y.range[2]
+  # Unpacking some of the NMR data
+  x1 <- d$direct.shift
+  x2 <- d$indirect.shift
+  x1.range <- range(x1)
+  x2.range <- range(x2)
+  x1.span <- x1.range[2] - x1.range[1]
+  x2.span <- x2.range[2] - x2.range[1]
+  y <- d$intensity
+  y.range <- range(Re(y))
 
-    # Baseline knots have to be scaled along with 
+  # Normalizing data
+  x1 <- (x1 - x1.range[1])/x1.span
+  x2 <- (x2 - x2.range[1])/x2.span
+  y <- cmplx2(rr = y$rr, ri = y$ri, ir = y$ir, ii = y$ii)
+  y <- y/y.range[2]
 
-    # Exclude peaks in advance by tying into the update_peaks functions
-    # (to consider full resonance/fit exclusion)
-    peaks <- peaks(object)
-    logic <- (peaks$position > x.range[1]) & (peaks$position < x.range[2])
-    peaks <- peaks[logic, ]
+  # Scaling and unpacking all parameters
+  peaks <- peaks(object)
+  n.peaks <- nrow(peaks)
+  data.columns <- c('position', 'width', 'height', 'fraction.gauss')
 
-    object2 <- update_peaks(object, peaks, exclusion.level = exclusion.level,
-                            exclusion.notification = "none")
+  columns <- c("mixture", "species", "resonance")
+  descriptors <- as.matrix(peaks[, which(colnames(peaks) %in% columns)])
+  descriptors <- apply(descriptors, 1, paste, collapse = "-")
+  
+  dimensions <- peaks$dimension 
 
-    peaks <- peaks(object2)
-    n.peaks <- nrow(peaks)
+  peaks <- list(par = peaks[, data.columns], 
+                lb = bounds(object)$lower$peaks[, data.columns], 
+                ub = bounds(object)$upper$peaks[, data.columns])
 
-    # Scaling and unpacking all parameters
-    data.columns <- c('position', 'width', 'height', 'fraction.gauss')
+  for (name in names(peaks)) {
+    logic <- dimensions == "direct"
 
-    peaks <- list(par = peaks[, data.columns], 
-                  lb = bounds(object)$lower$peaks[, data.columns], 
-                  ub = bounds(object)$upper$peaks[, data.columns])
+    peaks[[name]]$position <- 
+      ifelse(logic, (peaks[[name]]$position - x1.range[1])/x1.span
+                    (peaks[[name]]$position - x2.range[1])/x2.span)
 
-    for (name in names(peaks)) {
-      peaks[[name]]$position <- (peaks[[name]]$position - x.range[1])/x.span
-      peaks[[name]]$width <- peaks[[name]]$width/sf/x.span
-      peaks[[name]]$height <- peaks[[name]]$height/y.range[2]
+    peaks[[name]]$width <- 
+      ifelse(logic, peaks[[name]]$width/sf/x1.span,
+                    peaks[[name]]$width/sf/x2.span)
 
-      peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
-    }
+    peaks[[name]]$height <- peaks[[name]]$height/y.range[2]
 
-    #---------------------------------------
-    # Scaling and unpacking baseline/phase terms
+    peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
+  }
+
+
+  #---------------------------------------
+  # Scaling and unpacking baseline/phase terms
+  
+  # Scaling knots in line with x
+  knots <- sort(c(knots(object), c(0, 1)))
+  
+  n.baseline <- length(baseline(object))
+
+  # y-scaling performed below for convenience
+  baseline <- list(par = baseline(object), 
+                   lb = rep(bounds(object)$lower$baseline, n.baseline),
+                   ub = rep(bounds(object)$upper$baseline, n.baseline))
+
+  # 1st order phase coefficients must be adapted to the local scale
+  # (although a 0 order correction remains constant)
+  phase <- phase(object)
+  n.phase <- length(phase)
+  if ( n.phase == 3 ) {
+    phase[1] <- phase[1] + phase[2]*x1.range[1] + phase[3]*x1.range[1]
+    phase[2] <- (phase[2] - phase[1])*x1.span
+    phase[3] <- (phase[3] - phase[1])*x2.span
+  }
+
+  # Adding simple bounds that are expanded to constraints for 1st order
+  # phase correction
+  phase <- list(par = phase, 
+                lb = rep(bounds(object)$lower$phase, n.phase),
+                ub = rep(bounds(object)$upper$phase, n.phase))
+
+  par <- list(par = NA, lb = NA, ub = NA)
+  for (name in names(par)) {
+
+    # At the end of the day, all parameters must be flattened into a vector
+    par[[name]] <- c(
+      peaks[[name]], 
+      baseline[[name]]$rr/y.range[2], 
+      baseline[[name]]$ri/y.range[2], 
+      baseline[[name]]$ir/y.range[2], 
+      baseline[[name]]$ii/y.range[2], 
+      phase[[name]]
+    )
+  }
+
+  #---------------------------------------
+  # Generating constraint lists
+
+  # Comparing constraint code)
+  #constraints <- parse_constraints(object, x.span)
+
+  #eq.constraints <- constraints[[1]]
+  #ineq.constraints <- constraints[[2]]
+
+  #---------------------------------------
+  # Performing the fit
+
+  # Generating baseline basis
+  order <- n.baseline - length(knots) - 1
+  if ( n.baseline > 0 ) {
+    basis <- splines::bs(x, degree = order, knots = knots, intercept = TRUE)
+  } else {
+    # Creating a mock basis that will be ignored in the Rcpp code
+    basis <- matrix(0, nrow = length(x), ncol = 1)
+  }
+
+  print(head(x))
+  print(head(y))
+  print(par)
+  print(head(basis))
+  print(eq.constraints)
+  print(ineq.constraints)
+
+  start.time <- proc.time()
+  fit_lineshape_2d(x, y, par$par, par$lb, par$ub, basis, 
+                   eq.constraints, ineq.constraints,
+                   n.peaks, n.baseline, n.phase)
+  object@time <- as.numeric(proc.time() - start.time)[3]
+
+  #---------------------------------------
+  # Unpacking and rescaling parameters
+  
+  # Starting with peaks
+  peaks <- peaks(object)
+  new.peaks <- matrix(par$par[1:(n.peaks*4)], ncol = 4, byrow = TRUE)
+  peaks[, data.columns] <- new.peaks
+
+  peaks$position <- peaks$position*x.span + x.range[1]
+  peaks$width <- peaks$width*sf*x.span
+  peaks$height <- peaks$height*y.range[2]
+
+  object <- update_peaks(object, peaks, exclusion.level = exclusion.level,
+                         exclusion.notification = exclusion.notification)
+
+  # Then baseline
+  index.re <- (n.peaks*4 + 1):(n.peaks*4 + n.baseline)
+  index.im <- index.re + n.baseline
+  if ( n.baseline > 0 ) {
+    object@baseline <- complex(re = par$par[index.re]*y.range[2],
+                               im = par$par[index.im]*y.range[2])
+  }
+
+  # And phase
+  index <- (n.peaks*4 + n.baseline*2 + 1):(n.peaks*4 + n.baseline*2 + n.phase)
+  if ( n.phase > 0 ) {
+    phase <- par$par[index]
+
+    print('Phase!')
+    print(phase)
+    print(x.range)
     
-    # Scaling knots in line with x
-    knots <- knots(object)
-    knots <- (knots - x.range[1])/x.span
-    n.baseline <- length(baseline(object))
-
-    # y-scaling performed below for convenience
-    baseline <- list(par = baseline(object), 
-                     lb = rep(bounds(object)$lower$baseline, n.baseline),
-                     ub = rep(bounds(object)$upper$baseline, n.baseline))
-
-    # 1st order phase coefficients must be adapted to the local scale
-    # (although a 0 order correction remains constant)
-    phase <- phase(object)
-    n.phase <- length(phase)
+    # 1st order phase coefficients must be adapted back to the global scale
     if ( n.phase == 2 ) {
-      phase[1] <- phase[1] + phase[2]*x.range[1]
-      phase[2] <- (phase[2] - phase[1])*x.span
+      phase.left <- phase[1]
+      phase.right <- phase[1] + phase[2]
+      phase[2] <- (phase.right - phase.left)/x.span
+      phase[1] <- phase.left - phase[2]*x.range[1]
     }
 
-    # Adding simple bounds that are expanded to constraints for 1st order
-    # phase correction
-    phase <- list(par = phase, 
-                  lb = rep(bounds(object)$lower$phase, n.phase),
-                  ub = rep(bounds(object)$upper$phase, n.phase))
+    object@phase <- phase
+  }
 
-    par <- list(par = NA, lb = NA, ub = NA)
-    for (name in names(par)) {
-      par[[name]] <- c(peaks[[name]], Re(baseline[[name]])/y.range[2], 
-                        Im(baseline[[name]])/y.range[2], phase[[name]])
-    }
-
-    #---------------------------------------
-    # Generating constraint lists
-    # Each element in the list is an encoded constraint in the form of a vector.
-    # The elements are decoded as follows:
-    # 1: Code of either 0, 1, 2, 3, 4. 0 means position, 1 width, 2 height, 
-    #    3 fraction.gauss, 4 area
-    # 2: The equality or inequality target value. 
-    # 3+: Integers corresponding to peak indexes in the overall parameter 
-    #     vector. Positive vs negative values are treated differently depending
-    #     on code. For positions, parameters with negative indexes are  
-    #     subtracted while for width and area, all parameters with negative
-    #     indexes are added up before dividing the positive ones.
-    eq.constraints <- list()
-    ineq.constraints <- list()
-
-    # Redefining peaks from modified object
-    peaks <- peaks(object)
-
-    # To ensure that individual leeway values are considered, looping through
-    # each species/resonance one at a time
-    for (specie in object@species) {
-
-      # At the species level, constraints are based on overall area sums
-      leeway <- abs(specie@connections.leeway)
-
-      # First dealing with conenctions between resonances
-      connections <- specie@connections
-      if ( nrow(connections) > 0 ) {
-        
-        for ( i in 1:nrow(connections) ) {
-          resonance.1 <- connections$resonance.1[i]
-          resonance.2 <- connections$resonance.2[i]
-          ratio <- connections$area.ratio[i]
-
-          logic <-(specie@id == peaks$species)
-          logic.1 <- logic & (resonance.1 == peaks$resonance)
-          logic.2 <- logic & (resonance.2 == peaks$resonance)
-
-          if ( leeway == 0 ) {
-            new.constraint <- c(4, ratio, which(logic.2), -which(logic.1))
-            eq.constraints <- c(eq.constraints, list(new.constraint))
-          }
-          else {
-            # The upper bounds
-            new.constraint <- c(4, ratio*(1+leeway), 
-                                which(logic.2), -which(logic.1))
-            ineq.constraints <- c(ineq.constraints, list(new.constraint))
-
-            # The lower bound
-            new.constraint <- c(4, 1/(ratio*(1-leeway)), 
-                                -which(logic.2), which(logic.1))
-            ineq.constraints <- c(ineq.constraints, list(new.constraint))
-          }
-        }
-      }
-
-      # Then looping through each specific resonance within each species
-      for (resonance in specie@resonances) {
-
-        # At the species level, constraints are based on overall area sums
-        id <- resonance@id
-        position.leeway <- abs(resonance@couplings.leeway$position)
-        width.leeway <- abs(resonance@couplings.leeway$width)
-        fraction.leeway <- abs(resonance@couplings.leeway$fraction.gauss)
-        area.leeway <- abs(resonance@couplings.leeway$area)
-
-        # Only continue if there are couplings defined
-        couplings <- resonance@couplings
-        if ( nrow(couplings) > 0 ) {
-          
-          for ( i in 1:nrow(couplings) ) {
-            peak.1 <- couplings$peak.1[i]
-            peak.2 <- couplings$peak.2[i]
-            diff <- couplings$position.difference[i]/x.span
-            ratio <- couplings$area.ratio[i]
-
-            logic <- (specie@id == peaks$species) & 
-                       (resonance@id == peaks$resonance)
-            logic.1 <- logic & (peak.1 == peaks$peak)
-            logic.2 <- logic & (peak.2 == peaks$peak)
-
-            # Each coupling constraint includes position, width, and area
-
-            # First, the position
-            leeway <- position.leeway
-            if ( leeway == 0 ) {
-              new.constraint <- c(0, diff, which(logic.2), -which(logic.1))
-              eq.constraints <- c(eq.constraints, list(new.constraint))
-            }
-            else {
-              # The upper bounds
-              new.constraint <- c(0, diff*(1+leeway), 
-                                  which(logic.2), -which(logic.1))
-              ineq.constraints <- c(ineq.constraints, list(new.constraint))
-
-              # The lower bound
-              new.constraint <- c(0, -diff*(1-leeway), 
-                                  -which(logic.2), which(logic.1))
-              ineq.constraints <- c(ineq.constraints, list(new.constraint))
-            }
-
-            # Then, the width (same by default)
-            leeway <- width.leeway
-            if ( leeway == 0 ) {
-              new.constraint <- c(1, 1, which(logic.2), -which(logic.1))
-              eq.constraints <- c(eq.constraints, list(new.constraint))
-            }
-            else {
-              # The upper bounds
-              new.constraint <- c(1, (1+leeway), 
-                                  which(logic.2), -which(logic.1))
-              ineq.constraints <- c(ineq.constraints, list(new.constraint))
-
-              # The lower bound
-              new.constraint <- c(1, 1/(1-leeway), 
-                                  -which(logic.2), which(logic.1))
-              ineq.constraints <- c(ineq.constraints, list(new.constraint))
-            }
-
-            # Then, the fraction Gauss (same by default)
-            leeway <- fraction.leeway
-            if ( leeway == 0 ) {
-              new.constraint <- c(3, 0, which(logic.2), -which(logic.1))
-              eq.constraints <- c(eq.constraints, list(new.constraint))
-            }
-            else {
-              # The upper bounds
-              new.constraint <- c(3, leeway, 
-                                  which(logic.2), -which(logic.1))
-              ineq.constraints <- c(ineq.constraints, list(new.constraint))
-
-              # The lower bound
-              new.constraint <- c(3, leeway, 
-                                  -which(logic.2), which(logic.1))
-              ineq.constraints <- c(ineq.constraints, list(new.constraint))
-            }
-
-            # Finally, the area
-            leeway <- area.leeway
-            if ( leeway == 0 ) {
-              new.constraint <- c(4, ratio, which(logic.2), -which(logic.1))
-              eq.constraints <- c(eq.constraints, list(new.constraint))
-            }
-            else {
-              # Inequality constraints around percentages can be problematic
-              # since 10% of a 2x peak area difference doesn't directly map
-              # to a 10% difference around the inverse 0.5x. As such, all
-              # ratio are treated as being greater than 1, with indexes
-              # flipped to accommodate.
-              if ( ratio < 1 ) {
-                ratio <- 1/ratio
-                temp.logic <- logic.1
-                logic.1 <- logic.2
-                logic.2 <- temp.logic
-              }
-
-              # The upper bounds
-              new.constraint <- c(4, ratio*(1+leeway), 
-                                  which(logic.2), -which(logic.1))
-              ineq.constraints <- c(ineq.constraints, list(new.constraint))
-
-              # The lower bound
-              new.constraint <- c(4, 1/(ratio*(1-leeway)), 
-                                  -which(logic.2), which(logic.1))
-              ineq.constraints <- c(ineq.constraints, list(new.constraint))
-            }
-          }
-        }
-      }
-    }
-
-    #---------------------------------------
-    # Performing the fit
-
-    # Generating baseline basis
-    order <- n.baseline - length(knots) - 1
-    if ( n.baseline > 0 ) {
-      basis <- splines::bs(x, degree = order, knots = knots, intercept = TRUE)
-    } else {
-      # Creating a mock basis that will be ignored in the Rcpp code
-      basis <- matrix(0, nrow = length(x), ncol = 1)
-    }
-
-    print(head(x))
-    print(head(y))
-    print(par)
-    print(head(basis))
-    print(eq.constraints)
-    print(ineq.constraints)
-
-    start.time <- proc.time()
-    fit_lineshape_2d(x, y, par$par, par$lb, par$ub, basis, 
-                     eq.constraints, ineq.constraints,
-                     n.peaks, n.baseline, n.phase)
-    object@time <- as.numeric(proc.time() - start.time)[3]
-
-    #---------------------------------------
-    # Unpacking and rescaling parameters
-    
-    # Starting with peaks
-    peaks <- peaks(object)
-    new.peaks <- matrix(par$par[1:(n.peaks*4)], ncol = 4, byrow = TRUE)
-    peaks[, data.columns] <- new.peaks
-
-    peaks$position <- peaks$position*x.span + x.range[1]
-    peaks$width <- peaks$width*sf*x.span
-    peaks$height <- peaks$height*y.range[2]
-
-    object <- update_peaks(object, peaks, exclusion.level = exclusion.level,
-                           exclusion.notification = exclusion.notification)
-
-    # Then baseline
-    index.re <- (n.peaks*4 + 1):(n.peaks*4 + n.baseline)
-    index.im <- index.re + n.baseline
-    if ( n.baseline > 0 ) {
-      object@baseline <- complex(re = par$par[index.re]*y.range[2],
-                                 im = par$par[index.im]*y.range[2])
-    }
-
-    # And phase
-    index <- (n.peaks*4 + n.baseline*2 + 1):(n.peaks*4 + n.baseline*2 + n.phase)
-    if ( n.phase > 0 ) {
-      phase <- par$par[index]
-
-      print('Phase!')
-      print(phase)
-      print(x.range)
-      
-      # 1st order phase coefficients must be adapted back to the global scale
-      if ( n.phase == 2 ) {
-        phase.left <- phase[1]
-        phase.right <- phase[1] + phase[2]
-        phase[2] <- (phase.right - phase.left)/x.span
-        phase[1] <- phase.left - phase[2]*x.range[1]
-      }
-
-      object@phase <- phase
-    }
-
-    object
-  })
+  object
+})
 
 
 

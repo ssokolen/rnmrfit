@@ -67,6 +67,51 @@ setMethod("show", "NMRScaffold2D",
 
 
 #==============================================================================>
+# Validation methods 
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------------
+#' @rdname conforms
+#' @export
+setMethod("check_conformity", "NMRScaffold2D",
+  function(object, nmrdata, error = TRUE) {
+
+  out <- TRUE
+
+  # Checking nmrdata
+  if ( class(nmrdata) != 'NMRData2D' ) {
+    err <- '"nmrdata" must be a valid NMRData2D object.'
+    if ( error ) stop(err)
+    out <- FALSE
+  }
+
+  # Checking that data captures all defined peaks
+  d <- processed(nmrdata)
+  peaks <- peaks(object) 
+
+  direct.peaks <- filter(peaks, dimension == "direct")
+  direct.logic <- (direct.peaks$position < min(d$direct.shift)) | 
+                  (direct.peaks$position > max(d$direct.shift)) 
+
+
+  indirect.peaks <- filter(peaks, dimension == "indirect")
+  indirect.logic <- (indirect.peaks$position < min(d$indirect.shift)) | 
+                    (indirect.peaks$position > max(d$indirect.shift))
+
+  if ( any(direct.logic) | any(indirect.logic) ) {
+    err <- "Some peaks fall outside the data's chemical shift"
+    if ( error ) (stop(err))
+    out <- FALSE
+  }
+
+  out
+})
+
+
+
+#==============================================================================>
 #  Helper functions
 #==============================================================================>
 

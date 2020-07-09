@@ -29,12 +29,12 @@
 #'                intensity values of the baseline based on the chemical shift
 #'                locations of the knots. The default baseline order and the
 #'                number of internal knots can be set using
-#'                nmrpotions$direct$baseline = list(order = 3, n.knots = 0),
+#'                nmrpotions$baseline = list(order = 3, n.knots = 0),
 #'                with the baseline vector length equal to the order + n.knots +
 #'                1.
 #' @slot phase A vector of phase correction terms, corresponding to either 0 or
 #'             1st order phase correction. The default phase correction order
-#'             can be set using nmroptions$direct$phase = list(order=1). Note
+#'             can be set using nmroptions$phase = list(order=1). Note
 #'             that the 0 order term is always calculated with respect to 0 ppm
 #'             and the first order term has units of degrees per ppm.
 #' @slot bounds A lower and upper bounds on baseline and phase terms. Both lower
@@ -101,7 +101,7 @@ NMRFit1D <- setClass("NMRFit1D",
 #'                knots() function. To modify initial values of the baseline,
 #'                use baseline() function.
 #' @param phase.order An integer specifying the order of the phase correction
-#'                    polynomial. Only 0 and 1st order terms are typically used
+#'                    polynomial -- may be 0 or 1 (-1 to disable).
 #'                    in practice, but a higher order correction is possible.
 #' @param delay.fit FALSE to immediately run least squares optimization after
 #'                  the NMRFit1D object is initialized, TRUE to skip the
@@ -125,9 +125,9 @@ NMRFit1D <- setClass("NMRFit1D",
 #' 
 #' @export
 nmrfit_1d <- function(
-  species, nmrdata, baseline.order = nmroptions$direct$baseline$order,
-  n.knots = nmroptions$direct$baseline$n.knots, 
-  phase.order = nmroptions$direct$phase$order, 
+  species, nmrdata, baseline.order = nmroptions$baseline$order,
+  n.knots = nmroptions$baseline$n.knots, 
+  phase.order = nmroptions$phase$order, 
   delay.fit = FALSE, sf = nmroptions$direct$sf,
   init = nmroptions$fit$init, opts = nmroptions$fit$opts, ...) {
 
@@ -140,23 +140,7 @@ nmrfit_1d <- function(
   #---------------------------------------
   # Checking nmrdata
 
-  if ( (class(nmrdata) != 'NMRData1D') || (! validObject(nmrdata)) ) {
-    err <- '"nmrdata" must be a valid NMRData1D object.'
-    stop(err)
-  }
-
-  # Ensuring that positions don't fall outside data
-  d <- processed(nmrdata)
-  positions <- peaks(mixture)$position
-
-  logic <- ( positions < min(d$direct.shift) ) | 
-           ( positions > max(d$direct.shift) )
-
-  if ( any(logic) ) {
-    err <- "The following peak positions are outside data range: %s"
-    err <- sprintf(err, paste(positions[logic], collapse = ", "))
-    stop(err)
-  }
+  check_conformity(mixture, nmrdata)
 
   #---------------------------------------
   # Baseline and phase
@@ -172,12 +156,20 @@ nmrfit_1d <- function(
                         im = rep(median(Im(nmrdata@processed$intensity)), n))
 
     # Knots are initialized to fall evenly between the chemical shift data
-    direct.shift <- range(nmrdata@processed$direct.shift)
-    knots <- seq(direct.shift[1], direct.shift[2], length.out = n.knots)
+    if ( n.knots > 0 ) {
+      knots <- seq(0, 1, length.out = n.knots + 2)
+      knots <- knots[2:(n.knots + 1)]
+    } else {
+      knots <- numeric(0)
+    }
   }
 
   # The initial value for the phase is always 0
   if ( phase.order == -1 ) phase <- numeric(0)
+  else if ( phase.order > 1 ) {
+    err <- "Phase order must be 0 or 1 (or -1 to disable phase correction)"
+    stop(err)
+  }
   else phase <- rep(0, phase.order + 1)
 
   # Initializing bounds
@@ -194,216 +186,7 @@ nmrfit_1d <- function(
   # If the fit is delayed, then return current object, otherwise run fit first
   if ( delay.fit ) out
   else fit(out, sf = sf, init = init, opts = opts)
-
 }
-
-
-
-#==============================================================================>
-#  Parsing constraints
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' Parse constraints for fitting
-#' 
-#' This is an internal function used to parse equality and inequality
-#' constraints into a form that can be used for lower level fit code.
-#' Essentially, each constraint is defined as a vector with a variable number
-#' of elements codified as follows: 1) Code of either 0 (position), 1 (width),
-#' 2 (height), 3 (fraction.gauss), 4 (area); 2) The equality or inequality
-#' target value; 3+) Integers corresponding to peak indexes in the overall
-#' parameter vector. Positive vs negative values are treated differently
-#' depending on the code. For positions, parameters with negative indexes are
-#' subtracted while for width and area, all parameters with negative indexes
-#' are added up before dividing the positive ones.
-#' 
-#' @param object An NMRMixture1D object.
-#' @param x.span The ppm range of the fit used to scale position differences.
-#' @param offset An integer offset to the indexes used to handle direct/indirect
-#'               dimensions for 2D fitting.
-#' 
-#' @name parse_constraints
-setGeneric("parse_constraints", 
-  function(object, ...) {
-    standardGeneric("parse_constraints")
-})
-
-#' @rdname parse_constraints
-#' @export
-setMethod("parse_constraints", "NMRMixture1D",
-  function(object, x.span = 1, offset = 0) {
-
-    #---------------------------------------
-    # Defining separate functions for dealing with the 5 different constraints.
-    
-    # Differences in peak position
-    f_position <- function(leeway, difference, indexes) {
-      if ( leeway == 0 ) {
-        list(c(0, difference, indexes))
-      } else {
-        list(c(0, difference*(1+leeway), indexes),
-             c(0, -difference*(1-leeway), -indexes))
-      }
-    }
-
-    # height currently ignored
-
-    # Ratios of peak width (fixed at equal)
-    f_width <- function(leeway, indexes) {
-      if ( leeway == 0 ) {
-        list(c(1, 1, indexes))
-      } else {
-        list(c(1, (1+leeway), indexes),
-             c(1, 1/(1-leeway), -indexes))
-      }
-    }
-
-    # Differences of fraction.gauss (fixed at equal)
-    f_fraction <- function(leeway, indexes) {
-      if ( leeway == 0 ) {
-        list(c(3, 0, indexes))
-      } else {
-        list(c(3, leeway, indexes),
-             c(3, leeway, -indexes))
-      }
-    }
-
-    # Ratios of area
-    f_area <- function(leeway, ratio, indexes) {
-      if ( leeway == 0 ) {
-        list(c(4, ratio, indexes))
-      } else {
-        # All ratios are converted to be greater than 1 to allow for
-        # standardized lower and upper bounds
-        if ( ratio < 1 ) {
-          ratio <- 1/ratio
-          indexes <- -indexes
-        }
-
-        list(c(4, ratio*(1+leeway),  indexes),
-             c(4, 1/(ratio*(1-leeway)), -indexes))
-      }
-    }
-
-    #---------------------------------------
-    # Applying the constraints
-
-    eq.constraints <- list()
-    ineq.constraints <- list()
-
-    peaks <- peaks(object)
-    peaks$resonance <- as.character(peaks$resonance)
-
-    # To ensure that individual leeway values are considered, looping through
-    # each species/resonance one at a time
-    for ( specie in object@children ) {
-
-      # At the species level, constraints are based on overall area sums
-      leeway <- abs(specie@connections.leeway)
-
-      # First dealing with conenctions between resonances
-      connections <- specie@connections
-      
-      if ( nrow(connections) > 0 ) {
-        
-        for ( i in 1:nrow(connections) ) {
-          resonance.1 <- connections$resonance.1[i]
-          resonance.2 <- connections$resonance.2[i]
-          ratio <- connections$area.ratio[i]
-
-          logic <-(specie@id == peaks$species)
-          logic.1 <- logic & (resonance.1 == peaks$resonance)
-          logic.2 <- logic & (resonance.2 == peaks$resonance)
-          indexes <- c(which(logic.2) + offset, -which(logic.1) - offset)
-
-          if ( leeway == 0 ) {
-            eq.constraints <- c(eq.constraints, 
-                                f_area(leeway, ratio, indexes))
-          } else {
-            ineq.constraints <- c(ineq.constraints, 
-                                f_area(leeway, ratio, indexes))
-          }
-        }
-      }
-
-      # Then looping through each specific resonance within each species
-      for ( resonance in specie@children ) {
-
-        # At the species level, constraints are based on overall area sums
-        id <- resonance@id
-        position.leeway <- abs(resonance@couplings.leeway$position)
-        width.leeway <- abs(resonance@couplings.leeway$width)
-        fraction.leeway <- abs(resonance@couplings.leeway$fraction.gauss)
-        area.leeway <- abs(resonance@couplings.leeway$area)
-
-        # Only continue if there are couplings defined
-        couplings <- resonance@couplings
-
-        if ( nrow(couplings) > 0 ) {
-          
-          for ( i in 1:nrow(couplings) ) {
-            peak.1 <- couplings$peak.1[i]
-            peak.2 <- couplings$peak.2[i]
-            diff <- couplings$position.difference[i]/x.span
-            ratio <- couplings$area.ratio[i]
-
-            logic <- (specie@id == peaks$species) & 
-                       (resonance@id == peaks$resonance)
-            logic.1 <- logic & (peak.1 == peaks$peak)
-            logic.2 <- logic & (peak.2 == peaks$peak)
-            indexes <- c(which(logic.2) + offset, -which(logic.1) - offset)
-
-            # Each coupling constraint includes position, width, and area
-
-            # First, the position
-            leeway <- position.leeway
-            if ( leeway == 0 ) {
-              eq.constraints <- c(eq.constraints, 
-                                  f_position(leeway, diff, indexes))
-            } else {
-              ineq.constraints <- c(ineq.constraints, 
-                                  f_position(leeway, diff, indexes))
-            }
-
-            # Then, the width (same by default)
-            leeway <- width.leeway
-            if ( leeway == 0 ) {
-              eq.constraints <- c(eq.constraints, 
-                                  f_width(leeway, indexes))
-            } else {
-              ineq.constraints <- c(ineq.constraints, 
-                                  f_width(leeway, indexes))
-            }
-
-            # Then, the fraction Gauss (same by default)
-            leeway <- fraction.leeway
-            if ( leeway == 0 ) {
-              eq.constraints <- c(eq.constraints, 
-                                  f_fraction(leeway, indexes))
-            } else {
-              ineq.constraints <- c(ineq.constraints, 
-                                  f_fraction(leeway, indexes))
-            }
-
-            # Finally, the area
-            leeway <- area.leeway
-            if ( leeway == 0 ) {
-              eq.constraints <- c(eq.constraints, 
-                                  f_area(leeway, ratio, indexes))
-            } else {
-              ineq.constraints <- c(ineq.constraints, 
-                                  f_area(leeway, ratio, indexes))
-            }
-          }
-        }
-      }
-    }
-
-    # Returning list of constraints
-    list(eq.constraints, ineq.constraints)
-})
 
 
 
@@ -449,8 +232,11 @@ setMethod("fit", "NMRFit1D",
   # First, run the initialization
   object <- init(object, sf = sf, init = init, opts = opts)
 
-  # Unpacking some of the NMR data
+  # Ensuring consistent order
   d <- processed(object@nmrdata)
+  d <- d[order(d$direct.shift), ]
+
+  # Unpacking some of the NMR data
   x <- d$direct.shift
   x.range <- range(x)
   x.span <- x.range[2] - x.range[1]
@@ -461,12 +247,6 @@ setMethod("fit", "NMRFit1D",
   x <- (x - x.range[1])/x.span
   y <- complex(re = Re(y), im = Im(y))
   y <- y/y.range[2]
-
-  # It's helpful for phasing for x to go left to right
-  if ( x.range[1] > x.range[2] ) {
-    x <- rev(x)
-    y <- rev(y)
-  }
 
   # Scaling and unpacking all parameters
   peaks <- peaks(object)
@@ -487,10 +267,10 @@ setMethod("fit", "NMRFit1D",
 
   #---------------------------------------
   # Scaling and unpacking baseline/phase terms
+
+  # Tacking out bounds to internal knots
+  knots <- sort(c(knots(object), c(0, 1)))
   
-  # Scaling knots in line with x
-  knots <- knots(object)
-  knots <- (knots - x.range[1])/x.span
   n.baseline <- length(baseline(object))
 
   # y-scaling performed below for convenience
@@ -515,14 +295,19 @@ setMethod("fit", "NMRFit1D",
 
   par <- list(par = NA, lb = NA, ub = NA)
   for (name in names(par)) {
-    par[[name]] <- c(peaks[[name]], Re(baseline[[name]])/y.range[2], 
-                      Im(baseline[[name]])/y.range[2], phase[[name]])
+
+    # At the end of the day, all parameters must be flattened into a vector
+    par[[name]] <- c(
+      peaks[[name]], 
+      Re(baseline[[name]])/y.range[2], 
+      Im(baseline[[name]])/y.range[2], 
+      phase[[name]]
+    )
   }
 
   #---------------------------------------
   # Generating constraint lists
 
-  # Comparing constraint code)
   constraints <- parse_constraints(object, x.span)
 
   eq.constraints <- constraints[[1]]
@@ -530,9 +315,6 @@ setMethod("fit", "NMRFit1D",
 
   #---------------------------------------
   # Performing the fit
-
-  # Adding boundary knots
-  knots <- sort(c(knots, c(0,1)))
 
   # Flattening constraints
   eq.constraints <- unlist(lapply(eq.constraints, function (x) c(x, NaN)))

@@ -69,6 +69,19 @@ test_that("2d species construction works", {
   expect_error(peaks(species) <- peaks(r.direct, TRUE),
                'Input data.frame must have a "dimension" column.')
 
+  # Checking conformity checks
+  p <- tibble(direct.shift = c(-1, 1), indirect.shift = c(-1, 1), 
+              intensity = cmplx2(rr=c(-1, 1)))
+  d <- new("NMRData2D")
+  d@acqus <- list(direct = list(sfo1 = nmroptions$sf),
+                  indirect = list(sfo1 = nmroptions$sf))
+  d@processed <- p
+  expect_true(check_conformity(species, d))
+
+  p$direct.shift <- c(-1, 0)
+  d@processed <- p
+  expect_error(check_conformity(species, d),
+               "Some peaks fall outside the data's chemical shift")
 })
 
 #==============================================================================>
