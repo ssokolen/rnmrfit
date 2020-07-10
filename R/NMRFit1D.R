@@ -427,10 +427,6 @@ setMethod("show", "NMRFit1D",
     if ( length(baseline) > 0) {cat('\n'); print(round(Re(baseline), 4))}
     else cat('None\n')
 
-    cat('Imaginary baseline: ')
-    if ( length(baseline) > 0) {cat('\n'); print(round(Im(baseline), 4))}
-    else cat('None\n')
-
     cat('Internal knots: ')
     if ( length(knots) > 0) {cat('\n'); print(round(knots, 4))}
     else cat('None\n')
@@ -462,16 +458,6 @@ setMethod("show", "NMRFit1D",
     if ( length(object@lower.bounds$baseline) > 0) {
       lower <- round(Re(object@lower.bounds$baseline), 4)
       upper <- round(Re(object@upper.bounds$baseline), 4)
-      
-      range <- paste('(', lower, ', ', upper, ')\n', sep = '')
-      cat(range)
-    }
-    else cat('None\n')
-
-    cat('Imaginary baseline: ')
-    if ( length(object@lower.bounds$baseline) > 0) {
-      lower <- round(Im(object@lower.bounds$baseline), 4)
-      upper <- round(Im(object@upper.bounds$baseline), 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)

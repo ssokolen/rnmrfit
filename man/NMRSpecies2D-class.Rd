@@ -12,7 +12,7 @@ between multiple resonances as part of a single species.
 \section{Slots}{
 
 \describe{
-\item{\code{resonances}}{A list of NMRResonance2D objects.}
+\item{\code{children}}{A list of NMRResonance2D objects.}
 
 \item{\code{connections}}{A data.frame relating the volumes of the resonances.}
 

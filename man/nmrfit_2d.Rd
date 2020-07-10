@@ -7,15 +7,13 @@
 nmrfit_2d(
   species,
   nmrdata,
-  baseline.order = nmroptions$direct$baseline$order,
-  n.knots = nmroptions$direct$baseline$n.knots,
-  phase.order = nmroptions$direct$phase$order,
+  baseline.order = nmroptions$baseline$order,
+  n.knots = nmroptions$baseline$n.knots,
+  phase.order = nmroptions$phase$order,
   delay.fit = FALSE,
   sf = nmroptions$direct$sf,
   init = nmroptions$fit$init,
   opts = nmroptions$fit$opts,
-  exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification,
   ...
 )
 }
@@ -40,8 +38,7 @@ knots() function. To modify initial values of the baseline,
 use baseline() function.}
 
 \item{phase.order}{An integer specifying the order of the phase correction
-polynomial. Only 0 and 1st order terms are typically used
-in practice, but a higher order correction is possible.}
+polynomial -- may be 0 or 1 (-1 to disable).}
 
 \item{delay.fit}{FALSE to immediately run least squares optimization after
 the NMRFit2D object is initialized, TRUE to skip the
@@ -61,19 +58,6 @@ fit() function are also passed on the init() function.}
 
 \item{opts}{A list of NLOPT fit options to override the default options in
 the nmroptions$fit$opts.}
-
-\item{exclusion.level}{A string specifying what to do when peaks are found to
-fall outside of the data range: either 'species' to
-exclude the whole species to which the offending peak
-belongs, 'resonance' to exclude the resonance to which
-the offending peak belongs, or 'peak' to exclude just
-the peak itself.}
-
-\item{exclusion.notification}{A function specifying how to report when peaks
-are found to be outside the data range: 'none'
-to ignore, 'message' to issue a message,
-'warning' to issue a warning, or 'stop' to
-issue an error.}
 
 \item{...}{Options passed to nmrspecies_2d if conversion has to be performed.
 See ?nmrspecies_2d for more details.}

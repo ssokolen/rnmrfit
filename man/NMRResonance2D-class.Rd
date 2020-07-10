@@ -16,8 +16,6 @@ separate set of coupling constraints.
 \section{Slots}{
 
 \describe{
-\item{\code{dimensions}}{An NMRResonance1D object.}
-
-\item{\code{indirect}}{An NMRResonance1D object.}
+\item{\code{dimensions}}{A list of NMRResonance1D object.}
 }}
 

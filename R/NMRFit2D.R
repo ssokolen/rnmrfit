@@ -60,8 +60,8 @@ NMRFit2D <- setClass("NMRFit2D",
   ),
   prototype = prototype(
     knots = numeric(0), 
-    #baseline = cmplx2(rr = rep(0, 4), ri = rep(0, 4),
-    #                  ir = rep(0, 4), ii = rep(0, 4)),
+    baseline = cmplx2(rr = rep(0, 4), ri = rep(0, 4),
+                      ir = rep(0, 4), ii = rep(0, 4)),
     phase = c(0),
     lower.bounds = NULL, 
     upper.bounds = NULL,
@@ -316,36 +316,53 @@ setMethod("fit", "NMRFit2D",
   #---------------------------------------
   # Generating constraint lists
 
-  # Comparing constraint code)
-  #constraints <- parse_constraints(object, x.span)
+  constraints <- parse_constraints(object, x1.span, x2.span)
 
-  #eq.constraints <- constraints[[1]]
-  #ineq.constraints <- constraints[[2]]
+  eq.constraints <- constraints[[1]]
+  ineq.constraints <- constraints[[2]]
 
   #---------------------------------------
   # Performing the fit
 
-  # Generating baseline basis
-  order <- n.baseline - length(knots) - 1
-  if ( n.baseline > 0 ) {
-    basis <- splines::bs(x, degree = order, knots = knots, intercept = TRUE)
-  } else {
-    # Creating a mock basis that will be ignored in the Rcpp code
-    basis <- matrix(0, nrow = length(x), ncol = 1)
-  }
+  # Flattening constraints
+  eq.constraints <- unlist(lapply(eq.constraints, function (x) c(x, NaN)))
+  eq.constraints <- eq.constraints[-length(eq.constraints)]
 
-  print(head(x))
-  print(head(y))
-  print(par)
-  print(head(basis))
-  print(eq.constraints)
-  print(ineq.constraints)
+  ineq.constraints <- unlist(lapply(ineq.constraints, function (x) c(x, NaN)))
+  ineq.constraints <- ineq.constraints[-length(ineq.constraints)]
+
+  # Encoding resonance/dimension information
+  i.res <- as.integer(factor(descriptors)) - 1
+  i.res <- rep(i.res, each = 4)
+
+  i.dim <- as.integer(factor(dimensions, 
+                             levels = c('direct', 'indirect'))) - 1
+  i.dim <- rep(i.dim, each = 4)
 
   start.time <- proc.time()
-  fit_lineshape_2d(x, y, par$par, par$lb, par$ub, basis, 
-                   eq.constraints, ineq.constraints,
-                   n.peaks, n.baseline, n.phase)
+  out <- .Call("fit_2d_wrapper", 
+    x_direct = as.double(x1), 
+    x_indirect = as.double(x2), 
+    y = as.double(c(y$rr, y$ri, y$ir, y$ii)), 
+    resonances = as.integer(i.res),
+    dimensions = as.integer(i.dim),
+    knots = as.double(knots),
+    p = as.double(par$par), 
+    lb = as.double(par$lb), 
+    ub = as.double(par$ub), 
+    n = as.integer(length(x)),
+    nl = as.integer(n.peaks*4),
+    nb = as.integer(n.baseline),
+    np = as.integer(n.phase),
+    nk = as.integer(length(knots)),
+    eq = as.double(eq.constraints),
+    iq = as.double(ineq.constraints),
+    neq = as.integer(length(eq.constraints)),
+    niq = as.integer(length(ineq.constraints))
+  )
   object@time <- as.numeric(proc.time() - start.time)[3]
+
+  par$par <- out
 
   #---------------------------------------
   # Unpacking and rescaling parameters
@@ -355,19 +372,31 @@ setMethod("fit", "NMRFit2D",
   new.peaks <- matrix(par$par[1:(n.peaks*4)], ncol = 4, byrow = TRUE)
   peaks[, data.columns] <- new.peaks
 
-  peaks$position <- peaks$position*x.span + x.range[1]
-  peaks$width <- peaks$width*sf*x.span
+  peaks$position <- ifelse(
+    dimensions == "direct",
+    peaks$position*x1.span + x1.range[1],
+    peaks$position*x2.span + x2.range[1])
+
+  peaks$width <- ifelse(
+    dimensions == "direct",
+    peaks$width*sf*x1.span,
+    peaks$width*sf*x2.span)
+
   peaks$height <- peaks$height*y.range[2]
 
-  object <- update_peaks(object, peaks, exclusion.level = exclusion.level,
-                         exclusion.notification = exclusion.notification)
+  peaks(object) <- peaks
 
   # Then baseline
-  index.re <- (n.peaks*4 + 1):(n.peaks*4 + n.baseline)
-  index.im <- index.re + n.baseline
+  index.rr <- (n.peaks*4 + 1):(n.peaks*4 + n.baseline)
+  index.ri <- index.re + n.baseline
+  index.ir <- index.re + n.baseline
+  index.ii <- index.re + n.baseline
+
   if ( n.baseline > 0 ) {
-    object@baseline <- complex(re = par$par[index.re]*y.range[2],
-                               im = par$par[index.im]*y.range[2])
+    object@baseline <- cmplx2(rr = par$par[index.rr]*y.range[2],
+                              ri = par$par[index.ri]*y.range[2],
+                              ir = par$par[index.ir]*y.range[2],
+                              ii = par$par[index.ii]*y.range[2])
   }
 
   # And phase
@@ -375,22 +404,21 @@ setMethod("fit", "NMRFit2D",
   if ( n.phase > 0 ) {
     phase <- par$par[index]
 
-    print('Phase!')
-    print(phase)
-    print(x.range)
-    
     # 1st order phase coefficients must be adapted back to the global scale
-    if ( n.phase == 2 ) {
+    if ( n.phase == 3 ) {
       phase.left <- phase[1]
-      phase.right <- phase[1] + phase[2]
-      phase[2] <- (phase.right - phase.left)/x.span
-      phase[1] <- phase.left - phase[2]*x.range[1]
+      phase.right.1 <- phase[1] + phase[2]
+      phase.right.2 <- phase[1] + phase[3]
+      phase[2] <- (phase.right.1 - phase.left)/x1.span
+      phase[3] <- (phase.right.2 - phase.left)/x2.span
+      phase[1] <- phase.left - phase[2]*x1.range[1] - phase[3]*x2.range[1]
     }
 
     object@phase <- phase
   }
 
   object
+
 })
 
 
@@ -434,10 +462,6 @@ setMethod("show", "NMRFit2D",
     if ( length(baseline) > 0) {cat('\n'); print(round(Re(baseline), 4))}
     else cat('None\n')
 
-    cat('Imaginary baseline: ')
-    if ( length(baseline) > 0) {cat('\n'); print(round(Im(baseline), 4))}
-    else cat('None\n')
-
     cat('Internal knots: ')
     if ( length(knots) > 0) {cat('\n'); print(round(knots, 4))}
     else cat('None\n')
@@ -469,16 +493,6 @@ setMethod("show", "NMRFit2D",
     if ( length(object@lower.bounds$baseline) > 0) {
       lower <- round(Re(object@lower.bounds$baseline), 4)
       upper <- round(Re(object@upper.bounds$baseline), 4)
-      
-      range <- paste('(', lower, ', ', upper, ')\n', sep = '')
-      cat(range)
-    }
-    else cat('None\n')
-
-    cat('Imaginary baseline: ')
-    if ( length(object@lower.bounds$baseline) > 0) {
-      lower <- round(Im(object@lower.bounds$baseline), 4)
-      upper <- round(Im(object@upper.bounds$baseline), 4)
       
       range <- paste('(', lower, ', ', upper, ')\n', sep = '')
       cat(range)
@@ -532,10 +546,10 @@ setMethod("bounds", "NMRFit2D",
     # Baseline and phase
     lower.baseline <- object@bounds$lower$baseline
     lower.baseline <- ifelse(length(lower.baseline) == 0, 
-                             complex(re = -Inf, im = -Inf), lower.baseline)
+      cmplx2(rr = -Inf, ri = -Inf, ir = -Inf, ii = -Inf), lower.baseline)
     upper.baseline <- object@bounds$upper$baseline
     upper.baseline <- ifelse(length(upper.baseline) == 0, 
-                             complex(re = Inf, im = Inf), upper.baseline)   
+      cmplx2(rr = Inf, ri = Inf, ir = Inf, ii = Inf), upper.baseline)
 
     lower.phase <- object@bounds$lower$phase
     lower.phase <- ifelse(length(lower.phase) == 0, -Inf, lower.phase)   
@@ -591,7 +605,7 @@ setMethod("phase", "NMRFit2D",
 
 
 
-
+# TODO -- still from 1D
 
 #' @rdname f_baseline
 #' @export

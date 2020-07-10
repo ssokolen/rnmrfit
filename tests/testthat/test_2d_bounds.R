@@ -207,7 +207,7 @@ test_that("2d relative offset bounds work with species", {
 # Fit
 
 
-
+if ( FALSE ) {
 #==============================================================================>
 test_that("2d absolute general bounds work with fit", {
 
@@ -298,3 +298,4 @@ test_that("2d relative offset bounds work with fit", {
   check_offset_bounds(direct(object), par, 1e-6)
   check_offset_bounds(indirect(object), par, 1e-6)
 })
+}

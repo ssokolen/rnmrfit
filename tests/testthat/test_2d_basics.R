@@ -115,13 +115,13 @@ test_that("2d lineshape works", {
   nmroptions$sf <- 500
 
   id <- "R1"
-  r1.direct <- nmrresonance_1d("0.5 d 20", id = id)
-  r1.indirect <- nmrresonance_1d("0.7 d 20", id = id)
+  r1.direct <- nmrresonance_1d("0.5 s", id = id, width = 5)
+  r1.indirect <- nmrresonance_1d("0.7 s", id = id, width = 5)
   r1 <- nmrresonance_2d(r1.direct, r1.indirect)
 
   id <- "R2"
-  r2.direct <- nmrresonance_1d("0.2 s", id = id)
-  r2.indirect <- nmrresonance_1d("0.3 d 20", id = id)
+  r2.direct <- nmrresonance_1d("0.2 s", id = id, width = 5)
+  r2.indirect <- nmrresonance_1d("0.3 s", id = id, width = 5)
   r2 <- nmrresonance_2d(r2.direct, r2.indirect)
 
   id <- "S1"
@@ -144,20 +144,20 @@ test_that("2d lineshape works", {
   htmlwidgets::saveWidget(p, "2d_data.htm")
 
   direct.2d <- direct(d)@processed$intensity
-  indirect.2d <- indirect(d)@processed$intensity
+  indirect.2d <<- indirect(d)@processed$intensity
 
   # Generating 1D data
   species <- nmrspecies_1d(list(r1.direct, r2.direct), id = id)
   direct.1d <- values(species, x1)
 
   species <- nmrspecies_1d(list(r1.indirect, r2.indirect), id = id)
-  indirect.1d <- values(species, x2)
+  indirect.1d <<- values(species, x2)
 
   # Comparing
-  expect_equal(direct.2d/max(Re(direct.1d)), 
-               direct.2d/max(Re(direct.1d)))
-  expect_equal(indirect.2d/max(Re(indirect.1d)), 
-               indirect.2d/max(Re(indirect.1d)))
+  expect_equal(direct.2d/max(Re(direct.2d)), 
+               direct.1d/max(Re(direct.1d)), tolerance = 0.08)
+  expect_equal(indirect.2d/max(Re(indirect.2d)), 
+               indirect.1d/max(Re(indirect.1d)), tolerance = 0.08)
 
 })
 

@@ -1,6 +1,6 @@
 # Definition of a new set of complex classes that expand beyond the i notation
 
-
+#' @import vctrs
 #' @importFrom vctrs vec_arith
 NULL
 
@@ -298,6 +298,8 @@ vec_math.vctrs_cmplx1 <- function(.fn, .x, ...) {
   )
 }
 
+methods::setOldClass(c("vctrs_cmplx1", "vctrs_vctr"))
+
 
 
 #==============================================================================>
@@ -555,3 +557,5 @@ vec_math.vctrs_cmplx2 <- function(.fn, .x, ...) {
     vec_math_base(.fn, .x, ...)
   )
 }
+
+methods::setOldClass(c("vctrs_cmplx2", "vctrs_vctr"))

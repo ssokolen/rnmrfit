@@ -4,11 +4,14 @@
 \alias{nmrmixture_2d}
 \title{Generate an NMRMixture2D object}
 \usage{
-nmrmixture_2d(species, ...)
+nmrmixture_2d(species, id = "mixture", ...)
 }
 \arguments{
 \item{species}{A list of NMRSpecies2D objects. If list elements are named,
 these names will be use to replace species ids.}
+
+\item{id}{An optional string specifying mixture name. If left empty, the
+mixture name is left as the default "mixture"}
 
 \item{...}{Currently ignored.}
 }

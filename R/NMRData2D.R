@@ -332,14 +332,13 @@ setMethod("projection", "NMRData2D",
   # Handling processed data
   d <- d %>%
     select(-intensity) %>%
-    group_by(across(matches(x))) %>%
+    group_by(across(x)) %>%
     summarize(r = sum(r), i = sum(i)) %>%
     ungroup()
 
   d <- tibble(direct.shift = d[[x]], intensity = cmplx1(r = d$r, i = d$i))
 
   new("NMRData1D", processed = d, procs = procs, acqus = acqus)
-
 })
 
 

@@ -19,9 +19,7 @@ fit(object, ...)
   object,
   sf = nmroptions$direct$sf,
   init = nmroptions$fit$init,
-  opts = nmroptions$fit$opts,
-  exclusion.level = nmroptions$exclusion$level,
-  exclusion.notification = nmroptions$exclusion$notification
+  opts = nmroptions$fit$opts
 )
 }
 \arguments{

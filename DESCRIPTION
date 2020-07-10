@@ -17,7 +17,7 @@ Depends:
 Imports: pillar
 License: Apache (>= 2.0)
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Collate: 
     'cmplxn.R'
     'NMRData.R'

@@ -58,11 +58,10 @@ test_that("1d species construction works", {
   d@processed <- p
   expect_true(check_conformity(species, d))
 
-  p <- tibble(direct.shift = c(-1, 0), intensity = complex(re=c(-1, 1)))
+  p$direct.shift <- c(-1, 0)
   d@processed <- p
   expect_error(check_conformity(species, d),
                "Some peaks fall outside the data's chemical shift")
-
 })
 
 #==============================================================================>

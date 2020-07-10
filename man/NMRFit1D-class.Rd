@@ -29,13 +29,13 @@ values are control points that are roughly proportional to the
 intensity values of the baseline based on the chemical shift
 locations of the knots. The default baseline order and the
 number of internal knots can be set using
-nmrpotions$direct$baseline = list(order = 3, n.knots = 0),
+nmrpotions$baseline = list(order = 3, n.knots = 0),
 with the baseline vector length equal to the order + n.knots +
 1.}
 
 \item{\code{phase}}{A vector of phase correction terms, corresponding to either 0 or
 1st order phase correction. The default phase correction order
-can be set using nmroptions$direct$phase = list(order=1). Note
+can be set using nmroptions$phase = list(order=1). Note
 that the 0 order term is always calculated with respect to 0 ppm
 and the first order term has units of degrees per ppm.}
 

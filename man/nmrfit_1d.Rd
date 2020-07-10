@@ -7,9 +7,9 @@
 nmrfit_1d(
   species,
   nmrdata,
-  baseline.order = nmroptions$direct$baseline$order,
-  n.knots = nmroptions$direct$baseline$n.knots,
-  phase.order = nmroptions$direct$phase$order,
+  baseline.order = nmroptions$baseline$order,
+  n.knots = nmroptions$baseline$n.knots,
+  phase.order = nmroptions$phase$order,
   delay.fit = FALSE,
   sf = nmroptions$direct$sf,
   init = nmroptions$fit$init,
@@ -38,7 +38,7 @@ knots() function. To modify initial values of the baseline,
 use baseline() function.}
 
 \item{phase.order}{An integer specifying the order of the phase correction
-polynomial. Only 0 and 1st order terms are typically used
+polynomial -- may be 0 or 1 (-1 to disable).
 in practice, but a higher order correction is possible.}
 
 \item{delay.fit}{FALSE to immediately run least squares optimization after
