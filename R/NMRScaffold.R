@@ -151,6 +151,74 @@ setMethod("split_all", "NMRScaffold",
 
 
 #==============================================================================>
+# Splitting components
+#==============================================================================>
+
+
+
+#---------------------------------------
+#' Unpack NMR components
+#' 
+#' This function enables access to lower-level NMR objects (such as
+#' NMRResonance1D) which are contained within higher-level ones (such as
+#' NMRFit1D). Note that splitting up resonances within species drops area
+#' constraints.
+#' 
+#' @param object An NMRScaffold object.
+#' @param level One of "resonance", "species", or "mixture".
+#' @param ... Additional arguments passed to inheriting methods.
+#' 
+#' @return A tibble with varying numbers of descriptor columns and a single
+#'         "component" column holding NMRScaffold objects.
+#' 
+#' @name components
+#' @export
+setGeneric("components", 
+  function(object, ...) standardGeneric("components")
+)
+
+#' @rdname components
+#' @export
+setMethod("components", "NMRScaffold", 
+  function(object, level = "resonance") {
+
+    # The only possible output for resonance is itself
+    if ( any(class(object) %in% c("NMRResonance1D", "NMRResonance2D")) ) {
+      d <- tibble(resonance = id(object), component = list(object))
+    } else if ( any(class(object) %in% c("NMRSpecies1D", "NMRSpecies2D")) ) {
+      if ( level == "resonance" ) {
+        resonances <- object@children
+        d <- tibble(
+          species = id(object), 
+          resonance = map_chr(resonances, ~ id(.))
+        )
+        d$component <- resonances
+      } else {
+        d <- tibble(species = id(object), component = list(object))
+      }
+    } else {
+      if ( level == "resonance" ) {
+        species <- object@children
+        resonances <- map(species, ~ components(., level = level))
+        d <- tibble(mixture = id(object), bind_rows(resonances))
+      } else if ( level == "species" ) {
+        species <- object@children
+        d <- tibble(
+          mixture = id(object), 
+          species = map_chr(species, ~ id(.))
+        )
+        d$component <- species 
+      } else {
+        d <- tibble(mixture = id(object), component = list(object))
+      }
+    }
+
+    return(d)
+  })
+
+
+
+#==============================================================================>
 # Generics for basic setter and getter functions
 #==============================================================================>
 
@@ -393,7 +461,9 @@ setGeneric("check_conformity",
 #---------------------------------------
 #' Update bounds
 #' 
-#' This is an internal function used to update all the bounds of NMRScaffold object at once while ensuring that they are not widened if that is not desired. Do not use this function directly.
+#' This is an internal function used to update all the bounds of NMRScaffold
+#' object at once while ensuring that they are not widened if that is not
+#' desired. Do not use this function directly.
 #' 
 #' @param object An NMRScaffold object.
 #' @param lower.bounds data.frame of lower bounds.
