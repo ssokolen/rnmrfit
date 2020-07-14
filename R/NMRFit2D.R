@@ -282,7 +282,7 @@ setMethod("fit", "NMRFit2D",
       ifelse(logic, peaks[[name]]$width/direct.sf/x1.span,
                     peaks[[name]]$width/indirect.sf/x2.span)
 
-    peaks[[name]]$height <- peaks[[name]]$height/y.range[2]
+    peaks[[name]]$height <- peaks[[name]]$height/sqrt(y.range[2])
 
     peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
   }
@@ -356,6 +356,8 @@ setMethod("fit", "NMRFit2D",
                              levels = c('direct', 'indirect'))) - 1
   i.dim <- rep(i.dim, each = 4)
 
+  print(par)
+
   start.time <- proc.time()
   out <- .Call("fit_2d_wrapper", 
     x_direct = as.double(x1), 
@@ -380,6 +382,7 @@ setMethod("fit", "NMRFit2D",
   object@time <- as.numeric(proc.time() - start.time)[3]
 
   par$par <- out
+  print(out)
 
   #---------------------------------------
   # Unpacking and rescaling parameters
@@ -399,7 +402,7 @@ setMethod("fit", "NMRFit2D",
     peaks$width*direct.sf*x1.span,
     peaks$width*indirect.sf*x2.span)
 
-  peaks$height <- peaks$height*y.range[2]
+  peaks$height <- peaks$height*sqrt(y.range[2])
 
   peaks(object) <- peaks
 

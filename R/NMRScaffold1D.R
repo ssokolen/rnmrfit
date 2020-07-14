@@ -128,9 +128,10 @@ setMethod("check_conformity", "NMRScaffold1D",
 #------------------------------------------------------------------------------
 #' Initialize peak heights of an NMRScaffold1D object
 #' 
-#' Generates peak height estimates based on spectral data. At this point, there is just one approach: take peak height as the intensity
-#' of the data at the current position of the peak. There are plans to develop
-#' more sophisticated approaches in the future.
+#' Generates peak height estimates based on spectral data. At this point, there
+#' is just one approach: take peak height as the intensity of the data at the
+#' current position of the peak. There are plans to develop more sophisticated
+#' approaches in the future.
 #' 
 #' @param object An NMRScaffold1D object.
 #' @param nmrdata An NMRData1D object.
