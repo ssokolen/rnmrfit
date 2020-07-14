@@ -15,15 +15,14 @@ plot.NMRFit2D(
 \arguments{
 \item{x}{An NMRFit2D object.}
 
-\item{components}{One of either 'r', 'i', or 'r/i' to include real, imaginary
-or both components. If both components are selected, they
-are displayed in separate subplots.}
+\item{components}{One of 'rr', 'ii', 'ir', or 'ri' to specify various real
+and imaginary components. 3D plot subplots are not
+currently supported.}
 
 \item{apply.phase}{TRUE to apply the calculated phase to the data.}
 
-\item{sum.level}{One of either 'all', 'species', 'resonance', 'peak' to
-specify whether all peaks should be summed together the
-peaks should be summed at a lower level.}
+\item{sum.level}{One of either 'all', 'species', 'resonance', to specify
+whether all peaks should be summed together.}
 
 \item{sum.baseline}{TRUE to add the baseline to each fit.}
 }

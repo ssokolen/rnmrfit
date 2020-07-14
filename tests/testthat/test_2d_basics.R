@@ -161,4 +161,39 @@ test_that("2d lineshape works", {
 
 })
 
+#==============================================================================>
+test_that("2d fit construction works", {
+
+  nmroptions$sf <- 500
+
+  id <- "R1"
+  r1.direct <- nmrresonance_1d("0.5 s", id = id, width = 5)
+  r1.indirect <- nmrresonance_1d("0.7 s", id = id, width = 5)
+  resonance <- nmrresonance_2d(r1.direct, r1.indirect)
+
+  # Generating 2D data
+  x1 <- seq(0, 1, length.out = 50)
+  x2 <- seq(0, 1, length.out = 50)
+  p <- expand.grid(x1 = x1, x2 = x2)
+
+  intensity <- values(resonance, p$x1, p$x2, components = 'rr/ri/ir/ii')
+
+  p <- tibble(direct.shift = p$x1, indirect.shift = p$x2,
+              intensity = intensity)
+
+  d <- new("NMRData2D")
+  d@processed <- p
+
+  d@acqus <- list(direct = list(sfo1 = nmroptions$sf),
+                  indirect = list(sfo1 = nmroptions$sf))
+
+  # Fitting
+  r <- nmrresonance_2d('0.485 s', '0.685s')
+  s <- nmrspecies_2d(r, id = "S1")
+  fit <- nmrfit_2d(s, d, delay = TRUE)
+
+  # Checking getters
+  expect_equal(peaks(s)$position, peaks(fit)$position)
+
+})
 

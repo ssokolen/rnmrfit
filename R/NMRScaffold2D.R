@@ -40,9 +40,7 @@ NMRScaffold2D <- setClass("NMRScaffold2D",
 setMethod("show", "NMRScaffold2D", 
   function(object) {
 
-    print(1)
     direct <- direct(object)
-    print(2)
     indirect <- indirect(object)
     id <- id(object)
 
@@ -256,6 +254,42 @@ setMethod("indirect", "NMRScaffold2D",
 
 
 
+
+#==============================================================================>
+#  Initialization functions (generating parameter estimates based on data)
+#==============================================================================>
+
+
+
+#' @rdname initialize_heights
+#' @export
+setMethod("initialize_heights", "NMRScaffold2D",
+  function(object, nmrdata) {
+
+  # Checking nmrdata
+  check_conformity(object, nmrdata)
+
+  # Since heights are all dependent anyway, try to get direct dimension
+  # height from projection and then leave indirect at default (of 1)
+  d <- processed(direct(nmrdata))
+  peaks <- peaks(object) 
+
+  # Using loess with very light smoothing
+  d <- data.frame(x = d$direct.shift, y = Re(d$intensity))
+  m <- loess(y ~ x, data = d, span = 0.1)
+
+  # Generating heights from prediction
+  logic <- peaks$dimension == "direct"
+  peaks$height[logic] <- predict(m, data.frame(x = peaks$position[logic]))
+
+  # Updating
+  peaks(object) <- peaks
+  
+  object
+})
+
+
+
 #========================================================================>
 #  Lineshape and area calculations
 #========================================================================>
@@ -295,7 +329,7 @@ setMethod("f_lineshape", "NMRScaffold2D",
     parameters[logic, 2] <- parameters[logic, 2]/sf[1]
     parameters[!logic, 2] <- parameters[!logic, 2]/sf[2]
     
-    # The overall function is compose of two parts -- the Rust wrapper that
+    # The overall function is composed of two parts -- the Rust wrapper that
     # calculates values for all dimension and then the R formatter that 
     # selects which of these dimensions to output
 
@@ -306,7 +340,7 @@ setMethod("f_lineshape", "NMRScaffold2D",
     err <- paste('"component" argument must consist of two-character codes',
                  'and possibly a separator, e.g., "rr/ii" or "rr ri ir ii"')
     if ( any(! components %in% c('rr', 'ri', 'ir', 'ii')) ) stop(err)
-
+    
     if ( length(components) == 1 ) {
       f_out <- function(y) {
         d <- as_tibble(y)[, components]
@@ -424,8 +458,7 @@ setMethod("values", "NMRScaffold2D",
     f <- function(g) {
       tibble(direct.shift = direct.shift,
              indirect.shift = indirect.shift,
-             intensity = g[[1]](direct.shift, indirect.shift) + baseline) %>%
-      unpack('intensity')
+             intensity = g[[1]](direct.shift, indirect.shift) + baseline)
     }
 
     # Note that the unpack/pack functions are used to avoid bind_row errors
@@ -433,8 +466,7 @@ setMethod("values", "NMRScaffold2D",
     # And apply them to every peak
     d %>%
       group_by_if(~ ! is.list(.)) %>% 
-      do(f(.$f) ) %>% 
-      pack('intensity')
+      do(f(.$f) )
   }
 })
 

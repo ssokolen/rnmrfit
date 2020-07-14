@@ -354,7 +354,6 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
 
       # Checking to make sure that sweep frequency is defined
       err <- '"sf" must be provided as input or set using nmroptions'
-
       if ( is.null(sf) ) stop(err)
 
       # Converting coupling constant from Hz to ppm

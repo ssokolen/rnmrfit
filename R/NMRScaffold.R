@@ -1100,7 +1100,7 @@ setMethod("parse_constraints", "NMRScaffold",
       for ( resonance in specie@children ) {
 
         # If dealing with 2D data, use dimensions list, otherwise fake one
-        if ( "dimensions" %in% slotNames(object) ) {
+        if ( "dimensions" %in% slotNames(resonance) ) {
           dimensions <- resonance@dimensions
         } else {
           dimensions <- list(direct = resonance)

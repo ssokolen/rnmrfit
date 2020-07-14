@@ -22,8 +22,7 @@ are displayed in separate subplots.}
 \item{apply.phase}{TRUE to apply the calculated phase to the data.}
 
 \item{sum.level}{One of either 'all', 'species', 'resonance', 'peak' to
-specify whether all peaks should be summed together the
-peaks should be summed at a lower level.}
+specify whether all peaks should be summed together.}
 
 \item{sum.baseline}{TRUE to add the baseline to each fit.}
 }

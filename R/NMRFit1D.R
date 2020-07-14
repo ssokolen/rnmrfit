@@ -694,8 +694,7 @@ setMethod("f_baseline", "NMRFit1D",
 #'                   or both components. If both components are selected, they
 #'                   are displayed in separate subplots.
 #' @param sum.level One of either 'all', 'species', 'resonance', 'peak' to
-#'                  specify whether all peaks should be summed together the
-#'                  peaks should be summed at a lower level.
+#'                  specify whether all peaks should be summed together.
 #' @param sum.baseline TRUE to add the baseline to each fit.
 #' @param apply.phase TRUE to apply the calculated phase to the data.
 #' 

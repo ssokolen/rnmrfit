@@ -117,10 +117,16 @@ NMRFit2D <- setClass("NMRFit2D",
 #'                  the NMRFit2D object is initialized, TRUE to skip the
 #'                  optimization, enabling more customization. The fit can be
 #'                  run manually using fit().
-#' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf, but an override can be
-#'           provided here.
+#' @param direct.sf Sweep frequency (MHz) in the direct dimension -- needed to
+#'                  convert coupling constants from Hz to ppm. In most cases, it
+#'                  is recommended to set a single default value using
+#'                  nmroptions$direct$sf  = ..., but an override can be
+#'                  provided here.
+#' @param indirect.sf Sweep frequency (MHz) in the indirect dimension -- needed
+#'                    to convert coupling constants from Hz to ppm. In most
+#'                    cases, it is recommended to set a single default value
+#'                    using nmroptions$indirect$sf  = ..., but an override
+#'                    can be provided here.
 #' @param init An initialization, function that takes an NMRFit2D object and
 #'             returns a modified NMRFit2D object. Use the "identity" function
 #'             to override the default initialization in the
@@ -138,8 +144,17 @@ nmrfit_2d <- function(
   species, nmrdata, baseline.order = nmroptions$baseline$order,
   n.knots = nmroptions$baseline$n.knots, 
   phase.order = nmroptions$phase$order, 
-  delay.fit = FALSE, sf = nmroptions$direct$sf,
+  delay.fit = FALSE, direct.sf = nmroptions$direct$sf, 
+  indirect.sf = nmroptions$indirect$sf, 
   init = nmroptions$fit$init, opts = nmroptions$fit$opts, ...) {
+
+  # Checking to make sure that sweep frequency is defined
+  err <- '"direct.sf" must be provided as input or set using nmroptions'
+  if ( is.null(direct.sf) ) stop(err)
+
+  # Checking to make sure that sweep frequency is defined
+  err <- '"indirect.sf" must be provided as input or set using nmroptions'
+  if ( is.null(indirect.sf) ) stop(err)
 
   #---------------------------------------
   # Generating list of species 
@@ -186,19 +201,20 @@ nmrfit_2d <- function(
   }
 
   # Initializing bounds
-  bounds <- list(lower = list(baseline = cmplx2(0), phase = numeric(0)),
-                 upper = list(baseline = cmplx2(0), phase = numeric(0)))
+  lower_bounds <- list(baseline = NULL, phase = numeric(0))
+  upper_bounds <- list(baseline = NULL, phase = numeric(0))
 
   #---------------------------------------
   # Resulting fit object
   out <- new('NMRFit2D', mixture, nmrdata = nmrdata,
                          knots = knots, baseline = baseline, phase = phase,
-                         lower.bounds = bounds$lower,
-                         upper.bounds = bounds$upper)
+                         lower.bounds = lower_bounds,
+                         upper.bounds = upper_bounds)
 
   # If the fit is delayed, then return current object, otherwise run fit first
   if ( delay.fit ) out
-  else fit(out, sf = sf, init = init, opts = opts)
+  else fit(out, direct.sf = direct.sf, indirect.sf = indirect.sf, 
+           init = init, opts = opts)
 }
 
 
@@ -212,7 +228,8 @@ nmrfit_2d <- function(
 #' @rdname fit
 #' @export
 setMethod("fit", "NMRFit2D",
-  function(object, sf = nmroptions$direct$sf, init = nmroptions$fit$init, 
+  function(object, direct.sf = nmroptions$direct$sf, 
+           indirect.sf = nmroptions$indirect$sf, init = nmroptions$fit$init, 
            opts = nmroptions$fit$opts) {
 
   # First, run the initialization
@@ -246,6 +263,7 @@ setMethod("fit", "NMRFit2D",
   columns <- c("mixture", "species", "resonance")
   descriptors <- as.matrix(peaks[, which(colnames(peaks) %in% columns)])
   descriptors <- apply(descriptors, 1, paste, collapse = "-")
+
   
   dimensions <- peaks$dimension 
 
@@ -257,18 +275,17 @@ setMethod("fit", "NMRFit2D",
     logic <- dimensions == "direct"
 
     peaks[[name]]$position <- 
-      ifelse(logic, (peaks[[name]]$position - x1.range[1])/x1.span
+      ifelse(logic, (peaks[[name]]$position - x1.range[1])/x1.span,
                     (peaks[[name]]$position - x2.range[1])/x2.span)
 
     peaks[[name]]$width <- 
-      ifelse(logic, peaks[[name]]$width/sf/x1.span,
-                    peaks[[name]]$width/sf/x2.span)
+      ifelse(logic, peaks[[name]]$width/direct.sf/x1.span,
+                    peaks[[name]]$width/indirect.sf/x2.span)
 
     peaks[[name]]$height <- peaks[[name]]$height/y.range[2]
 
     peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
   }
-
 
   #---------------------------------------
   # Scaling and unpacking baseline/phase terms
@@ -282,7 +299,7 @@ setMethod("fit", "NMRFit2D",
   baseline <- list(par = baseline(object), 
                    lb = rep(bounds(object)$lower$baseline, n.baseline),
                    ub = rep(bounds(object)$upper$baseline, n.baseline))
-
+  
   # 1st order phase coefficients must be adapted to the local scale
   # (although a 0 order correction remains constant)
   phase <- phase(object)
@@ -350,7 +367,7 @@ setMethod("fit", "NMRFit2D",
     p = as.double(par$par), 
     lb = as.double(par$lb), 
     ub = as.double(par$ub), 
-    n = as.integer(length(x)),
+    n = as.integer(length(x1)),
     nl = as.integer(n.peaks*4),
     nb = as.integer(n.baseline),
     np = as.integer(n.phase),
@@ -379,8 +396,8 @@ setMethod("fit", "NMRFit2D",
 
   peaks$width <- ifelse(
     dimensions == "direct",
-    peaks$width*sf*x1.span,
-    peaks$width*sf*x2.span)
+    peaks$width*direct.sf*x1.span,
+    peaks$width*indirect.sf*x2.span)
 
   peaks$height <- peaks$height*y.range[2]
 
@@ -388,9 +405,9 @@ setMethod("fit", "NMRFit2D",
 
   # Then baseline
   index.rr <- (n.peaks*4 + 1):(n.peaks*4 + n.baseline)
-  index.ri <- index.re + n.baseline
-  index.ir <- index.re + n.baseline
-  index.ii <- index.re + n.baseline
+  index.ri <- index.rr + n.baseline
+  index.ir <- index.ri + n.baseline
+  index.ii <- index.ir + n.baseline
 
   if ( n.baseline > 0 ) {
     object@baseline <- cmplx2(rr = par$par[index.rr]*y.range[2],
@@ -544,17 +561,23 @@ setMethod("bounds", "NMRFit2D",
     bounds <- selectMethod("bounds", signature="NMRMixture2D")(object)
 
     # Baseline and phase
-    lower.baseline <- object@bounds$lower$baseline
-    lower.baseline <- ifelse(length(lower.baseline) == 0, 
-      cmplx2(rr = -Inf, ri = -Inf, ir = -Inf, ii = -Inf), lower.baseline)
-    upper.baseline <- object@bounds$upper$baseline
-    upper.baseline <- ifelse(length(upper.baseline) == 0, 
-      cmplx2(rr = Inf, ri = Inf, ir = Inf, ii = Inf), upper.baseline)
+    lower.baseline <- object@lower.bounds$baseline
+    if ( length(lower.baseline) == 0 ) {
+      lower.baseline <- cmplx2(rr = -Inf, ri = -Inf, ir = -Inf, ii = -Inf)
+    } 
+    upper.baseline <- object@upper.bounds$baseline
+    if ( length(upper.baseline) == 0 ) {
+      upper.baseline <- cmplx2(rr = Inf, ri = Inf, ir = Inf, ii = Inf)
+    }
 
-    lower.phase <- object@bounds$lower$phase
-    lower.phase <- ifelse(length(lower.phase) == 0, -Inf, lower.phase)   
-    upper.phase <- object@bounds$upper$phase
-    upper.phase <- ifelse(length(upper.phase) == 0, Inf, upper.phase)   
+    lower.phase <- object@lower.bounds$phase
+    if ( length(lower.phase) == 0 ) {
+      lower.phase <- -Inf
+    }
+    upper.phase <- object@upper.bounds$phase
+    if ( length(upper.phase) == 0 ) {
+      upper.phase <- Inf
+    }
 
     # Outputting
     list(lower = list(peaks = bounds$lower, baseline = lower.baseline, 
@@ -622,15 +645,15 @@ setMethod("f_baseline", "NMRFit2D",
     else if ( return.i ) f_out <- function(y) {Im(y)}
     else stop(err)
 
-    knots <- object@knots
-    baseline <- object@baseline
-    order <- length(baseline) - length(knots) - 1
+    #knots <- object@knots
+    #baseline <- object@baseline
+    #order <- length(baseline) - length(knots) - 1
 
     # If there are no baseline parameters, return a dummy functions
-    if ( length(baseline) == 0 ) {
-      function(x) {
-        zeros <- rep(0, length(x))
-        f_out(cmplx1(r = zeros, i = zeros))
+    if ( TRUE ) { #length(baseline) == 0 ) {
+      function(x1, x2) {
+        zeros <- rep(0, length(x1))
+        f_out(cmplx2(rr = zeros, ri = zeros, ir = zeros, ii = zeros))
       }
     }
     # Otherwise, generating actual baseline function
@@ -663,20 +686,36 @@ setMethod("f_baseline", "NMRFit2D",
 #' a composite of all the peaks, or individually.
 #' 
 #' @param x An NMRFit2D object.
-#' @param components One of either 'r', 'i', or 'r/i' to include real, imaginary
-#'                   or both components. If both components are selected, they
-#'                   are displayed in separate subplots.
-#' @param sum.level One of either 'all', 'species', 'resonance', 'peak' to
-#'                  specify whether all peaks should be summed together the
-#'                  peaks should be summed at a lower level.
+#' @param components One of 'rr', 'ii', 'ir', or 'ri' to specify various real
+#'                   and imaginary components. 3D plot subplots are not
+#'                   currently supported.
+#' @param sum.level One of either 'all', 'species', 'resonance', to specify
+#'                  whether all peaks should be summed together.
 #' @param sum.baseline TRUE to add the baseline to each fit.
 #' @param apply.phase TRUE to apply the calculated phase to the data.
 #' 
 #' @return A ggplot2 plot.
 #' 
 #' @export
-plot.NMRFit2D <- function(x, components = 'r', apply.phase = TRUE,  
+plot.NMRFit2D <- function(x, components = 'rr', apply.phase = TRUE,  
                           sum.level = 'species', sum.baseline = TRUE) { 
+
+  # Unlike 1D, 2D plots are limited to a single component
+  components <- tolower(components)
+  valid.components <- c('rr', 'ri', 'ir', 'ii')
+  err <- '"components" must be one of "rr", "ri", "ir", or "ii".'
+  if (! components %in% valid.components ) stop(err)
+
+  # Selecting plot label
+  if ( grepl('rr', components) ) {
+    label <- "Real"
+  } else if ( grepl('ri', components) )  {
+    label <- "Real/Imaginary"
+  } else if ( grepl('ir', components) ) {
+    label <- "Imaginary/Real"
+  } else {
+    label <- "Imaginary"
+  }
 
   #---------------------------------------
   # Calculating all required values
@@ -691,46 +730,51 @@ plot.NMRFit2D <- function(x, components = 'r', apply.phase = TRUE,
   d <- nmrdata@processed %>%
     arrange(direct.shift)
   direct.shift <- d$direct.shift 
-  y.data <- d$intensity
+  indirect.shift <- d$indirect.shift 
+
+  # TODO
+  y.data <- d$intensity$rr
 
   # The overall fit
-  sf <- get_parameter(x@nmrdata, 'sfo1', 'acqus')
-  if ( is.null(sf) ) sf <- nmroptions$direct$sf
+  sf <- c(get_parameter(x@nmrdata, 'sfo1', 'acqus', dimension = "direct"),
+          get_parameter(x@nmrdata, 'sfo1', 'acqus', dimension = "indirect"))
 
-  f <- f_lineshape(x, sf = sf, sum.peaks = TRUE)
-  y.fit <- f(direct.shift)
+  f <- f_lineshape(x, sf = sf, sum.peaks = TRUE, components = components)
+  y.fit <- f(direct.shift, indirect.shift)
 
   # The baseline
-  f <- f_baseline(x)
-  y.baseline <- f(direct.shift)
+  f <- f_baseline(x, components = components)
+  y.baseline <- f(direct.shift, indirect.shift)
 
   # The residual
   y.residual <- y.data - y.fit - y.baseline
 
   # All individual fits
-  y.fit.all <- values(x, direct.shift, sf = sf,
-                      sum.peaks = FALSE, sum.baseline = FALSE)
+  y.fit.all <- values(x, direct.shift, indirect.shift, sf = sf,
+                      sum.peaks = FALSE, sum.baseline = FALSE,
+                      components = components)
 
   # Generating grouped fits based on sum.level. The output is a list of
   # of data.frames with names that will be plotted one at a time
 
   # If everything is to be summed, generate frame from overall fit data
   if ( sum.level == 'all' ) {
-    d <- data.frame(direct.shift = direct.shift, intensity = y.fit)
+    d <- data.frame(
+      direct.shift = direct.shift, 
+      indirect.shift = indirect.shift, 
+      intensity = y.fit
+    )
     frames <- list('Fit' = d)
   }
   else {
-    err <- '"sum.level" must be one of "all", "species", "resonance", or "peak"'
+    err <- '"sum.level" must be one of "all", "species", or "resonance"'
     if ( sum.level == 'species' ) columns <- 'species'
     else if ( sum.level == 'resonance' ) columns <- c('species', 'resonance')
-    else if ( sum.level == 'peak' ) columns <- c('species', 'resonance', 'peak')
     else stop(err)
   
-    # Tacking on direct.shift as a grouping column
-    all.columns <- c(columns, 'direct.shift')
+    # Tacking on chemical shift as a grouping column
+    all.columns <- c(columns, 'direct.shift', 'indirect.shift')
 
-    # Converting cmplx1 to complex() for dplyr support
-    y.fit.all$intensity <- vec_cast(y.fit.all$intensity, complex())
     d <- y.fit.all %>%
       group_by_at(all.columns) %>%
       summarize(intensity = sum(intensity)) %>%
@@ -750,48 +794,103 @@ plot.NMRFit2D <- function(x, components = 'r', apply.phase = TRUE,
   # Setting legend options
   legend.opts <- list(orientation = 'h', xanchor = "center", x = 0.5)
 
-  # Note that the x values for each of the following functions is already
-  # set as the direct shift of the data
+  f <- list(
+    family = "Courier New, monospace",
+    size = 16,
+    color = "#7f7f7f"
+  )
+
+  xaxis <- list(
+    title = "Direct chemical shift (ppm)",
+    titlefont = f,
+    autorange = "reversed"
+  )
+  yaxis <- list(
+    title = "Indirect chemical shift (ppm)",
+    titlefont = f,
+    autorange = "reversed"
+  )
+  zaxis <- list(
+    title = "Intensity",
+    titlefont = f
+  )
+
+  scene <- list(
+    legend = legend.opts,
+    xaxis = xaxis,
+    yaxis = yaxis,
+    zaxis = zaxis,
+    camera=list(
+      eye = list(x=0, y=2, z=1.25)
+    )
+  )
 
   # This function initializes the overall plot object by drawing a single
   # line with the colour and name of choice
-  f_init <- function(y, color, name) {
-    p <- plot_ly(x = direct.shift, y = y, color = I(color), 
-                 name = I(name), type = 'scatter', mode = 'lines',
-                 legendgroup = 1) %>%
-         layout(legend = legend.opts,
-                xaxis = list(autorange = "reversed"))
+  f_init <- function(z, color, name) {
+
+    x <- direct.shift
+    y <- indirect.shift
+    groups <- unique(y)
+    n <- length(groups)
+
+    # Drawing separate lines for each indirect dimension
+    index <- y == groups[1]
+    p <- plot_ly(x = x[index], y = y[index], z = z[index],
+                 name = I(name), color = I(color),
+                 type = 'scatter3d', mode = 'lines', legendgroup = 1)
+
+    # Looping over the rest
+    for ( value in groups[-1] ) {
+      index <- y == value
+      p <- p %>%
+        add_trace(x = x[index], y = y[index], z = z[index],
+                  name = I(name), color = I(color),
+                  type = 'scatter3d', mode = 'lines', legendgroup = 1,
+                  showlegend = FALSE)
+    }
+
+    p %>%
+      layout(scene = scene)
   }
 
   # This functions adds a new line to an existing plot object
-  f_add <- function(p, y, color, name, group, showlegend = TRUE) {
-    p %>% 
-      add_trace(x = direct.shift, y = y, color = I(color),
-                name = I(name), type = 'scatter', mode = 'lines',
-                legendgroup = group, showlegend = showlegend)
+  f_add <- function(p, z, color, name, group, showlegend = TRUE) {
+
+    x <- direct.shift
+    y <- indirect.shift
+    groups <- unique(y)
+    n <- length(groups)
+
+    index <- y == groups[1]
+    p <- p %>%
+      add_trace(x = x[index], y = y[index], z = z[index],
+                name = I(name), color = I(color),
+                type = 'scatter3d', mode = 'lines', legendgroup = group)
+
+    for ( value in groups[-1] ) {
+      index <- y == value
+      p <- p %>%
+        add_trace(x = x[index], y = y[index], z = z[index],
+                  name = I(name), color = I(color),
+                  type = 'scatter3d', mode = 'lines', legendgroup = group,
+                  showlegend = FALSE)
+    }
+
+    p
   }
 
   #---------------------------------------
   # Building up the plot elements
 
-  # Initializing the plot list
-  plots <- list()
-
-  # Checking which components to plot
-  re <- grepl('r', components)
-  im <- grepl('i', components)
-
   # Initializing plots
-  if ( re ) plots$r <- f_init(Re(y.data), 'black', 'Real')
-  if ( im ) plots$i <- f_init(Im(y.data), 'grey', 'Imaginary')
+  p <- f_init(y.data, 'black', label)
 
   # Adding baseline
-  if ( re ) plots$r <- f_add(plots$r, Re(y.baseline), 'blue', 'Baseline', 2) 
-  if ( im ) plots$i <- f_add(plots$i, Im(y.baseline), 'blue', 'Baseline', 2)
+  p <- f_add(p, y.baseline, 'blue', 'Baseline', 2) 
 
   # Adding residual
-  if ( re ) plots$r <- f_add(plots$r, Re(y.residual), 'green', 'Residual', 3) 
-  if ( im ) plots$i <- f_add(plots$i, Re(y.residual), 'green', 'Residual', 3)
+  p <- f_add(p, y.residual, 'green', 'Residual', 3) 
 
   # Looping through each previously defined peak grouping
   for ( i in 1:length(frames) ) {
@@ -801,11 +900,10 @@ plot.NMRFit2D <- function(x, components = 'r', apply.phase = TRUE,
 
     id <- names(frames)[i] 
 
-    if ( re ) plots$r <- f_add(plots$r, Re(y), 'red', id, id) 
-    if ( im ) plots$i <- f_add(plots$i, Im(y), 'red', id, id)
+    p <- f_add(p, y, 'red', id, id) 
   }
 
-  if ( length(plots) == 0 ) NULL
-  else subplot(plots, shareX = TRUE, shareY = TRUE, 
-               nrows = min(length(plots), 2))
+  p
 }
+
+setMethod("plot", "NMRFit2D", plot.NMRFit2D)

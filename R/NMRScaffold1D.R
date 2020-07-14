@@ -128,16 +128,7 @@ setMethod("check_conformity", "NMRScaffold1D",
 #------------------------------------------------------------------------------
 #' Initialize peak heights of an NMRScaffold1D object
 #' 
-#' Generates peak height estimates based on spectral data. If used on an
-#' anything more complicated than an NMRResonance1D, the function propogates
-#' the bounds to component resonances. Since estimates cannot be provided for
-#' any peak outside the given data range, any such peaks are ignored. Whether
-#' or not warning/error messages are generated when that occurs is specified by
-#' the exclusion.notification parameter. Similarly, exclusion.level provided
-#' options to omit the whole resonance/species if a peak is found to be outside
-#' the data bounds.
-#' 
-#' At this point, there is just one approach: take peak height as the intensity
+#' Generates peak height estimates based on spectral data. At this point, there is just one approach: take peak height as the intensity
 #' of the data at the current position of the peak. There are plans to develop
 #' more sophisticated approaches in the future.
 #' 
@@ -163,11 +154,12 @@ setMethod("initialize_heights", "NMRScaffold1D",
   d <- processed(nmrdata)
   peaks <- peaks(object) 
 
-  # Building an interpolating function betwewn chemical shift and intensity
-  f <- approxfun(d$direct.shift, Re(d$intensity))
+  # Using loess with very light smoothing
+  d <- data.frame(x = d$direct.shift, y = Re(d$intensity))
+  m <- loess(y ~ x, data = d, span = 0.1)
 
-  # Generating heights from interpolation
-  peaks$height <- f(peaks$position)
+  # Generating heights from prediction
+  peaks$height <- predict(m, data.frame(x = peaks$position))
 
   # Updating
   peaks(object) <- peaks

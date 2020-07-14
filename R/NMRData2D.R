@@ -482,8 +482,8 @@ plot.NMRData2D <- function(x, components = 'rr') {
   y <- indirect.shift
   p <- NULL
   if ( rr ) p <- f_init(x, y, y.data$rr, 'black', 'Real')
-  if ( ri ) p <- f_init(x, y, y.data$ri, 'black', 'Imaginary/Real')
-  if ( ir ) p <- f_init(x, y, y.data$ir, 'black', 'Real/Imaginary')
+  if ( ri ) p <- f_init(x, y, y.data$ri, 'black', 'Real/Imaginary')
+  if ( ir ) p <- f_init(x, y, y.data$ir, 'black', 'Imaginary/Real')
   if ( ii ) p <- f_init(x, y, y.data$ii, 'black', 'Imaginary')
 
   p
