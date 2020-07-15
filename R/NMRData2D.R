@@ -210,6 +210,85 @@ read_processed_2d <- function(path, procs.list, number = NA) {
 
 
 
+#------------------------------------------------------------------------------
+#' Convert NMRScaffold2D to NMRData2D
+#' 
+#' Generate lineshape from specified peaks.
+#' 
+#' @param object An NMRScaffold2D object
+#' @param direct.shift Vector of chemical shift data in ppm.
+#' @param indirect.shift Similar to direct.shift but for the indirect dimension.
+#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
+#'                  from Hz to ppm. In most cases, it is recommended to set a
+#'                  single default value using nmroptions$direct$sf = ..., but
+#'                  an override can be provided here.
+#' @param indirect.sf Similar to direct.sf but for the indirect dimension.
+#' 
+#' @return An NMRData2D object.
+#' 
+#' @export
+nmrdata_2d_from_scaffold <- function(
+  object, direct.shift = NULL, indirect.shift = NULL, 
+  direct.sf = nmroptions$direct$sf, indirect.sf = nmroptions$indirect$sf) {
+
+  if ( is.null(direct.shift) ) {
+    positions <- peaks(direct(object))$position
+    direct.shift <- seq(min(positions) - 0.2, max(positions) + 0.2,
+                        length.out = 100)
+  }
+
+  if ( is.null(indirect.shift) ) {
+    positions <- peaks(indirect(object))$position
+    indirect.shift <- seq(min(positions) - 0.2, max(positions) + 0.2,
+                        length.out = 100)
+  }
+
+  # Generate grid
+  logic.1 <- length(direct.shift) == length(unique(direct.shift))
+  logic.2 <- length(indirect.shift) == length(unique(indirect.shift))
+  if ( logic.1 && logic.2 ) {
+    d <- expand.grid(x1 = direct.shift, x2 = indirect.shift)
+    direct.shift <- d$x1
+    indirect.shift <- d$x2
+  }
+
+  # Using the procs file to load the processed data
+  processed <- values(object, direct.shift = direct.shift,
+                      indirect.shift = indirect.shift,
+                      direct.sf = direct.sf, indirect.sf = indirect.sf,
+                      use.cmplx1 = TRUE)
+
+  # acqus just contains the sf
+  acqus <- list(direct = list(sf = direct.sf), indirect = list(sf = indirect.sf))
+
+  # Returning class object
+  new("NMRData2D", processed = processed, acqus = acqus)
+}
+
+
+
+#==============================================================================>
+#  Processing
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------
+# Extracting lineshape values
+#' @rdname values
+#' @export
+setMethod("values", "NMRData2D", 
+  function(object, domain = "rr/ri/ir/ii", use.cmplx1 = FALSE) {
+    
+    d <- object@processed
+    d$intensity <- domain(d$intensity, domain, use.cmplx1)
+
+    d
+  })
+
+
+
+
 
 #==============================================================================>
 #  Formatting and printing

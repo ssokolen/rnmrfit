@@ -90,7 +90,7 @@ nmrmixture_1d <- function(species, id = "mixture", ...) {
         
     # Modifying id if provided
     specie.id <- names(species)[i]
-    if (! is.null(specie.id) ) id(species.list[[i]]) <- specie.id
+    if (! is.null(specie.id) ) species.list[[i]]@id <- specie.id
   }
 
   #---------------------------------------

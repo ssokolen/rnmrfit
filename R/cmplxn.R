@@ -174,6 +174,55 @@ Im.vctrs_cmplx1 <- function(z) z$i
 Conj.vctrs_cmplx1 <- function(z) new_cmplx1(r = z$r, i = -z$i)
 
 #------------------------------------------------------------------------------
+#' Flexible domain selection
+#' 
+#' @param x cmplx1 or cmplx2 object.
+#' @param domain A character specifying which real/imaginary domains to output
+#'               for intensity data. For 1D data "r/i" outputs both real and
+#'               imaginary data, with "r" and "i" used to output one of either
+#'               real or imaginary. For 2D data, this is expanded to
+#'               "rr/ri/ir/ii". All domains are outputted by default. Warning:
+#'               this function can be used to flip real and imaginary data by
+#'               providing i/r as opposed to r/i.
+#' @param use.cmplx1 cmplx1 is the internal representation of complex() that
+#'                   matches cmplx2 for 2D data. It is replaced by default to
+#'                   complex() for user-facing functions. However, this behavior
+#'                   can be overriden here.
+#' 
+#' @return If one domain selected, a simple numeric vector. If two selected, a
+#'         complex() object with real and imaginary term replaced by the
+#'         selected variants. If 3 or 4 selected, a cmplx2 object.
+#' 
+#' @name domain
+#' @export
+domain <- function (x, ...) {
+  UseMethod("domain", x)
+}
+
+#' @rdname domain
+#' @export
+domain.vctrs_cmplx1 <- function(x, domain = "r/i", use.cmplx1 = FALSE) {
+
+  domain <- str_split(domain, "[ \t/_-]+")[[1]]
+
+  err <- '"domain" must be composed of "r" or "i" characters split by /'
+
+  if (! all(domain %in% c("r", "i")) ) stop(err)
+
+  if ( length(domain) == 1 ) {
+    get(domain, x)
+  } else if ( length(domain) == 2) {
+    if ( use.cmplx1 ) {
+      cmplx1(r = get(domain[1], x), i = get(domain[2], x)) 
+    } else {
+      complex(re = get(domain[1], x), im = get(domain[2], x))
+    }
+  } else {
+    stop(err)
+  }
+}
+
+#------------------------------------------------------------------------------
 # Summary
 
 #' @method as_tibble vctrs_cmplx1
@@ -456,6 +505,34 @@ Re.vctrs_cmplx2 <- function(z) z$rr
 #' @method Im vctrs_cmplx2
 #' @export
 Im.vctrs_cmplx2 <- function(z) z$ii
+
+#------------------------------------------------------------------------------
+#' Flexible domain selection
+
+#' @rdname domain
+#' @export
+domain.vctrs_cmplx2 <- function(x, domain = "rr/ri/ir/ii", use.cmplx1 = FALSE) {
+
+  domain <- str_split(domain, "[ \t/_-]+")[[1]]
+
+  err <- '"domain" must be composed of "rr","ri","ir","ii" characters split by /'
+
+  if (! all(domain %in% c("rr", "ri", "ir", "ii")) ) stop(err)
+
+  if ( length(domain) == 1 ) {
+    get(domain, x)
+  } else if ( length(domain) == 2) {
+    if ( use.cmplx1 ) {
+      cmplx1(re = get(domain[1], x), im = get(domain[2], x))
+    } else {
+      complex(re = get(domain[1], x), im = get(domain[2], x))
+    }
+  } else if ( length(domain) == 3) {
+    cmplx2(rr = get(domain[1], x), ri = get(domain[2], x), ir = get(domain[3], x))
+  } else {
+    stop(err)
+  }
+}
 
 #------------------------------------------------------------------------------
 # Summary

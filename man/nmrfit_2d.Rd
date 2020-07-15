@@ -11,7 +11,8 @@ nmrfit_2d(
   n.knots = nmroptions$baseline$n.knots,
   phase.order = nmroptions$phase$order,
   delay.fit = FALSE,
-  sf = nmroptions$direct$sf,
+  direct.sf = nmroptions$direct$sf,
+  indirect.sf = nmroptions$indirect$sf,
   init = nmroptions$fit$init,
   opts = nmroptions$fit$opts,
   ...
@@ -45,10 +46,17 @@ the NMRFit2D object is initialized, TRUE to skip the
 optimization, enabling more customization. The fit can be
 run manually using fit().}
 
-\item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-to ppm. In most cases, it is recommended to set a single default
-value using nmroptions$direct$sf, but an override can be
+\item{direct.sf}{Sweep frequency (MHz) in the direct dimension -- needed to
+convert coupling constants from Hz to ppm. In most cases, it
+is recommended to set a single default value using
+nmroptions$direct$sf  = ..., but an override can be
 provided here.}
+
+\item{indirect.sf}{Sweep frequency (MHz) in the indirect dimension -- needed
+to convert coupling constants from Hz to ppm. In most
+cases, it is recommended to set a single default value
+using nmroptions$indirect$sf  = ..., but an override
+can be provided here.}
 
 \item{init}{An initialization, function that takes an NMRFit2D object and
 returns a modified NMRFit2D object. Use the "identity" function

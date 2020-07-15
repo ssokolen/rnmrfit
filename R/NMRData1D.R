@@ -296,9 +296,109 @@ nmrdata_1d_from_jcamp <- function(path, blocks.number = 1, ntuples.number = 1) {
 
 
 
+#------------------------------------------------------------------------------
+#' Convert NMRScaffold1D to NMRData1D
+#' 
+#' Generate lineshape from specified peaks.
+#' 
+#' @param object An NMRScaffold1D object
+#' @param direct.shift Vector of chemical shift data in ppm.
+#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
+#'                  from Hz to ppm. In most cases, it is recommended to set a
+#'                  single default value using nmroptions$direct$sf = ..., but
+#'                  an override can be provided here.
+#' 
+#' @return An NMRData1D object.
+#' 
+#' @export
+nmrdata_1d_from_scaffold <- function(
+  object, direct.shift = NULL, direct.sf = nmroptions$direct$sf) {
+
+  if ( is.null(direct.shift) ) {
+    positions <- peaks(object)$position
+    direct.shift <- seq(min(positions) - 0.2, max(positions) + 0.2,
+                        length.out = 200)
+  }
+
+  # Using the procs file to load the processed data
+  processed <- values(object, direct.shift = direct.shift, 
+                      direct.sf = direct.sf, use.cmplx1 = TRUE)
+
+  # acqus just contains the sf
+  acqus <- list(direct = list(sf = direct.sf))
+
+  # Returning class object
+  new("NMRData1D", processed = processed, acqus = acqus)
+}
+
+
+
 #==============================================================================>
 #  Processing
 #==============================================================================>
+
+
+
+#------------------------------------------------------------------------
+# Extracting lineshape values
+#' @rdname values
+#' @export
+setMethod("values", "NMRData1D", 
+  function(object, domain = "r/i", use.cmplx1 = FALSE) {
+    
+    d <- object@processed
+    d$intensity <- domain(d$intensity, domain, use.cmplx1)
+
+    d
+  })
+
+setGeneric("add_baseline", function(object, ...) standardGeneric("add_baseline"))
+
+#------------------------------------------------------------------------
+# Add baseline
+#' @rdname add_baseline
+#' @export
+setMethod("add_baseline", "NMRData1D", 
+  function(object, baseline, knots = c()) {
+
+    # Generating baseline parameters based on input
+    if ( "numeric" %in% class(baseline) ) {
+      p <- c(baseline, baseline)
+    } else {
+      p <- c(Re(baseline), Im(baseline))
+    }
+
+    # Tacking out bounds to internal knots
+    knots <- sort(c(knots, c(0, 1)))
+
+    # Extracting processed values
+    d <- values(object)
+
+    n <- nrow(d)
+    n.baseline <- length(baseline)
+
+    # Feeding into Rust wrapper
+    out <- .Call(
+      "baseline_1d_wrapper", 
+      x = as.double(d$direct.shift), 
+      y = as.double(rep(0, n*2)), 
+      knots = as.double(knots),
+      p = as.double(p), 
+      n = as.integer(n),
+      nb = as.integer(n.baseline),
+      nk = as.integer(length(knots))
+    )
+
+    print(tail(out[1:n]))
+
+    index.re <- 1:n
+    index.im <- index.re + n
+
+    d$intensity <- d$intensity + cmplx1(r = out[index.re], i = out[index.im])
+    object@processed <- d
+
+    object
+  })
 
 
 

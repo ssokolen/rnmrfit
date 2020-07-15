@@ -2,19 +2,10 @@
 % Please edit documentation in R/NMRScaffold1D.R, R/NMRScaffold2D.R
 \name{f_lineshape}
 \alias{f_lineshape}
-\alias{f_lineshape,NMRScaffold1D-method}
 \alias{f_lineshape,NMRScaffold2D-method}
 \title{Generate lineshape function}
 \usage{
 f_lineshape(object, ...)
-
-\S4method{f_lineshape}{NMRScaffold1D}(
-  object,
-  sf = nmroptions$direct$sf,
-  sum.peaks = TRUE,
-  include.id = FALSE,
-  components = "r/i"
-)
 
 \S4method{f_lineshape}{NMRScaffold2D}(
   object,
@@ -29,11 +20,6 @@ f_lineshape(object, ...)
 
 \item{...}{Additional arguments passed to inheriting methods.}
 
-\item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-to ppm. In most cases, it is recommended to set a single default
-value using nmroptions$direct$sf = ..., but an override can be
-provided here.}
-
 \item{sum.peaks}{TRUE to add all individual peaks together and output a
 single function, FALSE to output a data frame of functions
 that correspond to individual peaks.}
@@ -42,6 +28,11 @@ that correspond to individual peaks.}
 
 \item{components}{'r/i' to output both real and imaginary data, 'r' to output
 only real and 'i' to output only imaginary.}
+
+\item{direct.sf}{Sweep frequency (in MHz) -- needed to convert peak widths
+from Hz to ppm. In most cases, it is recommended to set a
+single default value using nmroptions$direct$sf = ..., but
+an override can be provided here.}
 }
 \value{
 A function or tbl_df data frame of functions where each function

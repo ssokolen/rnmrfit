@@ -114,7 +114,7 @@ nmrspecies_1d <- function(resonances, areas = NULL, id = NULL,
         
     # Modifying id if provided
     resonance.id <- names(resonances)[i]
-    if (! is.null(resonance.id) ) id(resonances.list[[i]]) <- resonance.id
+    if (! is.null(resonance.id) ) resonances.list[[i]]@id <- resonance.id
   }
 
   #---------------------------------------

@@ -6,7 +6,7 @@
 \usage{
 plot.NMRFit2D(
   x,
-  components = "r",
+  components = "rr",
   apply.phase = TRUE,
   sum.level = "species",
   sum.baseline = TRUE

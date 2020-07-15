@@ -146,6 +146,63 @@ pub extern fn eval_1d(x: *const c_double, y: *mut c_double, knots: *const c_doub
 }
 
 #[no_mangle]
+pub extern fn baseline_1d(x: *const c_double, y: *mut c_double, knots: *const c_double,
+                          p: *const c_double, n: i32, nb: i32, nk: i32) {
+
+    let n = n as usize;
+    let nb = nb as usize;
+    let nk = nk as usize;
+
+    // Converting rest into slices
+    let x: &[f64] = unsafe { slice::from_raw_parts(x, n) };
+    let y: &mut[f64] = unsafe { slice::from_raw_parts_mut(y, n*2) };
+    let p: &[f64] = unsafe { slice::from_raw_parts(p, nb*2) };   
+    let knots: &[f64] = unsafe { slice::from_raw_parts(knots, nk) };
+
+    // Converting rest into arrays
+    let x = Array::from_shape_vec((n,), x.to_vec()).unwrap();
+    let p = Array::from_shape_vec((nb*2,), p.to_vec()).unwrap();
+    let knots = Array::from_shape_vec((nk,), knots.to_vec()).unwrap();
+
+    // Calling baseline
+    let y_out = rnmrfit::baseline_1d(x, knots, p, nb);
+
+    // Copying over y values
+    for i in 0 .. n {
+        y[i] = y_out[[0, i]];
+        y[i + n] = y_out[[1, i]];
+    }
+}
+
+#[no_mangle]
+pub extern fn phase_1d(x: *const c_double, y: *mut c_double,
+                       p: *const c_double, n: i32, np: i32) {
+
+    let n = n as usize;
+    let np = np as usize;
+
+    // Converting rest into slices
+    let x: &[f64] = unsafe { slice::from_raw_parts(x, n) };
+    let y: &mut[f64] = unsafe { slice::from_raw_parts_mut(y, n*2) };
+    let p: &[f64] = unsafe { slice::from_raw_parts(p, np) };   
+
+    // Converting rest into arrays
+    let x = Array::from_shape_vec((n,), x.to_vec()).unwrap();
+    let y_array = Array::from_shape_vec((n,2), y.to_vec()).unwrap();
+    let p = Array::from_shape_vec((np,), p.to_vec()).unwrap();
+
+    // Calling baseline
+    let y_out = rnmrfit::phase_1d(x, y_array, p, np);
+
+    // Copying over y values
+    for i in 0 .. n {
+        y[i] = y_out[[0, i]];
+        y[i + n] = y_out[[1, i]];
+    }
+}
+
+
+#[no_mangle]
 pub extern fn fit_2d(x_direct: *const c_double, x_indirect: *const c_double, y: *const c_double, 
                      resonances: *const i32, dimensions: *const i32, knots: *const c_double,
                      p: *mut c_double, lb: *const c_double, ub: *const c_double,  
@@ -253,3 +310,64 @@ pub extern fn eval_2d(x_direct: *const c_double, x_indirect: *const c_double, y:
     }
 }
 
+#[no_mangle]
+pub extern fn baseline_2d(x_direct: *const c_double, x_indirect: *const c_double, y: *mut c_double, 
+                          knots: *const c_double, p: *const c_double, n: i32, nb: i32, nk: i32) {
+
+    let n = n as usize;
+    let nb = nb as usize;
+    let nk = nk as usize;
+
+    // Converting rest into slices
+    let x_direct: &[f64] = unsafe { slice::from_raw_parts(x_direct, n) };
+    let x_indirect: &[f64] = unsafe { slice::from_raw_parts(x_indirect, n) };
+    let y: &mut[f64] = unsafe { slice::from_raw_parts_mut(y, n*4) };
+    let p: &[f64] = unsafe { slice::from_raw_parts(p, nb*4) };   
+    let knots: &[f64] = unsafe { slice::from_raw_parts(knots, nk) };
+
+    // Converting rest into arrays
+    let x_direct = Array::from_shape_vec((n,), x_direct.to_vec()).unwrap();
+    let x_indirect = Array::from_shape_vec((n,), x_indirect.to_vec()).unwrap();
+    let p = Array::from_shape_vec((nb*4,), p.to_vec()).unwrap();
+    let knots = Array::from_shape_vec((nk,), knots.to_vec()).unwrap();
+
+    // Calling eval
+    let y_out = rnmrfit::baseline_2d(x_direct, x_indirect, knots, p, nb);
+
+    // Copying over y values
+    for i in 0 .. n {
+        for j in 0 .. 4 {
+            y[i + n*j] = y_out[[j, i]];
+        }
+    }
+}
+
+#[no_mangle]
+pub extern fn phase_2d(x_direct: *const c_double, x_indirect: *const c_double, y: *mut c_double, 
+                       p: *const c_double, n: i32, np: i32) {
+
+    let n = n as usize;
+    let np = np as usize;
+
+    // Converting rest into slices
+    let x_direct: &[f64] = unsafe { slice::from_raw_parts(x_direct, n) };
+    let x_indirect: &[f64] = unsafe { slice::from_raw_parts(x_indirect, n) };
+    let y: &mut[f64] = unsafe { slice::from_raw_parts_mut(y, n*4) };
+    let p: &[f64] = unsafe { slice::from_raw_parts(p, np) };   
+
+    // Converting rest into arrays
+    let x_direct = Array::from_shape_vec((n,), x_direct.to_vec()).unwrap();
+    let x_indirect = Array::from_shape_vec((n,), x_indirect.to_vec()).unwrap();
+    let y_array = Array::from_shape_vec((n,4), y.to_vec()).unwrap();
+    let p = Array::from_shape_vec((np,), p.to_vec()).unwrap();
+
+    // Calling eval
+    let y_out = rnmrfit::phase_2d(x_direct, x_indirect, y_array, p, np);
+
+    // Copying over y values
+    for i in 0 .. n {
+        for j in 0 .. 4 {
+            y[i + n*j] = y_out[[j, i]];
+        }
+    }
+}

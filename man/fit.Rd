@@ -17,7 +17,8 @@ fit(object, ...)
 
 \S4method{fit}{NMRFit2D}(
   object,
-  sf = nmroptions$direct$sf,
+  direct.sf = nmroptions$direct$sf,
+  indirect.sf = nmroptions$indirect$sf,
   init = nmroptions$fit$init,
   opts = nmroptions$fit$opts
 )

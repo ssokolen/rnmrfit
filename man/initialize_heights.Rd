@@ -23,7 +23,8 @@ initialize_heights(object, ...)
 A new object with modified peak heights.
 }
 \description{
-Generates peak height estimates based on spectral data. At this point, there is just one approach: take peak height as the intensity
-of the data at the current position of the peak. There are plans to develop
-more sophisticated approaches in the future.
+Generates peak height estimates based on spectral data. At this point, there
+is just one approach: take peak height as the intensity of the data at the
+current position of the peak. There are plans to develop more sophisticated
+approaches in the future.
 }

@@ -1,0 +1,274 @@
+CMake Warning (dev) at /usr/share/cmake-3.17/Modules/UseSWIG.cmake:607 (message):
+  Policy CMP0078 is not set: UseSWIG generates standard target names.  Run
+  "cmake --help-policy CMP0078" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  src/swig/CMakeLists.txt:23 (swig_add_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at /usr/share/cmake-3.17/Modules/UseSWIG.cmake:460 (message):
+  Policy CMP0086 is not set: UseSWIG honors SWIG_MODULE_NAME via -module
+  flag.  Run "cmake --help-policy CMP0086" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /usr/share/cmake-3.17/Modules/UseSWIG.cmake:702 (SWIG_ADD_SOURCE_TO_MODULE)
+  src/swig/CMakeLists.txt:23 (swig_add_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at /usr/share/cmake-3.17/Modules/UseSWIG.cmake:607 (message):
+  Policy CMP0078 is not set: UseSWIG generates standard target names.  Run
+  "cmake --help-policy CMP0078" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  src/swig/CMakeLists.txt:50 (swig_add_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at /usr/share/cmake-3.17/Modules/UseSWIG.cmake:460 (message):
+  Policy CMP0086 is not set: UseSWIG honors SWIG_MODULE_NAME via -module
+  flag.  Run "cmake --help-policy CMP0086" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /usr/share/cmake-3.17/Modules/UseSWIG.cmake:702 (SWIG_ADD_SOURCE_TO_MODULE)
+  src/swig/CMakeLists.txt:50 (swig_add_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at /usr/share/cmake-3.17/Modules/CPack.cmake:598 (option):
+  Policy CMP0077 is not set: option() honors normal variables.  Run "cmake
+  --help-policy CMP0077" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, option is clearing the
+  normal variable 'CPACK_BINARY_TZ'.
+Call Stack (most recent call first):
+  CMakeLists.txt:343 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at /usr/share/cmake-3.17/Modules/CPack.cmake:605 (option):
+  Policy CMP0077 is not set: option() honors normal variables.  Run "cmake
+  --help-policy CMP0077" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, option is clearing the
+  normal variable 'CPACK_BINARY_STGZ'.
+Call Stack (most recent call first):
+  CMakeLists.txt:343 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at /usr/share/cmake-3.17/Modules/CPack.cmake:606 (option):
+  Policy CMP0077 is not set: option() honors normal variables.  Run "cmake
+  --help-policy CMP0077" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, option is clearing the
+  normal variable 'CPACK_BINARY_TBZ2'.
+Call Stack (most recent call first):
+  CMakeLists.txt:343 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at /usr/share/cmake-3.17/Modules/CPack.cmake:607 (option):
+  Policy CMP0077 is not set: option() honors normal variables.  Run "cmake
+  --help-policy CMP0077" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, option is clearing the
+  normal variable 'CPACK_BINARY_TGZ'.
+Call Stack (most recent call first):
+  CMakeLists.txt:343 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:112: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:116: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 503: Can't wrap 'operator =' unless renamed to a valid identifier.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 362: operator= ignored
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/cdirect/hybrid.c: In function ‘optimize_rect’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/cdirect/hybrid.c:91:6: warning: ‘nlopt_minimize’ is deprecated [-Wdeprecated-declarations]
+   91 |      ret = nlopt_minimize(p->local_alg, n, fcount, p,
+      |      ^~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/util/nlopt-util.h:31,
+                 from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/cdirect/hybrid.c:27:
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.h:298:28: note: declared here
+  298 | NLOPT_EXTERN(nlopt_result) nlopt_minimize(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data,
+      |                            ^~~~~~~~~~~~~~
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/newuoa/newuoa.c: In function ‘trsapp_’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/newuoa/newuoa.c:184:3: warning: ‘nlopt_minimize_constrained’ is deprecated [-Wdeprecated-declarations]
+  184 |   ret = nlopt_minimize_constrained(NLOPT_LD_MMA, *n, quad_model, &qmd,
+      |   ^~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/util/nlopt-util.h:31,
+                 from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/newuoa/newuoa.h:4,
+                 from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/newuoa/newuoa.c:33:
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.h:304:28: note: declared here
+  304 | NLOPT_EXTERN(nlopt_result) nlopt_minimize_constrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data, ptrdiff_t fc_datum_size,
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/newuoa/newuoa.c: In function ‘biglag_’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/newuoa/newuoa.c:1241:3: warning: ‘nlopt_minimize_constrained’ is deprecated [-Wdeprecated-declarations]
+ 1241 |   return nlopt_minimize_constrained(NLOPT_LD_MMA, *n, lag, &ld,
+      |   ^~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/util/nlopt-util.h:31,
+                 from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/newuoa/newuoa.h:4,
+                 from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/newuoa/newuoa.c:33:
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.h:304:28: note: declared here
+  304 | NLOPT_EXTERN(nlopt_result) nlopt_minimize_constrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data, ptrdiff_t fc_datum_size,
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+In function ‘hfti_’,
+    inlined from ‘lsei_’ at /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/slsqp/slsqp.c:1176:5,
+    inlined from ‘lsq_’ at /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/slsqp/slsqp.c:1417:5:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/slsqp/slsqp.c:959:12: warning: ‘__builtin_memset’ writing between 8 and 34359738368 bytes into a region of size 0 overflows the destination [-Wstringop-overflow=]
+  959 |  rnorm[jb] = dnrm2___(&i__1, &b[kp1 + jb * b_dim1], 1);
+      |  ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/deprecated.c: In function ‘nlopt_minimize_constrained’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/deprecated.c:170:5: warning: ‘nlopt_minimize_econstrained’ is deprecated [-Wdeprecated-declarations]
+  170 |     return nlopt_minimize_econstrained(algorithm, n, f, f_data,
+      |     ^~~~~~
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/deprecated.c:65:28: note: declared here
+   65 | nlopt_result NLOPT_STDCALL nlopt_minimize_econstrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data_, ptrdiff_t fc_datum_size, int p, nlopt_func_old h, void *h_data_, ptrdiff_t h_datum_size, const double *lb, const double *ub, /* bounds */
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/deprecated.c: In function ‘nlopt_minimize’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/deprecated.c:179:5: warning: ‘nlopt_minimize_constrained’ is deprecated [-Wdeprecated-declarations]
+  179 |     return nlopt_minimize_constrained(algorithm, n, f, f_data, 0, NULL, NULL, 0, lb, ub, x, minf, minf_max, ftol_rel, ftol_abs, xtol_rel, xtol_abs, maxeval, maxtime);
+      |     ^~~~~~
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/deprecated.c:165:28: note: declared here
+  165 | nlopt_result NLOPT_STDCALL nlopt_minimize_constrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data, ptrdiff_t fc_datum_size, const double *lb, const double *ub,   /* bounds */
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:105:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nloptc_’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:60:5: warning: ‘nlopt_minimize_constrained’ is deprecated [-Wdeprecated-declarations]
+   60 |     *info = nlopt_minimize_constrained((nlopt_algorithm) * algorithm,
+      |     ^
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:304:28: note: declared here
+  304 | NLOPT_EXTERN(nlopt_result) nlopt_minimize_constrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data, ptrdiff_t fc_datum_size,
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:105:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nlogls_’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:95:5: warning: ‘nlopt_get_local_search_algorithm’ is deprecated [-Wdeprecated-declarations]
+   95 |     nlopt_get_local_search_algorithm(&deriv, &nonderiv, maxeval);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:317:20: note: declared here
+  317 | NLOPT_EXTERN(void) nlopt_get_local_search_algorithm(nlopt_algorithm * deriv, nlopt_algorithm * nonderiv, int *maxeval) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:105:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nlosls_’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:103:5: warning: ‘nlopt_set_local_search_algorithm’ is deprecated [-Wdeprecated-declarations]
+  103 |     nlopt_set_local_search_algorithm(deriv, nonderiv, *maxeval);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:318:20: note: declared here
+  318 | NLOPT_EXTERN(void) nlopt_set_local_search_algorithm(nlopt_algorithm deriv, nlopt_algorithm nonderiv, int maxeval) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:105:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nlogsp_’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:107:5: warning: ‘nlopt_get_stochastic_population’ is deprecated [-Wdeprecated-declarations]
+  107 |     *pop = nlopt_get_stochastic_population();
+      |     ^
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:320:19: note: declared here
+  320 | NLOPT_EXTERN(int) nlopt_get_stochastic_population(void) NLOPT_DEPRECATED;
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:105:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nlossp_’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:111:5: warning: ‘nlopt_set_stochastic_population’ is deprecated [-Wdeprecated-declarations]
+  111 |     nlopt_set_stochastic_population(*pop);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:321:20: note: declared here
+  321 | NLOPT_EXTERN(void) nlopt_set_stochastic_population(int pop) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:116:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nloptc’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:60:5: warning: ‘nlopt_minimize_constrained’ is deprecated [-Wdeprecated-declarations]
+   60 |     *info = nlopt_minimize_constrained((nlopt_algorithm) * algorithm,
+      |     ^
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:304:28: note: declared here
+  304 | NLOPT_EXTERN(nlopt_result) nlopt_minimize_constrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data, ptrdiff_t fc_datum_size,
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:116:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nlogls’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:95:5: warning: ‘nlopt_get_local_search_algorithm’ is deprecated [-Wdeprecated-declarations]
+   95 |     nlopt_get_local_search_algorithm(&deriv, &nonderiv, maxeval);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:317:20: note: declared here
+  317 | NLOPT_EXTERN(void) nlopt_get_local_search_algorithm(nlopt_algorithm * deriv, nlopt_algorithm * nonderiv, int *maxeval) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:116:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nlosls’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:103:5: warning: ‘nlopt_set_local_search_algorithm’ is deprecated [-Wdeprecated-declarations]
+  103 |     nlopt_set_local_search_algorithm(deriv, nonderiv, *maxeval);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:318:20: note: declared here
+  318 | NLOPT_EXTERN(void) nlopt_set_local_search_algorithm(nlopt_algorithm deriv, nlopt_algorithm nonderiv, int maxeval) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:116:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nlogsp’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:107:5: warning: ‘nlopt_get_stochastic_population’ is deprecated [-Wdeprecated-declarations]
+  107 |     *pop = nlopt_get_stochastic_population();
+      |     ^
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:320:19: note: declared here
+  320 | NLOPT_EXTERN(int) nlopt_get_stochastic_population(void) NLOPT_DEPRECATED;
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:116:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘nlossp’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:111:5: warning: ‘nlopt_set_stochastic_population’ is deprecated [-Wdeprecated-declarations]
+  111 |     nlopt_set_stochastic_population(*pop);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:321:20: note: declared here
+  321 | NLOPT_EXTERN(void) nlopt_set_stochastic_population(int pop) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:131:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘NLOPTC’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:60:5: warning: ‘nlopt_minimize_constrained’ is deprecated [-Wdeprecated-declarations]
+   60 |     *info = nlopt_minimize_constrained((nlopt_algorithm) * algorithm,
+      |     ^
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:304:28: note: declared here
+  304 | NLOPT_EXTERN(nlopt_result) nlopt_minimize_constrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data, ptrdiff_t fc_datum_size,
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:131:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘NLOGLS’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:95:5: warning: ‘nlopt_get_local_search_algorithm’ is deprecated [-Wdeprecated-declarations]
+   95 |     nlopt_get_local_search_algorithm(&deriv, &nonderiv, maxeval);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:317:20: note: declared here
+  317 | NLOPT_EXTERN(void) nlopt_get_local_search_algorithm(nlopt_algorithm * deriv, nlopt_algorithm * nonderiv, int *maxeval) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:131:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘NLOSLS’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:103:5: warning: ‘nlopt_set_local_search_algorithm’ is deprecated [-Wdeprecated-declarations]
+  103 |     nlopt_set_local_search_algorithm(deriv, nonderiv, *maxeval);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:318:20: note: declared here
+  318 | NLOPT_EXTERN(void) nlopt_set_local_search_algorithm(nlopt_algorithm deriv, nlopt_algorithm nonderiv, int maxeval) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:131:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘NLOGSP’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:107:5: warning: ‘nlopt_get_stochastic_population’ is deprecated [-Wdeprecated-declarations]
+  107 |     *pop = nlopt_get_stochastic_population();
+      |     ^
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:320:19: note: declared here
+  320 | NLOPT_EXTERN(int) nlopt_get_stochastic_population(void) NLOPT_DEPRECATED;
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:131:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h: In function ‘NLOSSP’:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77funcs.h:111:5: warning: ‘nlopt_set_stochastic_population’ is deprecated [-Wdeprecated-declarations]
+  111 |     nlopt_set_stochastic_population(*pop);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/f77api.c:26:
+/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:321:20: note: declared here
+  321 | NLOPT_EXTERN(void) nlopt_set_stochastic_population(int pop) NLOPT_DEPRECATED;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+make[3]: Warning: File 'test/CMakeFiles/testopt.dir/depend.make' has modification time 0.002 s in the future
+make[3]: warning:  Clock skew detected.  Your build may be incomplete.

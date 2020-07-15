@@ -371,6 +371,60 @@ setReplaceMethod("procs", "NMRData",
 
 
 #==============================================================================>
+#  Generic definition for values
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------
+#' Extract or calculate peak lineshape values
+#' 
+#' This is a core function used to convert an abstract NMRScaffold or NMRData
+#' object into a tibble of chemical shifts and intensity values. The method for
+#' this depends on the nature of the object. If the input is NMRData, the
+#' output just extracts internal data for output. However, if the input is an
+#' NMRScaffold object, new lineshape is data based on the chemical shifts and
+#' sweep frequency provided. For 2D scaffolds, direct and indirect chemical
+#' shifts will automatically generate a grid if unique.
+#' 
+#' @param object An NMRScaffold or NMRData object.
+#' @param direct.shift Vector of chemical shift data in ppm.
+#' @param indirect.shift Similar to direct.shift, but in the indirect dimension.
+#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
+#'                  from Hz to ppm. In most cases, it is recommended to set a
+#'                  single default value using nmroptions$direct$sf = ..., but
+#'                  an override can be provided here.
+#' @param indirect.sf Similar to direct.sf, but in the indirect dimension.
+#' @param sum.level The level at which values should be calculated, with "all"
+#'                  resulting in a single set of values from the sum of all
+#'                  underlying components. Alternatively, separate values can be
+#'                  generated at the "mixture", "species", and "resonance"
+#'                  levels.
+#' @param domain A character specifying which real/imaginary domains to output
+#'               for intensity data. For 1D data "r/i" outputs both real and
+#'               imaginary data, with "r" and "i" used to output one of either
+#'               real or imaginary. For 2D data, this is expanded to
+#'               "rr/ri/ir/ii". All domains are outputted by default.
+#' @param use.cmplx1 cmplx1 is the internal representation of complex() that
+#'                   matches cmplx2 for 2D data. It is replaced by default to
+#'                   complex() for user-facing functions. However, this behavior
+#'                   can be overriden here.
+#' @param ... Additional arguments passed to inheriting methods.
+#' 
+#' @return A tibble with "direct.shift", and "intensity" columns, as well as
+#'         "indirect.shift" for 2D data and any combination of "resonance",
+#'         "species", and "mixture" depending on the sum.level parameter and the
+#'         input data.
+#' 
+#' @name values
+#' @export
+setGeneric("values", 
+  function(object, ...) standardGeneric("values")
+)
+
+
+
+#==============================================================================>
 #  Defining list and data.frame like behaviour
 #==============================================================================>
 

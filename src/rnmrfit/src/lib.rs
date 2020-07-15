@@ -154,6 +154,32 @@ pub fn eval_1d(x: Array1<f64>, knots: Array1<f64>, p: Array1<f64>,
 }
 
 //==============================================================================
+pub fn baseline_1d(x: Array1<f64>, knots: Array1<f64>, p: Array1<f64>, nb: usize) 
+    -> Array2<f64> {
+
+    let x = x.into_shared();
+
+    let mut baseline = Baseline1D::new(x.clone(), knots, nb);
+    let p_slice = p.slice(s![0 .. (nb*2)]).to_vec(); 
+    baseline.eval(&p_slice);
+
+    baseline.y.clone() 
+}
+
+//==============================================================================
+pub fn phase_1d(x: Array1<f64>, y: Array2<f64>, p: Array1<f64>, np: usize) 
+    -> Array2<f64> {
+
+    let x = x.into_shared();
+
+    let mut phase = Phase1D::new(x.clone(), y, np);
+    let p_slice = p.slice(s![0 .. np]).to_vec(); 
+    phase.eval(&p_slice);
+
+    phase.y.clone() 
+}
+
+//==============================================================================
 pub fn fit_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, y: Array2<f64>, 
               resonances: Array1<usize>, dimensions: Array1<usize>, knots: Array1<f64>,
               p: Array1<f64>, lb: Array1<f64>, ub: Array1<f64>,
@@ -228,3 +254,35 @@ pub fn eval_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>,
 
     phase.y.clone() 
 }
+
+//==============================================================================
+pub fn baseline_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, 
+                   knots: Array1<f64>, p: Array1<f64>,  nb: usize)
+    -> Array2<f64> {
+
+    let x_direct = x_direct.into_shared();
+    let x_indirect = x_indirect.into_shared();
+
+    let mut baseline = Baseline2D::new(x_direct.clone(), x_indirect.clone(),
+                                       knots, nb);
+    let p_slice = p.slice(s![0 .. (nb*4)]).to_vec(); 
+    baseline.eval(&p_slice);
+
+    baseline.y.clone() 
+}
+
+//==============================================================================
+pub fn phase_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, y: Array2<f64>,
+               p: Array1<f64>,  np: usize)
+    -> Array2<f64> {
+
+    let x_direct = x_direct.into_shared();
+    let x_indirect = x_indirect.into_shared();
+
+    let mut phase = Phase2D::new(x_direct.clone(), x_indirect.clone(), y, np);
+    let p_slice = p.slice(s![0 .. np]).to_vec(); 
+    phase.eval(&p_slice);
+
+    phase.y.clone() 
+}
+

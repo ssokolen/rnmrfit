@@ -184,10 +184,10 @@ setMethod("initialize_heights", "NMRScaffold1D",
 #' data given a vector input of chemical shifts.
 #' 
 #' @param object An NMRScaffold1D object.
-#' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf = ..., but an override can be
-#'           provided here.
+#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
+#'                  from Hz to ppm. In most cases, it is recommended to set a
+#'                  single default value using nmroptions$direct$sf = ..., but
+#'                  an override can be provided here.
 #' @param sum.peaks TRUE to add all individual peaks together and output a
 #'                  single function, FALSE to output a data frame of functions
 #'                  that correspond to individual peaks.
@@ -207,160 +207,64 @@ setGeneric("f_lineshape",
   function(object, ...) standardGeneric("f_lineshape")
 )
 
-#' @rdname f_lineshape
-#' @export
-setMethod("f_lineshape", "NMRScaffold1D",
-  function(object, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
-           include.id = FALSE, components = 'r/i') {
 
-    # Checking to make sure that sweep frequency is defined
-    err <- '"sf" must be provided as input or set using nmroptions$direct$sf'
-    if ( is.null(sf) ) stop(err)
-
-    columns <- c('position', 'width', 'height', 'fraction.gauss')
-    peaks <- peaks(object)
-    parameters <- as.matrix(peaks[, columns])
-
-    # Converting peak width to ppm
-    parameters[, 2] <- parameters[, 2]/sf
-
-    # The overall function is compose of two parts -- the Rust wrapper that
-    # calculates values for all dimension and then the R formatter that 
-    # selects which of these dimensions to output
-
-    #---------------------------------------
-    # First, defining how to format the output 
-
-    return.r <- grepl('r', tolower(components))
-    return.i <- grepl('i', tolower(components))
-
-    err <- '"components" must have at least one of either "r" or "i"'
-    if ( return.r && return.i ) f_out <- function(y) {y}
-    else if ( return.r ) f_out <- function(y) {Re(y)}
-    else if ( return.i ) f_out <- function(y) {Im(y)}
-    else stop(err)
-
-    #---------------------------------------
-    # Then, defining wrapper to incorporate the formatting
-
-    f_gen <- function(p) {
-      force(p)
-      function(x) {
-        n <- as.integer(length(x))
-        y <- .Call("eval_1d_wrapper",        
-          x = as.double(x),
-          y = as.double(rep(0, n*2)),
-          knots = as.double(0),
-          p = as.double(as.vector(p)),
-          n = n,
-          nl = as.integer(length(p)),
-          nb = as.integer(0),
-          np = as.integer(0),
-          nk = as.integer(0)
-        )
-
-        f_out(cmplx1(r = y[1:n], i = y[(n+1):(2*n)]))
-      }
-    }
-
-    #---------------------------------------
-    # Finally, output either a single function or a tibble split by peaks
-
-    if ( sum.peaks ) {
-      p <- as.vector(t(parameters))
-      out <- f_gen(p)
-    } 
-    # Otherwise, generate a tbl_df data frame
-    else {
-      out <- as_tibble(peaks[, which(! colnames(peaks) %in% columns)])
-      parameters <- split(parameters, 1:nrow(parameters))
-      
-      # Generating a list of functions, each with their parameters enclosed
-      functions <- map(parameters, function (p) {
-        f_gen(p)
-      })
-
-      # Adding functions as a column
-      out$f <- functions
-    }
-
-    out
-  })
-
-
-
-#------------------------------------------------------------------------
-#' Calculate peak lineshape values
-#' 
-#' Calculated peak intensity values over a set of chemical shifts.
-#' 
-#' @param object An NMRScaffold1D object.
-#' @param direct.shift Vector of chemical shift data in ppm.
-#' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf = ..., but an override can be
-#'           provided here.
-#' @param sum.peaks TRUE to add all individual peaks together and output a
-#'                  single set of values, FALSE to output a data frame of values
-#'                  that correspond to individual peaks.
-#' @param sum.baseline TRUE to add baseline to every peak, if one is defined.
-#'                     FALSE to exclude baseline. 
-#' @param include.id TRUE to include id as outer column if outputting data
-#'                   frame.
-#' @param components 'r/i' to output both real and imaginary data, 'r' to output
-#'                   only real and 'i' to output only imaginary.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @return A vector of spectral intensity data or a tibble with columns
-#'         "resonance" (optional), "peak", "direct.shift", and "intensity".
-#' 
-#' @name values
-#' @export
-setGeneric("values", 
-  function(object, ...) standardGeneric("values")
-)
 
 #' @rdname values
 #' @export
 setMethod("values", "NMRScaffold1D",
-  function(object, direct.shift, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
-           sum.baseline = FALSE, include.id = FALSE, components = 'r/i') {
+  function(object, direct.shift, direct.sf = nmroptions$direct$sf, 
+           sum.level = "all", domain = 'r/i', use.cmplx1 = FALSE) {
 
-  # Generating baseline if necessary
-  if ( sum.baseline && (class(object) == 'NMRFit1D') ) {
-    f <- f_baseline(object, components)
-    baseline <- f(direct.shift)
-  } else {
-    baseline <- rep(0, length(direct.shift))
+  # Checking to make sure that sweep frequency is defined
+  err <- '"sf" must be provided as input or set using nmroptions$direct$sf'
+  if ( is.null(direct.sf) ) stop(err)
+
+  # Generating components to work with a consistent basis
+  components <- components(object, sum.level)
+
+  # Function to apply to each component
+  columns <- c('position', 'width', 'height', 'fraction.gauss')
+
+  f_values <- function(object) {
+
+    # Converting peak width to ppm
+    peaks <- peaks(object)
+    parameters <- as.matrix(peaks[, columns])
+    parameters[, 2] <- parameters[, 2]/direct.sf
+
+    p <- as.vector(t(parameters))
+    n <- as.integer(length(direct.shift))
+    
+    y <- .Call(
+      "eval_1d_wrapper",        
+      x = as.double(direct.shift),
+      y = as.double(rep(0, n*2)),
+      knots = as.double(0),
+      p = as.double(as.vector(p)),
+      n = n,
+      nl = as.integer(length(p)),
+      nb = as.integer(0),
+      np = as.integer(0),
+      nk = as.integer(0)
+    )
+    y <- cmplx1(r = y[1:n], i = y[(n+1):(2*n)])
+
+    tibble(direct.shift = direct.shift, intensity = y)
   }
 
-  # Output depends on whether peaks are summed or not
-  if ( sum.peaks ) {
-    # Get function
-    f <- f_lineshape(object, sf, sum.peaks, components)
+  # And apply it to every component
+  d <- components %>% 
+    group_by(across(where(~ !is.list(.)))) %>%
+    summarise( f_values(component[[1]]) ) %>%
+    ungroup()
 
-    # And apply it to specified chemical shifts
-    f(direct.shift) + baseline
-  } 
-  else {
-    # Get data frame of functions
-    d <- f_lineshape(object, sf, sum.peaks, include.id, components)
+  # If all components were selected, drop identifiers
+  if ( sum.level == "all" ) d <- select(d, direct.shift, intensity)
 
-    # Defining function that generates necessary data frame
-    f <- function(g) {
-      intensity <- g[[1]](direct.shift) + baseline
-      data.frame(direct.shift = direct.shift, 
-                 intensity = vec_cast(intensity, complex())) 
-    }
+  # Select output for intensity
+  d$intensity <- domain(d$intensity, domain, use.cmplx1)
 
-    # Note that the unpack/pack functions are used to avoid bind_row errors
-
-    # And apply it for every peak
-    d %>% 
-      group_by_if(~ ! is.list(.)) %>% 
-      do( f(.$f) ) %>%
-      ungroup()
-  }
+  d
 })
 
 

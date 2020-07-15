@@ -21,5 +21,7 @@ update_bounds(object, ...)
 \item{widen}{FALSE to prevent new bounds from widening existing bounds.}
 }
 \description{
-This is an internal function used to update all the bounds of NMRScaffold object at once while ensuring that they are not widened if that is not desired. Do not use this function directly.
+This is an internal function used to update all the bounds of NMRScaffold
+object at once while ensuring that they are not widened if that is not
+desired. Do not use this function directly.
 }
