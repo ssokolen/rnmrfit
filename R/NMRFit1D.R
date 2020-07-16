@@ -101,16 +101,16 @@ NMRFit1D <- setClass("NMRFit1D",
 #'                knots() function. To modify initial values of the baseline,
 #'                use baseline() function.
 #' @param phase.order An integer specifying the order of the phase correction
-#'                    polynomial -- may be 0 or 1 (-1 to disable).
-#'                    in practice, but a higher order correction is possible.
+#'                    polynomial -- may be 0 or 1 (-1 to disable). in practice,
+#'                    but a higher order correction is possible.
 #' @param delay.fit FALSE to immediately run least squares optimization after
 #'                  the NMRFit1D object is initialized, TRUE to skip the
 #'                  optimization, enabling more customization. The fit can be
 #'                  run manually using fit().
-#' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf, but an override can be provided
-#'           here.
+#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
+#'                  from Hz to ppm. In most cases, it is recommended to set a
+#'                  single default value using nmroptions$direct$sf, but an
+#'                  override can be provided here.
 #' @param init An initialization, function that takes an NMRFit1D object and
 #'             returns a modified NMRFit1D object. Use the "identity" function
 #'             to override the default initialization in the
@@ -128,8 +128,12 @@ nmrfit_1d <- function(
   species, nmrdata, baseline.order = nmroptions$baseline$order,
   n.knots = nmroptions$baseline$n.knots, 
   phase.order = nmroptions$phase$order, 
-  delay.fit = FALSE, sf = nmroptions$direct$sf,
+  delay.fit = FALSE, direct.sf = nmroptions$direct$sf,
   init = nmroptions$fit$init, opts = nmroptions$fit$opts, ...) {
+
+  # Checking to make sure that sweep frequency is defined
+  err <- '"direct.sf" must be provided as input or set using nmroptions$direct$sf'
+  if ( is.null(direct.sf) ) stop(err)
 
   #---------------------------------------
   # Generating list of species 
@@ -185,7 +189,7 @@ nmrfit_1d <- function(
 
   # If the fit is delayed, then return current object, otherwise run fit first
   if ( delay.fit ) out
-  else fit(out, sf = sf, init = init, opts = opts)
+  else fit(out, direct.sf = direct.sf, init = init, opts = opts)
 }
 
 
@@ -203,7 +207,7 @@ nmrfit_1d <- function(
 #' data and updates the peak parameters. 
 #' 
 #' @param object An NMRFit1D object.
-#' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
+#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 #'           to ppm. In most cases, it is recommended to set a single default
 #'           value using nmroptions$direct$sf = ..., but an override can be
 #'           provided here.
@@ -226,11 +230,11 @@ setGeneric("fit",
 #' @rdname fit
 #' @export
 setMethod("fit", "NMRFit1D",
-  function(object, sf = nmroptions$direct$sf, init = nmroptions$fit$init, 
+  function(object, direct.sf = nmroptions$direct$sf, init = nmroptions$fit$init, 
            opts = nmroptions$fit$opts) {
 
   # First, run the initialization
-  object <- init(object, sf = sf, init = init, opts = opts)
+  object <- init(object, sf = direct.sf, init = init, opts = opts)
 
   # Ensuring consistent order
   d <- processed(object@nmrdata)
@@ -259,7 +263,7 @@ setMethod("fit", "NMRFit1D",
 
   for (name in names(peaks)) {
     peaks[[name]]$position <- (peaks[[name]]$position - x.range[1])/x.span
-    peaks[[name]]$width <- peaks[[name]]$width/sf/x.span
+    peaks[[name]]$width <- peaks[[name]]$width/direct.sf/x.span
     peaks[[name]]$height <- peaks[[name]]$height/y.range[2]
 
     peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
@@ -354,7 +358,7 @@ setMethod("fit", "NMRFit1D",
   peaks[, data.columns] <- new.peaks
 
   peaks$position <- peaks$position*x.span + x.range[1]
-  peaks$width <- peaks$width*sf*x.span
+  peaks$width <- peaks$width*direct.sf*x.span
   peaks$height <- peaks$height*y.range[2]
 
   peaks(object) <- peaks
@@ -670,168 +674,3 @@ setMethod("f_baseline", "NMRFit1D",
       }
     }
   })
-
-
-
-#==============================================================================>
-# Plotting  
-#==============================================================================>
-
-
-
-#------------------------------------------------------------------------------
-#' Plot NMRFit1D object
-#' 
-#' Generates an interactive plot object using the plotly package.
-#' 
-#' Convenience function that generates a graphical representation of the fit.
-#' The original data is plotted as a black line, the fit is plotted in red, the
-#' baseline is plotted in blue, the residual in red. The fit can be plotted as
-#' a composite of all the peaks, or individually.
-#' 
-#' @param x An NMRFit1D object.
-#' @param components One of either 'r', 'i', or 'r/i' to include real, imaginary
-#'                   or both components. If both components are selected, they
-#'                   are displayed in separate subplots.
-#' @param sum.level One of either 'all', 'species', 'resonance', 'peak' to
-#'                  specify whether all peaks should be summed together.
-#' @param sum.baseline TRUE to add the baseline to each fit.
-#' @param apply.phase TRUE to apply the calculated phase to the data.
-#' 
-#' @return A ggplot2 plot.
-#' 
-#' @export
-plot.NMRFit1D <- function(x, components = 'r', apply.phase = TRUE,  
-                          sum.level = 'species', sum.baseline = TRUE) { 
-
-  #---------------------------------------
-  # Calculating all required values
-
-  nmrdata <- x@nmrdata 
-
-  if ( apply.phase ) {
-    nmrdata <- apply_phase(nmrdata, x@phase, degrees = FALSE)
-  }
-
-  # The original data
-  d <- nmrdata@processed %>%
-    arrange(direct.shift)
-  direct.shift <- d$direct.shift 
-  y.data <- d$intensity
-
-  # The overall fit
-  sf <- get_parameter(x@nmrdata, 'sfo1', 'acqus', error = TRUE)
-  if ( is.null(sf) ) sf <- nmroptions$direct$sf
-
-  f <- f_lineshape(x, sf = sf, sum.peaks = TRUE)
-  y.fit <- f(direct.shift)
-
-  # The baseline
-  f <- f_baseline(x)
-  y.baseline <- f(direct.shift)
-
-  # The residual
-  y.residual <- y.data - y.fit - y.baseline
-
-  # All individual fits
-  y.fit.all <- values(x, direct.shift, sf = sf,
-                      sum.peaks = FALSE, sum.baseline = FALSE)
-
-  # Generating grouped fits based on sum.level. The output is a list of
-  # of data.frames with names that will be plotted one at a time
-
-  # If everything is to be summed, generate frame from overall fit data
-  if ( sum.level == 'all' ) {
-    d <- data.frame(direct.shift = direct.shift, intensity = y.fit)
-    frames <- list('Fit' = d)
-  }
-  else {
-    err <- '"sum.level" must be one of "all", "species", "resonance", or "peak"'
-    if ( sum.level == 'species' ) columns <- 'species'
-    else if ( sum.level == 'resonance' ) columns <- c('species', 'resonance')
-    else if ( sum.level == 'peak' ) columns <- c('species', 'resonance', 'peak')
-    else stop(err)
-  
-    # Tacking on direct.shift as a grouping column
-    all.columns <- c(columns, 'direct.shift')
-
-    # Converting cmplx1 to complex() for dplyr support
-    y.fit.all$intensity <- vec_cast(y.fit.all$intensity, complex())
-    d <- y.fit.all %>%
-      group_by_at(all.columns) %>%
-      summarize(intensity = sum(intensity)) %>%
-      ungroup()
-
-    d$id <- apply(d[, columns], 1, paste, collapse = '-')
-
-    d <- select(d, id, direct.shift, intensity)
-
-    frames <- by(d, d$id, identity)
-  }
-
-
-  #---------------------------------------
-  # Defining basic plot functions
-
-  # Setting legend options
-  legend.opts <- list(orientation = 'h', xanchor = "center", x = 0.5)
-
-  # Note that the x values for each of the following functions is already
-  # set as the direct shift of the data
-
-  # This function initializes the overall plot object by drawing a single
-  # line with the colour and name of choice
-  f_init <- function(y, color, name) {
-    p <- plot_ly(x = direct.shift, y = y, color = I(color), 
-                 name = I(name), type = 'scatter', mode = 'lines',
-                 legendgroup = 1) %>%
-         layout(legend = legend.opts,
-                xaxis = list(autorange = "reversed"))
-  }
-
-  # This functions adds a new line to an existing plot object
-  f_add <- function(p, y, color, name, group, showlegend = TRUE) {
-    p %>% 
-      add_trace(x = direct.shift, y = y, color = I(color),
-                name = I(name), type = 'scatter', mode = 'lines',
-                legendgroup = group, showlegend = showlegend)
-  }
-
-  #---------------------------------------
-  # Building up the plot elements
-
-  # Initializing the plot list
-  plots <- list()
-
-  # Checking which components to plot
-  re <- grepl('r', components)
-  im <- grepl('i', components)
-
-  # Initializing plots
-  if ( re ) plots$r <- f_init(Re(y.data), 'black', 'Real')
-  if ( im ) plots$i <- f_init(Im(y.data), 'grey', 'Imaginary')
-
-  # Adding baseline
-  if ( re ) plots$r <- f_add(plots$r, Re(y.baseline), 'blue', 'Baseline', 2) 
-  if ( im ) plots$i <- f_add(plots$i, Im(y.baseline), 'blue', 'Baseline', 2)
-
-  # Adding residual
-  if ( re ) plots$r <- f_add(plots$r, Re(y.residual), 'green', 'Residual', 3) 
-  if ( im ) plots$i <- f_add(plots$i, Re(y.residual), 'green', 'Residual', 3)
-
-  # Looping through each previously defined peak grouping
-  for ( i in 1:length(frames) ) {
-
-    y <- frames[[i]]$intensity
-    if ( sum.baseline ) y <- y + y.baseline
-
-    id <- names(frames)[i] 
-
-    if ( re ) plots$r <- f_add(plots$r, Re(y), 'red', id, id) 
-    if ( im ) plots$i <- f_add(plots$i, Im(y), 'red', id, id)
-  }
-
-  if ( length(plots) == 0 ) NULL
-  else subplot(plots, shareX = TRUE, shareY = TRUE, 
-               nrows = min(length(plots), 2))
-}

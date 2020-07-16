@@ -11,4 +11,6 @@
 *.pdf
 *.htm
 
+/src/*/target/*
+
 inst/extdata/simulations/*.rda

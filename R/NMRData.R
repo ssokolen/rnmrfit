@@ -480,6 +480,28 @@ setGeneric("add_phase",
 
 
 
+#------------------------------------------------------------------------
+#' Add noise to data
+#' 
+#' Helper function to add noise for simulations. At this point, noise is
+#' assumed to be independent of chemical shift and Gaussian, but these
+#' assumptions will hopefully be revisited at a later date.
+#' 
+#' @param object An NMRData object.
+#' @param sd Standard deviation of Gaussian noise as fraction of maximum
+#'           intensity (in the real domain).
+#' @param ... Additional arguments passed to inheriting methods.
+#' 
+#' @return A new NMRData object with modified intensity values.
+#' 
+#' @name add_phase
+#' @export
+setGeneric("add_noise", 
+  function(object, ...) standardGeneric("add_noise")
+)
+
+
+
 #==============================================================================>
 #  Defining list and data.frame like behaviour
 #==============================================================================>

@@ -449,6 +449,29 @@ setMethod("add_phase", "NMRData1D",
 
 
 
+#------------------------------------------------------------------------
+# Add noise
+#' @rdname add_noise
+#' @export
+setMethod("add_noise", "NMRData1D", 
+  function(object, sd = 0.01) {
+
+    # Extracting processed values
+    d <- values(object)
+    
+    sd <- sd*max(Re(d$intensity))
+    n <- nrow(d)
+
+    d$intensity <- d$intensity + 
+      cmplx1(r = rnorm(n, sd = sd), i = rnorm(n, sd = sd))
+    object@processed <- d
+
+    object
+  })
+
+
+
+
 #==============================================================================>
 #  Formatting and printing
 #==============================================================================>
@@ -507,14 +530,17 @@ obj_sum.NMRData1D <- function(x) format(x)
 #' Convenience function that generates a plot of the spectral data.
 #' 
 #' @param x An NMRData1D object.
-#' @param components One of either 'r', 'i', or 'r/i' to include real, imaginary
-#'                   or both components. If both components are selected, they
-#'                   are displayed in separate subplots.
+#' @param domain One of either 'r' or 'i' corresponding to either real or
+#'               imaginary data. are displayed in separate subplots.
+#' @param legendgroup Unique value for grouping legend entries.
+#' @param color Intended for internal use -- line colour as character 
+#' @param name Intended for internal use -- data name as character.
 #' 
 #' @return A plot_ly plot.
 #' 
 #' @export
-plot.NMRData1D <- function(x, components = 'r') {
+plot.NMRData1D <- function(x, domain = 'r', legendgroup = 1,
+                           color = NULL, name = NULL) {
 
   legend.opts <- list(orientation = 'h', xanchor = "center", x = 0.5)
 
@@ -536,33 +562,59 @@ plot.NMRData1D <- function(x, components = 'r') {
 
   #---------------------------------------
 
-  d <- x@processed
-  direct.shift <- d$direct.shift
-  y.data <- d$intensity
+  d <- values(x, domain = domain)
+  x <- d$direct.shift
+  y <- d$intensity
 
-  # Defining generic plot function
-  f_init <- function(y, color, name) {
-    p <- plot_ly(x = direct.shift, y = y, color = I(color), 
-                 name = I(name), type = 'scatter', mode = 'lines',
-                 legendgroup = 1) %>%
-         layout(legend = legend.opts,
-                xaxis = xaxis, yaxis = yaxis)
-  }
+  if ( is.null(color) ) color <- "black"
+  if ( is.null(name) ) name <- "Raw data"
 
-  # Initializing the plot list
-  plots <- list()
+  p <- plot_ly(x = x, y = y, color = I(color), 
+               name = I(name), type = 'scatter', mode = 'lines',
+               legendgroup = 1) %>%
+       layout(legend = legend.opts,
+              xaxis = xaxis, yaxis = yaxis)
 
-  # Checking which components to plot
-  re <- grepl('r', components)
-  im <- grepl('i', components)
-
-  # Plotting 
-  if ( re ) plots$r <- f_init(Re(y.data), 'black', 'Real')
-  if ( im ) plots$i <- f_init(Im(y.data), 'grey', 'Imaginary')
-
-  if ( length(plots) == 0 ) NULL
-  else subplot(plots, shareX = TRUE, shareY = TRUE, 
-               nrows = min(length(plots), 2))
+  p
 }
 
 setMethod("plot", "NMRData1D", plot.NMRData1D)
+
+
+
+#------------------------------------------------------------------------------
+#' Add to existing NMRData1D plot
+#' 
+#' Meant to be primarily an internal function that adds a new line to an
+#' existing plot.
+#' 
+#' @param x An NMRData1D object.
+#' @param p A plot_ly object.
+#' @param domain One of either 'r' or 'i' corresponding to either real or
+#'               imaginary data. are displayed in separate subplots.
+#' @param legendgroup Unique value for grouping legend entries.
+#' @param color Line colour as character
+#' @param name Data name as character.
+#' 
+#' @return A plot_ly plot.
+#' 
+#' @export
+lines.NMRData1D <- function(x, p, domain = 'r', legendgroup = 2,
+                            color = NULL, name = NULL) {
+
+  d <- values(x, domain = domain)
+  x <- d$direct.shift
+  y <- d$intensity
+
+  if ( is.null(color) ) color <- "black"
+  if ( is.null(name) ) name <- "Raw data"
+
+  p <- p %>%
+    add_trace(x = x, y = y, color = I(color), 
+              name = I(name), type = 'scatter', mode = 'lines',
+              legendgroup = legendgroup)
+
+  p
+}
+
+setMethod("lines", "NMRData1D", lines.NMRData1D)

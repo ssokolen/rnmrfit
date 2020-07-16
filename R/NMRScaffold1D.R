@@ -334,3 +334,143 @@ setMethod("areas", "NMRScaffold1D",
   if ( sum.peaks ) sum(areas$area)
   else areas
 })
+
+
+
+#==============================================================================>
+# Plotting  
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------------
+#' Plot NMRScaffold1D object
+#' 
+#' Generates an interactive plot object using the plotly package.
+#' 
+#' If the input is an NMResonance1D, NMRSpecies1D, or NMRMixture1D, the peak
+#' lines are simply drawn in red. If the input is an NMRFit1D object, then the
+#' output features more components -- the original data is plotted as a black
+#' line, the fit is plotted in red, the baseline is plotted in blue, the
+#' residual in green. The fit can be plotted as a composite of all the peaks,
+#' or individually.
+#' 
+#' @param x An NMRScaffold1D object.
+#' @param domain One of either 'r' or 'i' corresponding to either real or
+#'               imaginary data. are displayed in separate subplots.
+#' @param direct.shift Used to override default selection of chemical shift
+#'                     values.
+#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
+#'                  from Hz to ppm. In most cases, it is recommended to set a
+#'                  single default value using nmroptions$direct$sf = ..., but
+#'                  an override can be provided here.
+#' @param sum.level One of either 'all', 'species', 'resonance', 'peak' to
+#'                  specify whether all peaks should be summed together.
+#' @param add.baseline TRUE to add calculated baseline correction (if it exists)
+#'                     to each fit.
+#' @param add.phase TRUE to add the calculated phase correction (if it exists)
+#'                  to the data.
+#' 
+#' @return A ggplot2 plot.
+#' 
+#' @export
+plot.NMRScaffold1D <- function(x, domain = 'r', direct.shift = NULL, 
+                               direct.sf = nmroptions$direct$sf,
+                               sum.level = 'species', add.baseline = TRUE, 
+                               add.phase = TRUE) { 
+
+  print(direct.sf)
+
+  #---------------------------------------
+  # Update a couple of logicals
+  if ( add.baseline %% ("baseline" %in% slotNames(x)) ) add.baseline <- TRUE
+  else add.baseline <- FALSE
+
+  if ( add.phase %% ("phase" %in% slotNames(x)) ) add.phase <- TRUE
+  else add.phase <- FALSE
+
+  if ( ("nmrdata" %in% slotNames(x)) ) add.data <- TRUE
+  else add.data <- FALSE
+
+  #---------------------------------------
+  # Select direct.shift based on data if it exists
+  if ( is.null(direct.shift) && add.data ) {
+    direct.shift <- values(x@nmrdata)$direct.shift
+  }
+
+  #---------------------------------------
+  # The fit should come last, so tacking on the extras first 
+
+  p <- NULL
+
+  # If there is raw data, add it, baseline, and residual
+  if ( add.data ) {
+    d <- x@nmrdata
+    direct.shift <- values(d)$direct.shift
+    
+    if ( add.phase ) d <- add_phase(d, phase(x), degrees = FALSE)
+
+    p <- plot(d, domain = domain, legendgroup = 1, color = "black", 
+              name = "Raw data")
+
+    # Total fit
+    d.fit <- nmrdata_1d_from_scaffold(x, direct.shift = direct.shift,
+                                      direct.sf = direct.sf)
+
+    d.total.fit <- add_baseline(d.fit, baseline(x), knots(x))
+
+    d.baseline <- d.total.fit
+    d.baseline@processed$intensity <-
+      d.total.fit@processed$intensity - d.fit@processed$intensity
+
+    p <- lines(d.baseline, p, domain = domain, legendgroup = 2, color = "blue", 
+               name = "Baseline")
+
+    d.residual <- d.total.fit
+    d.residual@processed$intensity <- 
+      d@processed$intensity - d.total.fit@processed$intensity
+
+    p <- lines(d.residual, p, domain = domain, legendgroup = 3, color = "green", 
+               name = "Residual")
+  }
+
+
+  #---------------------------------------
+  # First, generate the scaffold
+
+  components <- components(x, level = sum.level)$component
+
+  # Initialize plot with the first entry
+  d <- components[[1]] %>%
+    nmrdata_1d_from_scaffold(direct.shift = direct.shift,
+                             direct.sf = direct.sf)
+
+  if ( add.baseline ) d <- add_baseline(d, baseline(x), knots(x))
+  
+  if ( is.null(p) ) {
+    p <- plot(d, domain = domain, legendgroup = 4, color = "red", 
+              name = components[[1]]@id)
+  } else {
+    p <- lines(d, p,  domain = domain, legendgroup = 4, color = "red", 
+               name = components[[1]]@id)
+  }
+
+  # If there are more components, add them on
+  if ( length(components) > 1 ) {
+    for ( i in 2:length(components) ) {
+      d <- components[[i]] %>%
+        nmrdata_1d_from_scaffold(direct.shift = direct.shift,
+                                 direct.sf = direct.sf)
+
+      if ( add.baseline ) d <- add_baseline(d, baseline(x), knots(x))
+        
+      p <- lines(d, p, domain = domain, legendgroup = 4, color = "red", 
+                 name = components[[i]]@id)
+    }
+  }
+
+
+  p
+}
+
+setMethod("plot", "NMRScaffold", plot.NMRScaffold1D)
