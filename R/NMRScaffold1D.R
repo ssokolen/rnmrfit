@@ -216,20 +216,20 @@ setMethod("values", "NMRScaffold1D",
            sum.level = "all", domain = 'r/i', use.cmplx1 = FALSE) {
 
   # Checking to make sure that sweep frequency is defined
-  err <- '"sf" must be provided as input or set using nmroptions$direct$sf'
+  err <- '"direct.sf" must be provided as input or set using nmroptions$direct$sf'
   if ( is.null(direct.sf) ) stop(err)
 
   # Generating components to work with a consistent basis
   components <- components(object, sum.level)
 
   # Function to apply to each component
-  columns <- c('position', 'width', 'height', 'fraction.gauss')
+  data.columns <- c('position', 'width', 'height', 'fraction.gauss')
 
   f_values <- function(object) {
 
     # Converting peak width to ppm
     peaks <- peaks(object)
-    parameters <- as.matrix(peaks[, columns])
+    parameters <- as.matrix(peaks[, data.columns])
     parameters[, 2] <- parameters[, 2]/direct.sf
 
     p <- as.vector(t(parameters))

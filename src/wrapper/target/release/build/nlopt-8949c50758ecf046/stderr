@@ -80,12 +80,7 @@ Call Stack (most recent call first):
   CMakeLists.txt:343 (include)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:112: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:116: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 503: Can't wrap 'operator =' unless renamed to a valid identifier.
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 362: operator= ignored
+make[3]: Warning: File 'CMakeFiles/nlopt.dir/depend.make' has modification time 0.024 s in the future
 /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/cdirect/hybrid.c: In function ‘optimize_rect’:
 /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/cdirect/hybrid.c:91:6: warning: ‘nlopt_minimize’ is deprecated [-Wdeprecated-declarations]
    91 |      ret = nlopt_minimize(p->local_alg, n, fcount, p,
@@ -115,6 +110,12 @@ In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9
 /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.h:304:28: note: declared here
   304 | NLOPT_EXTERN(nlopt_result) nlopt_minimize_constrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data, ptrdiff_t fc_datum_size,
       |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:112: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:116: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 503: Can't wrap 'operator =' unless renamed to a valid identifier.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 362: operator= ignored
 In function ‘hfti_’,
     inlined from ‘lsei_’ at /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/slsqp/slsqp.c:1176:5,
     inlined from ‘lsq_’ at /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/slsqp/slsqp.c:1417:5:
@@ -270,5 +271,6 @@ In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9
 /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:321:20: note: declared here
   321 | NLOPT_EXTERN(void) nlopt_set_stochastic_population(int pop) NLOPT_DEPRECATED;
       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-make[3]: Warning: File 'test/CMakeFiles/testopt.dir/depend.make' has modification time 0.002 s in the future
+make[3]: warning:  Clock skew detected.  Your build may be incomplete.
+make[3]: Warning: File 'test/CMakeFiles/testopt.dir/depend.make' has modification time 0.031 s in the future
 make[3]: warning:  Clock skew detected.  Your build may be incomplete.

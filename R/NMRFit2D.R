@@ -349,12 +349,11 @@ setMethod("fit", "NMRFit2D",
   ineq.constraints <- ineq.constraints[-length(ineq.constraints)]
 
   # Encoding resonance/dimension information
-  i.res <- as.integer(factor(descriptors)) - 1
-  i.res <- rep(i.res, each = 4)
+  i.res <- as.integer(factor(descriptors))
+  i.res <- rep(i.res - 1, each = 4)
 
-  i.dim <- as.integer(factor(dimensions, 
-                             levels = c('direct', 'indirect'))) - 1
-  i.dim <- rep(i.dim, each = 4)
+  i.dim <- as.integer(factor(dimensions, levels = c('direct', 'indirect')))
+  i.dim <- rep(i.dim - 1, each = 4)
 
   print(par)
 

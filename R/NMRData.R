@@ -371,7 +371,7 @@ setReplaceMethod("procs", "NMRData",
 
 
 #==============================================================================>
-#  Generic definition for values
+#  Values and processing
 #==============================================================================>
 
 
@@ -420,6 +420,62 @@ setReplaceMethod("procs", "NMRData",
 #' @export
 setGeneric("values", 
   function(object, ...) standardGeneric("values")
+)
+
+
+
+#------------------------------------------------------------------------
+#' Add baseline to data
+#' 
+#' Baseline terms are defined in the same way as for NMRFit1D/NMRFit2D, so it
+#' should be possible to apply these directly.
+#' 
+#' @param object An NMRData object.
+#' @param baseline Vector of baseline spline parameters, where the domain of the
+#'                 baseline must match the domain of the underlying data, i.e.,
+#'                 a cmplx1 or complex vector is needed for 1D data and a cmplx2
+#'                 vector is needed for 2D data. If a numeric vector is
+#'                 provided, the same baseline is applied to all domains. Note
+#'                 that for 2D data, the baseline components represent both
+#'                 dimensions on an even grid and must therefore have a length
+#'                 that is a perfect square. These values themselves represent
+#'                 slices of baseline along the direct dimension in order of
+#'                 increasing indirect dimension chemical shift.
+#' @param knots A vector of relative internal knots ranging from 0
+#'              (corresponding to lower direct.shift) and 1 (corresponding to
+#'              upper direct.shift). Boundary knots are added automatically and
+#'              should not be included.
+#' @param ... Additional arguments passed to inheriting methods.
+#' 
+#' @return A new NMRData object with modified intensity values.
+#' 
+#' @name add_baseline
+#' @export
+setGeneric("add_baseline", 
+  function(object, ...) standardGeneric("add_baseline")
+)
+
+
+
+#------------------------------------------------------------------------
+#' Add phase to data
+#' 
+#' Manual phase correction meant to apply phase terms calculated through
+#' NMRFit. Note that phase terms are specified in radians unless "degrees" is
+#' set to TRUE.
+#' 
+#' @param object An NMRData object.
+#' @param phase A vector of phase correction terms -- 0 order, 1st order in the
+#'              direct dimension, 1st order in the indirect.dimension.
+#' @param degrees TRUE if phase terms are provided in degrees, FALSE by default.
+#' @param ... Additional arguments passed to inheriting methods.
+#' 
+#' @return A new NMRData object with modified intensity values.
+#' 
+#' @name add_phase
+#' @export
+setGeneric("add_phase", 
+  function(object, ...) standardGeneric("add_phase")
 )
 
 

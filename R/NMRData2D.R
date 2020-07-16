@@ -289,6 +289,116 @@ setMethod("values", "NMRData2D",
 
 
 
+#------------------------------------------------------------------------
+# Add baseline
+#' @rdname add_baseline
+#' @export
+setMethod("add_baseline", "NMRData2D", 
+  function(object, baseline, knots = c()) {
+
+    # Ensuring there are enough parameters
+    err <- '"baseline" must be ^2 + 1 or more elements longer than "knots"'
+    if ( sqrt(length(baseline)) <= length(knots) ) stop(err)
+
+    # Extracting processed values
+    d <- values(object)
+
+    n <- nrow(d)
+    n.baseline <- length(baseline)
+
+    # Generating baseline parameters based on input
+    if ( "numeric" %in% class(baseline) ) {
+      p <- c(baseline, baseline, baseline, baseline)
+    } else if ( "vctrs_cmplx2" %in% class(baseline) ) {
+      p <- c(baseline$rr, baseline$ri, baseline$ir, baseline$ii)
+    } else {
+      err <- '"baseline" must be a numeric or cmplx2 object'
+      stop(err)
+    }
+
+    # Tacking on bounds to internal knots
+    knots <- sort(c(knots, c(0, 1)))
+
+    # Chemical shift has to be scaled since knots are relative
+    x1.range <- range(d$direct.shift)
+    x1.span <- x1.range[2] - x1.range[1]
+
+    x2.range <- range(d$indirect.shift)
+    x2.span <- x2.range[2] - x2.range[1]
+
+    # Feeding into Rust wrapper
+    out <- .Call(
+      "baseline_2d_wrapper", 
+      x_direct = as.double((d$direct.shift - x1.range[1])/x1.span), 
+      x_indirect = as.double((d$indirect.shift - x2.range[1])/x2.span), 
+      y = as.double(rep(0, n*4)), 
+      knots = as.double(knots),
+      p = as.double(p), 
+      n = as.integer(n),
+      nb = as.integer(n.baseline),
+      nk = as.integer(length(knots))
+    )
+
+    index.rr <- 1:n
+    index.ri <- index.rr + n
+    index.ir <- index.ri + n
+    index.ii <- index.ir + n
+
+    d$intensity <- d$intensity + 
+      cmplx2(rr = out[index.rr], ri = out[index.ri],
+             ir = out[index.ir], ii = out[index.ii])
+    object@processed <- d
+
+    object
+  })
+
+
+
+#------------------------------------------------------------------------
+# Add phase
+#' @rdname add_phase
+#' @export
+setMethod("add_phase", "NMRData2D", 
+  function(object, phase, degrees = FALSE) {
+
+    # Ensuring correct length
+    err <- '"phase" must be of length 1 (0 order) or 3 (1st order)'
+    if (! length(phase) %in% c(1, 3) ) stop(err)
+
+    # Extracting processed values
+    d <- values(object)
+
+    n <- nrow(d)
+    n.phase <- length(phase)
+
+    # Modifying phase angles if required
+    if ( degrees ) phase <- phase/180*pi
+
+    # Feeding into Rust wrapper
+    out <- .Call(
+      "phase_2d_wrapper", 
+      x_direct = as.double(d$direct.shift), 
+      x_indirect = as.double(d$indirect.shift), 
+      y = as.double(c(d$intensity$rr, d$intensity$ri, 
+                      d$intensity$ir, d$intensity$ii)), 
+      p = as.double(phase), 
+      n = as.integer(n),
+      np = as.integer(n.phase)
+    )
+
+    index.rr <- 1:n
+    index.ri <- index.rr + n
+    index.ir <- index.ri + n
+    index.ii <- index.ir + n
+
+    d$intensity <- cmplx2(rr = out[index.rr], ri = out[index.ri],
+                          ir = out[index.ir], ii = out[index.ii])
+    object@processed <- d
+
+    object
+  })
+
+
 
 #==============================================================================>
 #  Formatting and printing

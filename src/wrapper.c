@@ -97,8 +97,8 @@ static const R_CallMethodDef CallEntries[] = {
   {"phase_1d_wrapper", (DL_FUNC) &phase_1d_wrapper, 5},
   {"fit_2d_wrapper", (DL_FUNC) &fit_2d_wrapper, 18},
   {"eval_2d_wrapper", (DL_FUNC) &eval_2d_wrapper, 12},
-  {"baseline_2d_wrapper", (DL_FUNC) &eval_2d_wrapper, 8},
-  {"phase_2d_wrapper", (DL_FUNC) &eval_2d_wrapper, 6},
+  {"baseline_2d_wrapper", (DL_FUNC) &baseline_2d_wrapper, 8},
+  {"phase_2d_wrapper", (DL_FUNC) &phase_2d_wrapper, 6},
   {NULL, NULL, 0}
 };
 

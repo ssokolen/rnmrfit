@@ -427,47 +427,98 @@ setMethod("f_lineshape", "NMRScaffold2D",
 #' @export
 setMethod("values", "NMRScaffold2D",
   function(object, direct.shift, indirect.shift,
-           sf = c(nmroptions$direct$sf, nmroptions$indirect$sf), 
-           sum.peaks = TRUE, sum.baseline = FALSE, include.id = FALSE, 
-           components = 'rr/ii') {
+           direct.sf = nmroptions$direct$sf, 
+           indirect.sf = nmroptions$indirect$sf, 
+           sum.level = "all", domain = 'rr/ri/ir/ii', use.cmplx1 = FALSE) {
+
+  # Checking to make sure that sweep frequency is defined
+  err <- '"direct.sf" must be provided as input or set using nmroptions$direct$sf'
+  if ( is.null(direct.sf) ) stop(err)
+
+  err <- '"indirect.sf" must be provided as input or set using nmroptions$indirect$sf'
+  if ( is.null(indirect.sf) ) stop(err)
 
   err <- '"direct.shift" and "indirect.shift" vectors must be same length'
   if ( length(direct.shift) != length(indirect.shift) ) stop(err)
 
-  # Generating baseline if necessary
-  if ( sum.baseline && (class(object) == 'NMRFit2D') ) {
-    f <- f_baseline(object, components)
-    baseline <- f(direct.shift, indirect.shift)
-  } else {
-    baseline <- rep(0, length(direct.shift))
-  }
+  # Generating components to work with a consistent basis
+  components <- components(object, sum.level)
 
-  # Output depends on whether peaks are summed or not
-  if ( sum.peaks ) {
-    # Get function
-    f <- f_lineshape(object, sf, sum.peaks, include.id, components)
+  # Function to apply to each component
+  data.columns <- c('position', 'width', 'height', 'fraction.gauss')
+  descriptor.columns <- c("mixture", "species", "resonance")
 
-    # And apply it to specified chemical shifts
-    f(direct.shift, indirect.shift) + baseline
-  } 
-  else {
-    # Get data frame of functions
-    d <- f_lineshape(object, sf, sum.peaks, include.id, components)
+  f_values <- function(object) {
 
-    # Defining function that generates necessary data frame
-    f <- function(g) {
-      tibble(direct.shift = direct.shift,
-             indirect.shift = indirect.shift,
-             intensity = g[[1]](direct.shift, indirect.shift) + baseline)
-    }
+    peaks <- peaks(object)
 
-    # Note that the unpack/pack functions are used to avoid bind_row errors
+    # Mapping resonances/dimensions
+    logic <- which(colnames(peaks) %in% descriptor.columns)
+    descriptors <- as.matrix(peaks[, logic])
+    descriptors <- apply(descriptors, 1, paste, collapse = "-")
+    dimensions <- peaks$dimension 
+
+    i.res <- as.integer(factor(descriptors))
+    i.res <- rep(i.res - 1, each = 4)
+
+    i.dim <- as.integer(factor(dimensions, levels = c('direct', 'indirect')))
+    i.dim <- rep(i.dim - 1, each = 4)
+
+    # Converting peak width to ppm
+    parameters <- as.matrix(peaks[, data.columns])
+    logic <- dimensions == "direct"
+    parameters[logic, 2] <- parameters[logic, 2]/direct.sf
+    parameters[!logic, 2] <- parameters[!logic, 2]/indirect.sf
+
+    p <- as.vector(t(parameters))
+    n <- as.integer(length(direct.shift))
     
-    # And apply them to every peak
-    d %>%
-      group_by_if(~ ! is.list(.)) %>% 
-      do(f(.$f) )
+    out <- .Call(
+      "eval_2d_wrapper",        
+      x_direct = as.double(direct.shift),
+      x_indirect = as.double(indirect.shift),
+      y = as.double(rep(0, n*4)),
+      resonances = as.integer(i.res),
+      dimensions = as.integer(i.dim),
+      knots = as.double(0),
+      p = as.double(as.vector(p)),
+      n = n,
+      nl = as.integer(length(p)),
+      nb = as.integer(0),
+      np = as.integer(0),
+      nk = as.integer(0)
+    )
+
+    index.rr <- 1:n
+    index.ri <- index.rr + n
+    index.ir <- index.ri + n
+    index.ii <- index.ir + n
+
+    y <- cmplx2(rr = out[index.rr], ri = out[index.ri],
+                ir = out[index.ir], ii = out[index.ii])
+
+    tibble(
+      direct.shift = direct.shift, 
+      indirect.shift = indirect.shift,
+      intensity = y
+    )
   }
+
+  # And apply it to every component
+  d <- components %>% 
+    group_by(across(where(~ !is.list(.)))) %>%
+    summarise( f_values(component[[1]]) ) %>%
+    ungroup()
+
+  # If all components were selected, drop identifiers
+  if ( sum.level == "all" ) {
+    d <- select(d, direct.shift, indirect.shift, intensity)
+  }
+
+  # Select output for intensity
+  d$intensity <- domain(d$intensity, domain, use.cmplx1)
+
+  d
 })
 
 

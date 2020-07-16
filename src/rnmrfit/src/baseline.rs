@@ -1,4 +1,5 @@
 use ndarray::{prelude::*, ArcArray1, stack};
+use ndarray_stats::QuantileExt;
 use num_integer::Roots;
 
 use crate::common::NMRFitComponent;
@@ -57,8 +58,15 @@ pub fn gen_basis(x: ArcArray1<f64>, knots: Array1<f64>, np: usize) -> Array2<f64
         }
     }
 
-    // Fudging last value by assuming boundary knots correspond to end points
-    basis[[x.len() - 1, np - 1]] = 1.0;
+    // Based on implied boundary knots, the maximum value of x should correspond to 1 
+    // (but max x may be replicated)
+    let max_x = x.max().unwrap();
+    
+    for i in 0 .. n {
+        if (x[n - 1 - i] - max_x).abs() < 1.0e-8 {
+            basis[[n - 1 - i, np - 1]] = 1.0;
+        }
+    }
 
     basis
 }
@@ -218,7 +226,7 @@ impl Baseline2D {
             for i in 0 .. np0 {
                 let direct_slice = basis_direct.slice(s![.., i]);
                 for j in 0 .. np0 {
-                    let mut basis_slice = basis.slice_mut(s![.., i*np0 + j]);
+                    let mut basis_slice = basis.slice_mut(s![.., i + j*np0]);
                     let indirect_slice = basis_indirect.slice(s![.., j]);
 
                     temp_col.assign(&direct_slice);

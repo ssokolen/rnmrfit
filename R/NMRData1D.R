@@ -352,7 +352,7 @@ setMethod("values", "NMRData1D",
     d
   })
 
-setGeneric("add_baseline", function(object, ...) standardGeneric("add_baseline"))
+
 
 #------------------------------------------------------------------------
 # Add baseline
@@ -360,6 +360,16 @@ setGeneric("add_baseline", function(object, ...) standardGeneric("add_baseline")
 #' @export
 setMethod("add_baseline", "NMRData1D", 
   function(object, baseline, knots = c()) {
+
+    # Ensuring there are enough parameters
+    err <- '"baseline" must be 1 or more elements longer than "knots"'
+    if ( length(baseline) <= length(knots) ) stop(err)
+
+    # Extracting processed values
+    d <- values(object)
+
+    n <- nrow(d)
+    n.baseline <- length(baseline)
 
     # Generating baseline parameters based on input
     if ( "numeric" %in% class(baseline) ) {
@@ -371,16 +381,14 @@ setMethod("add_baseline", "NMRData1D",
     # Tacking out bounds to internal knots
     knots <- sort(c(knots, c(0, 1)))
 
-    # Extracting processed values
-    d <- values(object)
-
-    n <- nrow(d)
-    n.baseline <- length(baseline)
+    # Direct shift has to be scaled since knots are relative
+    x.range <- range(d$direct.shift)
+    x.span <- x.range[2] - x.range[1]
 
     # Feeding into Rust wrapper
     out <- .Call(
       "baseline_1d_wrapper", 
-      x = as.double(d$direct.shift), 
+      x = as.double((d$direct.shift - x.range[1])/x.span), 
       y = as.double(rep(0, n*2)), 
       knots = as.double(knots),
       p = as.double(p), 
@@ -388,8 +396,6 @@ setMethod("add_baseline", "NMRData1D",
       nb = as.integer(n.baseline),
       nk = as.integer(length(knots))
     )
-
-    print(tail(out[1:n]))
 
     index.re <- 1:n
     index.im <- index.re + n
@@ -403,46 +409,43 @@ setMethod("add_baseline", "NMRData1D",
 
 
 #------------------------------------------------------------------------
-# Phase
-
-#' @rdname apply_phase
+# Add phase
+#' @rdname add_phase
 #' @export
-setMethod("apply_phase", "NMRData1D", 
-  function(object, phase, degrees = TRUE) {
+setMethod("add_phase", "NMRData1D", 
+  function(object, phase, degrees = FALSE) {
 
-  # Summing up phase components
-  n.phase <- length(phase)
-  if ( n.phase == 0 ) return(object)
+    # Ensuring correct length
+    err <- '"phase" must be of length 1 (0 order) or 2 (1st order)'
+    if (! length(phase) %in% c(1, 2) ) stop(err)
 
-  # Changing phase angle units if required
-  if (degrees) phase <- phase*pi/180
+    # Extracting processed values
+    d <- values(object)
 
-  n <- length(spectrum)
-  phase.total <- rep(phase[1], n)
+    n <- nrow(d)
+    n.phase <- length(phase)
 
-  processed <- processed(object)
+    # Modifying phase angles if required
+    if ( degrees ) phase <- phase/180*pi
 
-  if ( length(phase) == 1) {
-    phase.total <- phase
-  } else if ( length(phase) == 2 ) {
-    direct.shift <- processed$direct.shift
-    phase.total <- phase.total + phase[2]*direct.shift
-  } else {
-    err <- '"phase" must be a vector of length 1 or 2.'
-    stop(err)
-  }
+    # Feeding into Rust wrapper
+    out <- .Call(
+      "phase_1d_wrapper", 
+      x = as.double(d$direct.shift), 
+      y = as.double(c(Re(d$intensity), Im(d$intensity))), 
+      p = as.double(phase), 
+      n = as.integer(n),
+      np = as.integer(n.phase)
+    )
 
-  im <- Im(processed$intensity)
-  re <- Re(processed$intensity)
+    index.re <- 1:n
+    index.im <- index.re + n
 
-  intensity <- cmplx1(r =  re * cos(phase.total) + im * sin(phase.total),
-                      i = -re * sin(phase.total) + im * cos(phase.total))
+    d$intensity <- cmplx1(r = out[index.re], i = out[index.im])
+    object@processed <- d
 
-  processed$intensity <- intensity
-  object@processed <- processed
-  object
-})
-
+    object
+  })
 
 
 

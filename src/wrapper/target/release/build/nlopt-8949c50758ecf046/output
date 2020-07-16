@@ -96,41 +96,41 @@ Scanning dependencies of target nlopt
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 [  2%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRect.c.o
-make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 [  4%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/direct_wrap.c.o
+[  6%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRserial.c.o
+[  8%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRsubrout.c.o
+[ 10%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/cdirect.c.o
+[ 12%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/hybrid.c.o
+[ 14%] Building C object CMakeFiles/nlopt.dir/src/algs/praxis/praxis.c.o
+[ 16%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/plis.c.o
+[ 18%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/plip.c.o
+[ 20%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/pnet.c.o
+[ 22%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/mssubs.c.o
+[ 24%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/pssubs.c.o
+[ 26%] Building C object CMakeFiles/nlopt.dir/src/algs/crs/crs.c.o
+[ 28%] Building C object CMakeFiles/nlopt.dir/src/algs/mlsl/mlsl.c.o
+[ 30%] Building C object CMakeFiles/nlopt.dir/src/algs/mma/mma.c.o
+[ 32%] Building C object CMakeFiles/nlopt.dir/src/algs/mma/ccsa_quadratic.c.o
+[ 34%] Building C object CMakeFiles/nlopt.dir/src/algs/cobyla/cobyla.c.o
+[ 36%] Building C object CMakeFiles/nlopt.dir/src/algs/newuoa/newuoa.c.o
+[ 38%] Building C object CMakeFiles/nlopt.dir/src/algs/neldermead/nldrmd.c.o
+[ 40%] Building C object CMakeFiles/nlopt.dir/src/algs/neldermead/sbplx.c.o
+[ 42%] Building C object CMakeFiles/nlopt.dir/src/algs/auglag/auglag.c.o
+[ 44%] Building C object CMakeFiles/nlopt.dir/src/algs/bobyqa/bobyqa.c.o
+make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 Scanning dependencies of target nlopt_guile_swig_compilation
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[  6%] Swig compile nlopt.i for guile
-[  8%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRserial.c.o
+[ 46%] Swig compile nlopt.i for guile
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 10%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRsubrout.c.o
-[ 10%] Built target nlopt_guile_swig_compilation
+[ 46%] Built target nlopt_guile_swig_compilation
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 Scanning dependencies of target nlopt_swig_compilation
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 12%] Swig compile nlopt.i for python
-[ 14%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/cdirect.c.o
-[ 16%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/hybrid.c.o
-[ 18%] Building C object CMakeFiles/nlopt.dir/src/algs/praxis/praxis.c.o
+[ 48%] Swig compile nlopt.i for python
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 18%] Built target nlopt_swig_compilation
-[ 20%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/plis.c.o
-[ 22%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/plip.c.o
-[ 24%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/pnet.c.o
-[ 26%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/mssubs.c.o
-[ 28%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/pssubs.c.o
-[ 30%] Building C object CMakeFiles/nlopt.dir/src/algs/crs/crs.c.o
-[ 32%] Building C object CMakeFiles/nlopt.dir/src/algs/mlsl/mlsl.c.o
-[ 34%] Building C object CMakeFiles/nlopt.dir/src/algs/mma/mma.c.o
-[ 36%] Building C object CMakeFiles/nlopt.dir/src/algs/mma/ccsa_quadratic.c.o
-[ 38%] Building C object CMakeFiles/nlopt.dir/src/algs/cobyla/cobyla.c.o
-[ 40%] Building C object CMakeFiles/nlopt.dir/src/algs/newuoa/newuoa.c.o
-[ 42%] Building C object CMakeFiles/nlopt.dir/src/algs/neldermead/nldrmd.c.o
-[ 44%] Building C object CMakeFiles/nlopt.dir/src/algs/neldermead/sbplx.c.o
-[ 46%] Building C object CMakeFiles/nlopt.dir/src/algs/auglag/auglag.c.o
-[ 48%] Building C object CMakeFiles/nlopt.dir/src/algs/bobyqa/bobyqa.c.o
+[ 48%] Built target nlopt_swig_compilation
 [ 50%] Building C object CMakeFiles/nlopt.dir/src/algs/isres/isres.c.o
 [ 52%] Building C object CMakeFiles/nlopt.dir/src/algs/slsqp/slsqp.c.o
 [ 54%] Building C object CMakeFiles/nlopt.dir/src/algs/esch/esch.c.o
@@ -141,7 +141,7 @@ make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 [ 64%] Building C object CMakeFiles/nlopt.dir/src/api/f77api.c.o
 [ 66%] Building C object CMakeFiles/nlopt.dir/src/util/mt19937ar.c.o
 [ 68%] Building C object CMakeFiles/nlopt.dir/src/util/sobolseq.c.o
-[ 72%] Building C object CMakeFiles/nlopt.dir/src/util/timer.c.o
+[ 70%] Building C object CMakeFiles/nlopt.dir/src/util/timer.c.o
 [ 72%] Building C object CMakeFiles/nlopt.dir/src/util/stop.c.o
 [ 74%] Building C object CMakeFiles/nlopt.dir/src/util/redblack.c.o
 [ 76%] Building C object CMakeFiles/nlopt.dir/src/util/qsort_r.c.o
@@ -151,13 +151,13 @@ make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 [ 80%] Built target nlopt
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-Scanning dependencies of target nlopt_guile
-make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 Scanning dependencies of target _nlopt
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 [ 82%] Building CXX object src/swig/CMakeFiles/_nlopt.dir/CMakeFiles/_nlopt.dir/nloptPYTHON_wrap.cxx.o
+Scanning dependencies of target nlopt_guile
+make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
+make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 [ 84%] Building CXX object src/swig/CMakeFiles/nlopt_guile.dir/CMakeFiles/nlopt_guile.dir/nloptGUILE_wrap.cxx.o
 [ 86%] Linking CXX shared module nlopt_guile.so
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'

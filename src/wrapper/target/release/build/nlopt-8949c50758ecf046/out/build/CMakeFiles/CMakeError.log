@@ -1,11 +1,12 @@
 Performing C SOURCE FILE Test HAVE_THREAD_LOCAL_STORAGE failed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_c82af/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_c82af.dir/build.make CMakeFiles/cmTC_c82af.dir/build
+Run Build Command(s):/usr/bin/make cmTC_01521/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_01521.dir/build.make CMakeFiles/cmTC_01521.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_c82af.dir/src.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE   -o CMakeFiles/cmTC_c82af.dir/src.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c
+make[2]: Warning: File 'CMakeFiles/cmTC_01521.dir/progress.make' has modification time 0.0045 s in the future
+Building C object CMakeFiles/cmTC_01521.dir/src.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE   -o CMakeFiles/cmTC_01521.dir/src.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c
 /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c:2:5: warning: return type defaults to ‘int’ [-Wimplicit-int]
     2 |     __declspec(thread) int tls;
       |     ^~~~~~~~~~
@@ -22,9 +23,9 @@ Building C object CMakeFiles/cmTC_c82af.dir/src.c.o
 /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c:6: error: expected ‘{’ at end of input
     6 |     }
       | 
-make[2]: *** [CMakeFiles/cmTC_c82af.dir/build.make:86: CMakeFiles/cmTC_c82af.dir/src.c.o] Error 1
+make[2]: *** [CMakeFiles/cmTC_01521.dir/build.make:86: CMakeFiles/cmTC_01521.dir/src.c.o] Error 1
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[1]: *** [Makefile:141: cmTC_c82af/fast] Error 2
+make[1]: *** [Makefile:141: cmTC_01521/fast] Error 2
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
 

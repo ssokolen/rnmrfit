@@ -188,7 +188,7 @@ pub extern fn phase_1d(x: *const c_double, y: *mut c_double,
 
     // Converting rest into arrays
     let x = Array::from_shape_vec((n,), x.to_vec()).unwrap();
-    let y_array = Array::from_shape_vec((n,2), y.to_vec()).unwrap();
+    let y_array = Array::from_shape_vec((2,n), y.to_vec()).unwrap();
     let p = Array::from_shape_vec((np,), p.to_vec()).unwrap();
 
     // Calling baseline
@@ -358,7 +358,7 @@ pub extern fn phase_2d(x_direct: *const c_double, x_indirect: *const c_double, y
     // Converting rest into arrays
     let x_direct = Array::from_shape_vec((n,), x_direct.to_vec()).unwrap();
     let x_indirect = Array::from_shape_vec((n,), x_indirect.to_vec()).unwrap();
-    let y_array = Array::from_shape_vec((n,4), y.to_vec()).unwrap();
+    let y_array = Array::from_shape_vec((4,n), y.to_vec()).unwrap();
     let p = Array::from_shape_vec((np,), p.to_vec()).unwrap();
 
     // Calling eval

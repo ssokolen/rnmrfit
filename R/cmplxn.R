@@ -528,7 +528,11 @@ domain.vctrs_cmplx2 <- function(x, domain = "rr/ri/ir/ii", use.cmplx1 = FALSE) {
       complex(re = get(domain[1], x), im = get(domain[2], x))
     }
   } else if ( length(domain) == 3) {
-    cmplx2(rr = get(domain[1], x), ri = get(domain[2], x), ir = get(domain[3], x))
+    cmplx2(rr = get(domain[1], x), ri = get(domain[2], x), 
+           ir = get(domain[3], x))
+  } else if ( length(domain) == 4) {
+    cmplx2(rr = get(domain[1], x), ri = get(domain[2], x), 
+           ir = get(domain[3], x), ii = get(domain[4], x))
   } else {
     stop(err)
   }
