@@ -10,7 +10,7 @@ fit(object, ...)
 
 \S4method{fit}{NMRFit1D}(
   object,
-  sf = nmroptions$direct$sf,
+  direct.sf = nmroptions$direct$sf,
   init = nmroptions$fit$init,
   opts = nmroptions$fit$opts
 )
@@ -26,7 +26,7 @@ fit(object, ...)
 \arguments{
 \item{object}{An NMRFit1D object.}
 
-\item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
+\item{direct.sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
 to ppm. In most cases, it is recommended to set a single default
 value using nmroptions$direct$sf = ..., but an override can be
 provided here.}

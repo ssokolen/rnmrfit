@@ -355,15 +355,40 @@ setMethod("add_baseline", "NMRData2D",
 
 
 #------------------------------------------------------------------------
+# Add noise
+#' @rdname add_noise
+#' @export
+setMethod("add_noise", "NMRData2D", 
+  function(object, sd = 0.01) {
+
+    # Extracting processed values
+    d <- values(object)
+    
+    sd <- sd*max(Re(d$intensity))
+    n <- nrow(d)
+
+    d$intensity <- d$intensity + 
+      cmplx2(rr = rnorm(n, sd = sd), ri = rnorm(n, sd = sd),
+             ir = rnorm(n, sd = sd), ii = rnorm(n, sd = sd))
+    object@processed <- d
+
+    object
+  })
+
+
+
+#------------------------------------------------------------------------
 # Add phase
 #' @rdname add_phase
 #' @export
 setMethod("add_phase", "NMRData2D", 
   function(object, phase, degrees = FALSE) {
 
+    if ( length(phase) == 0 ) return(object)
+
     # Ensuring correct length
-    err <- '"phase" must be of length 1 (0 order) or 3 (1st order)'
-    if (! length(phase) %in% c(1, 3) ) stop(err)
+    err <- '"phase" must be of length 2 (0 order) or 3 (1st order)'
+    if (! length(phase) %in% c(2, 3) ) stop(err)
 
     # Extracting processed values
     d <- values(object)
@@ -576,19 +601,18 @@ setMethod("indirect", "NMRData2D",
 #' Convenience function that generates a plot of the spectral data.
 #' 
 #' @param x An NMRData2D object.
-#' @param components One of 'rr', 'ii', 'ir', or 'ri' to specify various real
-#'                   and imaginary components. 3D plot subplots are not
-#'                   currently supported.
+#' @param domain One of either 'rr', 'ri', 'ir', or 'ii' corresponding to
+#'               combinations of real and imaginary data from the direct and
+#'               indirect dimensions.
+#' @param legendgroup Unique value for grouping legend entries.
+#' @param color Intended for internal use -- line colour as character
+#' @param name Intended for internal use -- data name as character.
 #' 
 #' @return A plot_ly plot.
 #' 
 #' @export
-plot.NMRData2D <- function(x, components = 'rr') {
-
-  components <- tolower(components)
-  valid.components <- c('rr', 'ri', 'ir', 'ii')
-  err <- '"components" must be one of "rr", "ri", "ir", or "ii".'
-  if (! components %in% valid.components ) stop(err)
+plot.NMRData2D <- function(x, domain = 'rr', legendgroup = 1,
+                           color = NULL, name = NULL) {
 
   legend.opts <- list(orientation = 'h', xanchor = "center", x = 0.5)
 
@@ -625,57 +649,90 @@ plot.NMRData2D <- function(x, components = 'rr') {
 
   #---------------------------------------
 
-  d <- x@processed
-  direct.shift <- d$direct.shift
-  indirect.shift <- d$indirect.shift
-  y.data <- d$intensity
+  err <- '"domain" must be one of "rr", "ri", "ir", or "ii"'
+  if (! domain %in% c("rr", "ri", "ir", "ii") ) stop(err)
 
-  # Defining generic plot function
-  f_init <- function(x, y, z, color, name) {
+  d <- values(x, domain = domain)
+  x1 <- d$direct.shift
+  x2 <- d$indirect.shift
+  y <- d$intensity
 
-    # Drawing separate lines for each indirect dimension
-    groups <- unique(y)
-    n <- length(groups)
+  if ( is.null(color) ) color <- "black"
+  if ( is.null(name) ) name <- "Raw data"
 
-    index <- y == groups[1]
-    p <- plot_ly(x = x[index], y = y[index], z = z[index],
-                 name = I(name), color = I(color),
-                 type = 'scatter3d', mode = 'lines', legendgroup = name)
+  groups <- unique(x2)
+  n <- length(groups)
 
+  index <- x2 == groups[1]
+  p <- plot_ly(x = x1[index], y = x2[index], z = y[index], color = I(color), 
+               name = I(name), type = 'scatter3d', mode = 'lines',
+               legendgroup = legendgroup) %>%
+       layout(scene = scene)
 
-    # Looping over the rest
-    for ( value in groups[-1] ) {
-      index <- y == value
-      p <- p %>%
-        add_trace(x = x[index], y = y[index], z = z[index],
-                  name = I(name), color = I(color),
-                  type = 'scatter3d', mode = 'lines', legendgroup = name,
-                  showlegend = FALSE)
-    }
-
-    p %>%
-      layout(scene = scene)
+  for ( value in groups[-1] ) {
+    index <- x2 == value
+    p <- p %>%
+      add_trace(x = x1[index], y = x2[index], z = y[index], color = I(color), 
+               name = I(name), type = 'scatter3d', mode = 'lines',
+               legendgroup = legendgroup, showlegend = FALSE)
   }
-
-  # Initializing the plot list
-  plots <- list()
-
-  # Checking which components to plot
-  rr <- grepl('rr', components)
-  ri <- grepl('ri', components)
-  ir <- grepl('ir', components)
-  ii <- grepl('ii', components)
-
-  # Plotting 
-  x <- direct.shift
-  y <- indirect.shift
-  p <- NULL
-  if ( rr ) p <- f_init(x, y, y.data$rr, 'black', 'Real')
-  if ( ri ) p <- f_init(x, y, y.data$ri, 'black', 'Real/Imaginary')
-  if ( ir ) p <- f_init(x, y, y.data$ir, 'black', 'Imaginary/Real')
-  if ( ii ) p <- f_init(x, y, y.data$ii, 'black', 'Imaginary')
 
   p
 }
 
 setMethod("plot", "NMRData2D", plot.NMRData2D)
+
+
+
+#------------------------------------------------------------------------------
+#' Add to existing NMRData2D plot
+#' 
+#' Meant to be primarily an internal function that adds a new line to an
+#' existing plot.
+#' 
+#' @param x An NMRData2D object.
+#' @param domain One of either 'rr', 'ri', 'ir', or 'ii' corresponding to
+#'               combinations of real and imaginary data from the direct and
+#'               indirect dimensions.
+#' @param legendgroup Unique value for grouping legend entries.
+#' @param color Intended for internal use -- line colour as character
+#' @param name Intended for internal use -- data name as character.
+#' 
+#' @return A plot_ly plot.
+#' 
+#' @export
+lines.NMRData2D <- function(x, p, domain = 'rr', legendgroup = 2,
+                            color = NULL, name = NULL) {
+
+  err <- '"domain" must be one of "rr", "ri", "ir", or "ii"'
+  if (! domain %in% c("rr", "ri", "ir", "ii") ) stop(err)
+
+  d <- values(x, domain = domain)
+  x1 <- d$direct.shift
+  x2 <- d$indirect.shift
+  y <- d$intensity
+
+  if ( is.null(color) ) color <- "black"
+  if ( is.null(name) ) name <- "Raw data"
+
+  groups <- unique(x2)
+  n <- length(groups)
+
+  index <- x2 == groups[1]
+  p <- p %>%
+    add_trace(x = x1[index], y = x2[index], z = y[index], color = I(color), 
+              name = I(name), type = 'scatter3d', mode = 'lines',
+              legendgroup = legendgroup)
+
+  for ( value in groups[-1] ) {
+    index <- x2 == value
+    p <- p %>%
+      add_trace(x = x1[index], y = x2[index], z = y[index], color = I(color), 
+               name = I(name), type = 'scatter3d', mode = 'lines',
+               legendgroup = legendgroup, showlegend = FALSE)
+  }
+
+  p
+}
+
+setMethod("lines", "NMRData2D", lines.NMRData2D)

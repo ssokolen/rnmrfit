@@ -415,6 +415,8 @@ setMethod("add_baseline", "NMRData1D",
 setMethod("add_phase", "NMRData1D", 
   function(object, phase, degrees = FALSE) {
 
+    if ( length(phase) == 0 ) return(object)
+
     # Ensuring correct length
     err <- '"phase" must be of length 1 (0 order) or 2 (1st order)'
     if (! length(phase) %in% c(1, 2) ) stop(err)
@@ -468,7 +470,6 @@ setMethod("add_noise", "NMRData1D",
 
     object
   })
-
 
 
 
@@ -531,7 +532,7 @@ obj_sum.NMRData1D <- function(x) format(x)
 #' 
 #' @param x An NMRData1D object.
 #' @param domain One of either 'r' or 'i' corresponding to either real or
-#'               imaginary data. are displayed in separate subplots.
+#'               imaginary data. 
 #' @param legendgroup Unique value for grouping legend entries.
 #' @param color Intended for internal use -- line colour as character 
 #' @param name Intended for internal use -- data name as character.
@@ -562,6 +563,9 @@ plot.NMRData1D <- function(x, domain = 'r', legendgroup = 1,
 
   #---------------------------------------
 
+  err <- '"domain" must be one of "r" or "i"'
+  if (! domain %in% c("r", "i") ) stop(err)
+
   d <- values(x, domain = domain)
   x <- d$direct.shift
   y <- d$intensity
@@ -571,7 +575,7 @@ plot.NMRData1D <- function(x, domain = 'r', legendgroup = 1,
 
   p <- plot_ly(x = x, y = y, color = I(color), 
                name = I(name), type = 'scatter', mode = 'lines',
-               legendgroup = 1) %>%
+               legendgroup = legendgroup) %>%
        layout(legend = legend.opts,
               xaxis = xaxis, yaxis = yaxis)
 
@@ -601,6 +605,9 @@ setMethod("plot", "NMRData1D", plot.NMRData1D)
 #' @export
 lines.NMRData1D <- function(x, p, domain = 'r', legendgroup = 2,
                             color = NULL, name = NULL) {
+
+  stop <- '"domain" must be one of "r" or "i"'
+  if (! domain %in% c("r", "i") ) stop(err)
 
   d <- values(x, domain = domain)
   x <- d$direct.shift

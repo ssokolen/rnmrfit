@@ -4,14 +4,19 @@
 \alias{plot.NMRData1D}
 \title{Plot NMRData1D object}
 \usage{
-plot.NMRData1D(x, components = "r")
+plot.NMRData1D(x, domain = "r", legendgroup = 1, color = NULL, name = NULL)
 }
 \arguments{
 \item{x}{An NMRData1D object.}
 
-\item{components}{One of either 'r', 'i', or 'r/i' to include real, imaginary
-or both components. If both components are selected, they
-are displayed in separate subplots.}
+\item{domain}{One of either 'r' or 'i' corresponding to either real or
+imaginary data.}
+
+\item{legendgroup}{Unique value for grouping legend entries.}
+
+\item{color}{Intended for internal use -- line colour as character}
+
+\item{name}{Intended for internal use -- data name as character.}
 }
 \value{
 A plot_ly plot.

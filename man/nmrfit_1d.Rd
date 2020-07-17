@@ -11,7 +11,7 @@ nmrfit_1d(
   n.knots = nmroptions$baseline$n.knots,
   phase.order = nmroptions$phase$order,
   delay.fit = FALSE,
-  sf = nmroptions$direct$sf,
+  direct.sf = nmroptions$direct$sf,
   init = nmroptions$fit$init,
   opts = nmroptions$fit$opts,
   ...
@@ -38,18 +38,18 @@ knots() function. To modify initial values of the baseline,
 use baseline() function.}
 
 \item{phase.order}{An integer specifying the order of the phase correction
-polynomial -- may be 0 or 1 (-1 to disable).
-in practice, but a higher order correction is possible.}
+polynomial -- may be 0 or 1 (-1 to disable). in practice,
+but a higher order correction is possible.}
 
 \item{delay.fit}{FALSE to immediately run least squares optimization after
 the NMRFit1D object is initialized, TRUE to skip the
 optimization, enabling more customization. The fit can be
 run manually using fit().}
 
-\item{sf}{Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-to ppm. In most cases, it is recommended to set a single default
-value using nmroptions$direct$sf, but an override can be provided
-here.}
+\item{direct.sf}{Sweep frequency (in MHz) -- needed to convert peak widths
+from Hz to ppm. In most cases, it is recommended to set a
+single default value using nmroptions$direct$sf, but an
+override can be provided here.}
 
 \item{init}{An initialization, function that takes an NMRFit1D object and
 returns a modified NMRFit1D object. Use the "identity" function

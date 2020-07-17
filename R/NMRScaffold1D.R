@@ -176,39 +176,6 @@ setMethod("initialize_heights", "NMRScaffold1D",
 
 
 
-#------------------------------------------------------------------------
-#' Generate lineshape function
-#' 
-#' This is primarily an internal method that outputs a function (or a tbl_df
-#' data frame of functions), where each function outputs spectral intensity
-#' data given a vector input of chemical shifts.
-#' 
-#' @param object An NMRScaffold1D object.
-#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
-#'                  from Hz to ppm. In most cases, it is recommended to set a
-#'                  single default value using nmroptions$direct$sf = ..., but
-#'                  an override can be provided here.
-#' @param sum.peaks TRUE to add all individual peaks together and output a
-#'                  single function, FALSE to output a data frame of functions
-#'                  that correspond to individual peaks.
-#' @param include.id TRUE to include id outer column if outputting data frame.
-#' @param components 'r/i' to output both real and imaginary data, 'r' to output
-#'                   only real and 'i' to output only imaginary.
-#' @param ... Additional arguments passed to inheriting methods.
-#' 
-#' @return A function or tbl_df data frame of functions where each function
-#'         outputs spectral intensity data given a vector input of chemical
-#'         shifts. In the latter case, the functions are stored in a list column
-#'         called f.
-#' 
-#' @name f_lineshape
-#' @export
-setGeneric("f_lineshape", 
-  function(object, ...) standardGeneric("f_lineshape")
-)
-
-
-
 #' @rdname values
 #' @export
 setMethod("values", "NMRScaffold1D",
@@ -379,24 +346,16 @@ plot.NMRScaffold1D <- function(x, domain = 'r', direct.shift = NULL,
                                sum.level = 'species', add.baseline = TRUE, 
                                add.phase = TRUE) { 
 
-  print(direct.sf)
-
   #---------------------------------------
   # Update a couple of logicals
-  if ( add.baseline %% ("baseline" %in% slotNames(x)) ) add.baseline <- TRUE
+  if ( add.baseline && ("baseline" %in% slotNames(x)) ) add.baseline <- TRUE
   else add.baseline <- FALSE
 
-  if ( add.phase %% ("phase" %in% slotNames(x)) ) add.phase <- TRUE
+  if ( add.phase && ("phase" %in% slotNames(x)) ) add.phase <- TRUE
   else add.phase <- FALSE
 
   if ( ("nmrdata" %in% slotNames(x)) ) add.data <- TRUE
   else add.data <- FALSE
-
-  #---------------------------------------
-  # Select direct.shift based on data if it exists
-  if ( is.null(direct.shift) && add.data ) {
-    direct.shift <- values(x@nmrdata)$direct.shift
-  }
 
   #---------------------------------------
   # The fit should come last, so tacking on the extras first 
@@ -434,9 +393,15 @@ plot.NMRScaffold1D <- function(x, domain = 'r', direct.shift = NULL,
                name = "Residual")
   }
 
+  #---------------------------------------
+  # Select direct.shift based on data if it exists
+
+  if ( is.null(direct.shift) && add.data ) {
+    direct.shift <- values(x@nmrdata)$direct.shift
+  }
 
   #---------------------------------------
-  # First, generate the scaffold
+  # Then scaffold/fit
 
   components <- components(x, level = sum.level)$component
 
@@ -473,4 +438,4 @@ plot.NMRScaffold1D <- function(x, domain = 'r', direct.shift = NULL,
   p
 }
 
-setMethod("plot", "NMRScaffold", plot.NMRScaffold1D)
+setMethod("plot", "NMRScaffold1D", plot.NMRScaffold1D)

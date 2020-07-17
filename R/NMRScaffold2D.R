@@ -269,18 +269,29 @@ setMethod("initialize_heights", "NMRScaffold2D",
   # Checking nmrdata
   check_conformity(object, nmrdata)
 
-  # Since heights are all dependent anyway, try to get direct dimension
-  # height from projection and then leave indirect at default (of 1)
-  d <- processed(direct(nmrdata))
+  # Currently broken
+  if ( FALSE ) {
+    # Since heights are all dependent anyway, try to get direct dimension
+    # height from projection and then leave indirect at default (of 1)
+    d <- processed(direct(nmrdata))
+    peaks <- peaks(object) 
+
+    # Using loess with very light smoothing
+    d <- data.frame(x = d$direct.shift, y = Re(d$intensity))
+    m <- loess(y ~ x, data = d, span = 0.1)
+
+    # Generating heights from prediction
+    logic <- peaks$dimension == "direct"
+    peaks$height[logic] <- predict(m, data.frame(x = peaks$position[logic]))
+  }
+
+  d <- processed(nmrdata)
   peaks <- peaks(object) 
-
-  # Using loess with very light smoothing
-  d <- data.frame(x = d$direct.shift, y = Re(d$intensity))
-  m <- loess(y ~ x, data = d, span = 0.1)
-
-  # Generating heights from prediction
+  
   logic <- peaks$dimension == "direct"
-  peaks$height[logic] <- predict(m, data.frame(x = peaks$position[logic]))
+
+  y <- Re(d$intensity)
+  peaks$height[logic] <- (max(y) + min(y))*0.5
 
   # Updating
   peaks(object) <- peaks
@@ -293,133 +304,6 @@ setMethod("initialize_heights", "NMRScaffold2D",
 #========================================================================>
 #  Lineshape and area calculations
 #========================================================================>
-
-
-
-#' @rdname f_lineshape
-#' @export
-setMethod("f_lineshape", "NMRScaffold2D",
-  function(object, sf = c(nmroptions$direct$sf, nmroptions$indirect$sf),
-           sum.peaks = TRUE, include.id = FALSE, components = 'rr/ii') {
-
-    # Checking to make sure that sweep frequency is defined
-    err <- paste('"sf" must be provided as input or set using',
-                 'nmroptions$direct$sf and nmroptions$indirect$sf')
-    if ( is.null(sf) ) stop(err)
-
-    if ( length(sf) == 1 ) sf <- c(sf, sf)
-
-    columns <- c('position', 'width', 'height', 'fraction.gauss')
-    peaks <- peaks(object, include.id = include.id)
-    parameters <- as.matrix(peaks[, columns])
-
-    columns <- c("mixture", "species", "resonance")
-    descriptors <- as.matrix(peaks[, which(colnames(peaks) %in% columns)])
-    descriptors <- apply(descriptors, 1, paste, collapse = "-")
-
-    i.res <- as.integer(factor(descriptors)) - 1
-    i.res <- rep(i.res, each = 4)
-
-    i.dim <- as.integer(factor(peaks$dimension, 
-                               levels = c('direct', 'indirect'))) - 1
-    i.dim <- rep(i.dim, each = 4)
-
-    # Converting peak width to ppm
-    logic <- peaks$dimension == 'direct'
-    parameters[logic, 2] <- parameters[logic, 2]/sf[1]
-    parameters[!logic, 2] <- parameters[!logic, 2]/sf[2]
-    
-    # The overall function is composed of two parts -- the Rust wrapper that
-    # calculates values for all dimension and then the R formatter that 
-    # selects which of these dimensions to output
-
-    #---------------------------------------
-    # First, defining how to format the output 
-
-    components <- rev(sort(strsplit(components, '[^ri]+', perl = TRUE)[[1]]))
-    err <- paste('"component" argument must consist of two-character codes',
-                 'and possibly a separator, e.g., "rr/ii" or "rr ri ir ii"')
-    if ( any(! components %in% c('rr', 'ri', 'ir', 'ii')) ) stop(err)
-    
-    if ( length(components) == 1 ) {
-      f_out <- function(y) {
-        d <- as_tibble(y)[, components]
-        d[[components]]
-      }
-    } else if ( length(components) == 2 ) {
-      f_out <- function(y) {
-        d <- as_tibble(y)[, components]
-        cmplx1(r = d[, 1], i = d[, 2])
-      }
-    } else {
-      f_out <- function(y) {
-        d <- as_tibble(y)[, components]
-        cmplx2(rr = d$rr, ri = d$ri, ir = d$ir, ii = d$ii )
-      }
-    }
-
-    #---------------------------------------
-    # Then, defining wrapper to incorporate the formatting
-
-    f_gen <- function(p, i.res, i.dim) {
-      force(p)
-      function(x1, x2) {
-
-        n <- as.integer(length(x1))
-
-        y <- .Call("eval_2d_wrapper",        
-          x_direct = as.double(x1),
-          x_indirect = as.double(x2),
-          y = as.double(rep(0, n*4)),
-          resonances = as.integer(i.res),
-          dimensions = as.integer(i.dim),
-          knots = as.double(0),
-          p = as.double(as.vector(t(parameters))),
-          n = n,
-          nl = as.integer(length(parameters)),
-          nb = as.integer(0),
-          np = as.integer(0),
-          nk = as.integer(0)
-        )
-
-        f_out(cmplx2(rr = y[1:n], ri = y[(n+1):(2*n)], 
-                     ir = y[(2*n+1):(3*n)], ii = y[(3*n+1):(4*n)]))
-      }
-    }
-
-    #---------------------------------------
-    # Finally, output either a single function or a tibble split by resonances
-
-    if ( sum.peaks ) {
-      p <- as.vector(t(parameters))
-      out <- f_gen(p, i.res, i.dim)
-    } 
-    # Otherwise, generate a tbl_df data frame
-    else {
-      columns <- c("mixture", "species", "resonance")
-      out <- peaks[, which(colnames(peaks) %in% columns)]
-      out <- out[!duplicated(descriptors), ]
-      out <- as_tibble(out)
-
-      # The split is by unique resonance rather than row
-      par <- split(parameters, i.res)
-      res <- split(i.res, i.res)
-      dim <- split(i.dim, i.res)
-
-      # Generating a list of functions, each with their parameters enclosed
-      functions <- pmap(list(par, res, dim), function (p, r, d) {
-        # Split on matrix flattens parameters by column rather than row,
-        # so re-formatting it here
-        p <- as.vector(t(matrix(p, ncol = 4)))
-        f_gen(p, rep(0, length(r)), d)
-      })
-
-      # Adding functions as a column
-      out$f <- functions
-    }
-
-    out
-  })
 
 
 
@@ -578,3 +462,156 @@ setMethod("volumes", "NMRScaffold2D",
   if ( sum.peaks ) sum(volumes$volume)
   else volumes
 })
+
+
+
+#==============================================================================>
+# Plotting  
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------------
+#' Plot NMRScaffold2D object
+#' 
+#' Generates an interactive plot object using the plotly package.
+#' 
+#' If the input is an NMResonance1D, NMRSpecies1D, or NMRMixture1D, the peak
+#' lines are simply drawn in red. If the input is an NMRFit1D object, then the
+#' output features more components -- the original data is plotted as a black
+#' line, the fit is plotted in red, the baseline is plotted in blue, the
+#' residual in green. The fit can be plotted as a composite of all the peaks,
+#' or individually.
+#' 
+#' @param x An NMRScaffold2D object.
+#' @param domain One of either 'rr', 'ri', 'ir', or 'ii' corresponding to
+#'               combinations of real and imaginary data from the direct and
+#'               indirect dimensions.
+#' @param direct.shift Used to override default selection of chemical shift
+#'                     values.
+#' @param indirect.shift Similar to direct.shift but for the indirect dimension.
+#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
+#'                  from Hz to ppm. In most cases, it is recommended to set a
+#'                  single default value using nmroptions$direct$sf = ..., but
+#'                  an override can be provided here.
+#' @param indirect.sf Similar to direct.sf but for the indirect dimension.
+#' @param sum.level One of either 'all', 'species', 'resonance', 'peak' to
+#'                  specify whether all peaks should be summed together.
+#' @param add.baseline TRUE to add calculated baseline correction (if it exists)
+#'                     to each fit.
+#' @param add.phase TRUE to add the calculated phase correction (if it exists)
+#'                  to the data.
+#' 
+#' @return A ggplot2 plot.
+#' 
+#' @export
+plot.NMRScaffold2D <- function(x, domain = 'rr', direct.shift = NULL,
+                               indirect.shift = NULL,
+                               direct.sf = nmroptions$direct$sf,
+                               indirect.sf = nmroptions$indirect$sf,
+                               sum.level = 'species', add.baseline = TRUE, 
+                               add.phase = TRUE) { 
+
+  #---------------------------------------
+  # Update a couple of logicals
+  if ( add.baseline && ("baseline" %in% slotNames(x)) ) add.baseline <- TRUE
+  else add.baseline <- FALSE
+
+  if ( add.phase && ("phase" %in% slotNames(x)) ) add.phase <- TRUE
+  else add.phase <- FALSE
+
+  if ( ("nmrdata" %in% slotNames(x)) ) add.data <- TRUE
+  else add.data <- FALSE
+
+  #---------------------------------------
+  # The fit should come last, so tacking on the extras first 
+
+  p <- NULL
+
+  # If there is raw data, add it, baseline, and residual
+  if ( add.data ) {
+    d <- x@nmrdata
+    direct.shift <- values(d)$direct.shift
+    indirect.shift <- values(d)$indirect.shift
+    
+    if ( add.phase ) d <- add_phase(d, phase(x), degrees = FALSE)
+
+    p <- plot(d, domain = domain, legendgroup = 1, color = "black", 
+              name = "Raw data")
+
+    # Total fit
+    d.fit <- nmrdata_2d_from_scaffold(
+      x, direct.shift = direct.shift, indirect.shift = indirect.shift,
+      direct.sf = direct.sf, indirect.sf = indirect.sf
+    )
+
+    d.total.fit <- add_baseline(d.fit, baseline(x), knots(x))
+
+    d.baseline <- d.total.fit
+    d.baseline@processed$intensity <-
+      d.total.fit@processed$intensity - d.fit@processed$intensity
+
+    p <- lines(d.baseline, p, domain = domain, legendgroup = 2, color = "blue", 
+               name = "Baseline")
+
+    d.residual <- d.total.fit
+    d.residual@processed$intensity <- 
+      d@processed$intensity - d.total.fit@processed$intensity
+
+    p <- lines(d.residual, p, domain = domain, legendgroup = 3, color = "green", 
+               name = "Residual")
+  }
+
+  #---------------------------------------
+  # Select chemical based on data if it exists
+
+  if ( is.null(direct.shift) && add.data ) {
+    direct.shift <- values(x@nmrdata)$direct.shift
+  }
+
+  if ( is.null(indirect.shift) && add.data ) {
+    direct.shift <- values(x@nmrdata)$indirect.shift
+  }
+
+  #---------------------------------------
+  # Then scaffold/fit
+
+  components <- components(x, level = sum.level)$component
+
+  # Initialize plot with the first entry
+  d <- components[[1]] %>%
+    nmrdata_2d_from_scaffold(
+      direct.shift = direct.shift, indirect.shift = indirect.shift,
+      direct.sf = direct.sf, indirect.sf = indirect.sf
+    )
+
+  if ( add.baseline ) d <- add_baseline(d, baseline(x), knots(x))
+  
+  if ( is.null(p) ) {
+    p <- plot(d, domain = domain, legendgroup = 4, color = "red", 
+              name = components[[1]]@id)
+  } else {
+    p <- lines(d, p,  domain = domain, legendgroup = 4, color = "red", 
+               name = components[[1]]@id)
+  }
+
+  # If there are more components, add them on
+  if ( length(components) > 1 ) {
+    for ( i in 2:length(components) ) {
+      d <- components[[i]] %>%
+        nmrdata_2d_from_scaffold(
+          direct.shift = direct.shift, indirect.shift = indirect.shift,
+          direct.sf = direct.sf, indirect.sf = indirect.sf
+        )
+
+      if ( add.baseline ) d <- add_baseline(d, baseline(x), knots(x))
+        
+      p <- lines(d, p, domain = domain, legendgroup = 4, color = "red", 
+                 name = components[[i]]@id)
+    }
+  }
+
+  p
+}
+
+setMethod("plot", "NMRScaffold2D", plot.NMRScaffold2D)

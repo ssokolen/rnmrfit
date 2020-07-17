@@ -19,10 +19,6 @@ nmrdata_1d_from_scaffold(
 from Hz to ppm. In most cases, it is recommended to set a
 single default value using nmroptions$direct$sf = ..., but
 an override can be provided here.}
-
-\item{ntuples.number}{Specifies ntuple entry number to use when loading from
-a JCAMP-DX file. Defaults to the first ntuple entry
-encountered. Ignored if loading from a pdata directory.}
 }
 \value{
 An NMRData1D object.

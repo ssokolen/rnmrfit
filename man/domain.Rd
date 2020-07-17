@@ -8,9 +8,9 @@
 \usage{
 domain(x, ...)
 
-\method{domain}{vctrs_cmplx1}(x, domain = "r/i")
+\method{domain}{vctrs_cmplx1}(x, domain = "r/i", use.cmplx1 = FALSE)
 
-\method{domain}{vctrs_cmplx2}(x, domain = "rr/ri/ir/ii")
+\method{domain}{vctrs_cmplx2}(x, domain = "rr/ri/ir/ii", use.cmplx1 = FALSE)
 }
 \arguments{
 \item{x}{cmplx1 or cmplx2 object.}
@@ -22,6 +22,11 @@ real or imaginary. For 2D data, this is expanded to
 "rr/ri/ir/ii". All domains are outputted by default. Warning:
 this function can be used to flip real and imaginary data by
 providing i/r as opposed to r/i.}
+
+\item{use.cmplx1}{cmplx1 is the internal representation of complex() that
+matches cmplx2 for 2D data. It is replaced by default to
+complex() for user-facing functions. However, this behavior
+can be overriden here.}
 }
 \value{
 If one domain selected, a simple numeric vector. If two selected, a
