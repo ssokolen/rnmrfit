@@ -72,16 +72,7 @@ test_that("1d fit construction works", {
   #----------------------------------------
   # Basic peak
   r_ideal <- nmrresonance_1d('0.5 s', width = 3)
-
-  n <- 200
-  x <- seq(0, 1, length.out = n)
-  y <- values(r_ideal, x)
-  p <- tibble(direct.shift = x,
-              intensity = y)
-
-  d <- new("NMRData1D")
-  d@procs <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- nmrdata_1d_from_scaffold(r_ideal)
 
   # Fitting
   r <- nmrresonance_1d('0.485 s')
@@ -89,6 +80,5 @@ test_that("1d fit construction works", {
 
   # Checking getters
   expect_equal(peaks(r)$position, peaks(fit)$position)
-
 })
 

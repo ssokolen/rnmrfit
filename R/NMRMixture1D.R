@@ -25,6 +25,7 @@ NMRMixture1D <- setClass("NMRMixture1D",
   slots = c(
     name = 'character',
     id = 'character',
+    sf = 'numeric',
     children = 'list'
   ),
   prototype = prototype(
@@ -93,7 +94,12 @@ nmrmixture_1d <- function(species, id = "mixture", ...) {
     if (! is.null(specie.id) ) species.list[[i]]@id <- specie.id
   }
 
+  # All species must have the same sweep frequency
+  sf <- unique(map_dbl(species.list, ~ .@sf))
+  err <- 'All species used to define a mixture must have the same "sf".'
+  if ( length(sf) > 1 ) stop(err)
+
   #---------------------------------------
   # Resulting mixture object
-  out <- new('NMRMixture1D', id = id, children = species.list)
+  out <- new('NMRMixture1D', id = id, sf = sf, children = species.list)
 }

@@ -629,11 +629,13 @@ setMethod("set_general_bounds", "NMRScaffold",
     y.range <- max(Re(processed$intensity)) - min(Re(processed$intensity))
     x.range <- max(processed$direct.shift) - min(processed$direct.shift)
 
-    position <- position * x.range + min(processed$direct.shift)
-    height <- height * y.range
+    x.min <- min(processed$direct.shift)
+    if (! is.null(position) ) position <- position * x.range + x.min
 
-    sf <- get_parameter(nmrdata, 'sf', 'acqus', error = TRUE)
-    width <- width * (x.range * sf)
+    if (! is.null(height) ) height <- height * y.range
+
+    sf <- object@sf
+    if (! is.null(width) ) width <- width * (x.range * sf)
   }
 
   #---------------------------------------

@@ -6,6 +6,7 @@ Description: Implements NMR lineshape fitting using the real and imaginary compo
 Depends:
     R (>= 3.2.2),
     GlobalOptions (>= 0.1),
+    lpSolve (>= 5.6.15),
     magrittr (>= 1.5),
     plotly (>= 4.6.0),
     proto (>= 1.0.0),

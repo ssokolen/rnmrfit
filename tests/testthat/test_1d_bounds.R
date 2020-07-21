@@ -5,10 +5,10 @@ nmroptions$sf <- 500
 ################################################################################
 # Resonance
 
+object <- nmrresonance_1d("0.5 d 20", id = "R1")
+
 #==============================================================================>
 test_that("1d absolute general bounds work with resonance", {
-
-  object <- gen_resonance_1d()
 
   par <- list(position = c(2, 3), width = c(0.005, 5), 
               height = c(0, 10), fraction.gauss = c(0.1, 0.9), 
@@ -21,8 +21,6 @@ test_that("1d absolute general bounds work with resonance", {
 
 #------------------------------------------------------------------------------
 test_that("1d widen general bounds work with resonance", {
-
-  object <- gen_resonance_1d()
 
   par.1 <- list(position = c(0, 0.5), width = c(0, 0.5), 
                 height = c(0, 0.5), fraction.gauss = c(0.1, 0.9),
@@ -42,12 +40,9 @@ test_that("1d widen general bounds work with resonance", {
 #------------------------------------------------------------------------------
 test_that("1d relative general bounds work with resonance", {
 
-  object <- gen_resonance_1d()
-
-  p <- tibble(direct.shift = c(-1, 1), intensity = complex(re=c(-1, 1)))
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- nmrdata_1d_from_scaffold(object)
+  d@processed <- tibble(direct.shift = c(-1, 1), 
+                        intensity = complex(re=c(-1, 1)))
 
   par <- list(position = c(0, 1), width = c(0, 1), 
               height = c(0, 1), nmrdata = d, widen = TRUE, object = object)
@@ -63,10 +58,6 @@ test_that("1d relative general bounds work with resonance", {
 #==============================================================================>
 test_that("1d absolute offset bounds work with resonance", {
 
-  nmroptions$sf <- 500
-
-  object <- gen_resonance_1d()
-
   par <- list(position = c(-0.05, 0.05), width = c(-0.5, 1), 
               height = c(-0.5, 0.5), widen = TRUE, relative = FALSE,
               object = object)
@@ -78,10 +69,6 @@ test_that("1d absolute offset bounds work with resonance", {
 
 #------------------------------------------------------------------------------
 test_that("1d relative offset bounds work with resonance", {
-
-  nmroptions$sf <- 500
-
-  object <- gen_resonance_1d()
 
   par <- list(position = c(-0.01, 0.01), width = c(-0.1, 0.1), 
               height = c(-0.5, 0.5), widen = TRUE, relative = TRUE,
@@ -97,12 +84,12 @@ test_that("1d relative offset bounds work with resonance", {
 ################################################################################
 # Species
 
-
+r1 <- nmrresonance_1d("0.3 d 20", id = "R1")
+r2 <- nmrresonance_1d("0.7 d 20", id = "R2")
+object <- nmrspecies_1d(list(r1, r2), id = "S1")
 
 #==============================================================================>
 test_that("1d absolute general bounds work with species", {
-
-  object <- gen_species_1d()
 
   par <- list(position = c(2, 3), width = c(0.005, 5), 
               height = c(0, 10), fraction.gauss = c(0.1, 0.9),
@@ -115,8 +102,6 @@ test_that("1d absolute general bounds work with species", {
 
 #------------------------------------------------------------------------------
 test_that("1d widen general bounds work with species", {
-
-  object <- gen_species_1d()
 
   par.1 <- list(position = c(0, 0.5), width = c(0, 0.5), 
                 height = c(0, 0.5), fraction.gauss = c(0.1, 0.9),
@@ -136,12 +121,9 @@ test_that("1d widen general bounds work with species", {
 #------------------------------------------------------------------------------
 test_that("1d relative general bounds work with species", {
 
-  object <- gen_species_1d()
-
-  p <- tibble(direct.shift = c(-1, 1), intensity = complex(re=c(-1, 1)))
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- nmrdata_1d_from_scaffold(object)
+  d@processed <- tibble(direct.shift = c(-1, 1), 
+                        intensity = complex(re=c(-1, 1)))
 
   par <- list(position = c(0, 1), width = c(0, 1), 
               height = c(0, 1), nmrdata = d, widen = TRUE,
@@ -158,8 +140,6 @@ test_that("1d relative general bounds work with species", {
 #==============================================================================>
 test_that("1d absolute offset bounds work with species", {
 
-  object <- gen_species_1d()
-
   par <- list(position = c(-0.05, 0.05), width = c(-0.5, 1), 
               height = c(-0.5, 0.5), widen = TRUE, relative = FALSE,
               object = object)
@@ -171,8 +151,6 @@ test_that("1d absolute offset bounds work with species", {
 
 #------------------------------------------------------------------------------
 test_that("1d relative offset bounds work with species", {
-
-  object <- gen_species_1d()
 
   par <- list(position = c(-0.01, 0.01), width = c(-0.1, 0.1), 
               height = c(-0.5, 0.5), widen = TRUE, relative = TRUE,
@@ -188,12 +166,15 @@ test_that("1d relative offset bounds work with species", {
 ################################################################################
 # Fit
 
+r1 <- nmrresonance_1d("0.3 d 20", id = "R1")
+r2 <- nmrresonance_1d("0.7 d 20", id = "R2")
+f <- nmrspecies_1d(list(r1, r2), id = "S1")
 
+d <- nmrdata_1d_from_scaffold(f)
+object <- nmrfit_1d(f, d, delay = TRUE)
 
 #==============================================================================>
 test_that("1d absolute general bounds work with fit", {
-
-  object <- gen_species_1d() %>% gen_fit_1d()
 
   par <- list(position = c(2, 3), width = c(0.005, 5), 
               height = c(0, 10), fraction.gauss = c(0.1, 0.9),
@@ -206,8 +187,6 @@ test_that("1d absolute general bounds work with fit", {
 
 #------------------------------------------------------------------------------
 test_that("1d widen general bounds work with fit", {
-
-  object <- gen_species_1d() %>% gen_fit_1d()
 
   par.1 <- list(position = c(0, 0.5), width = c(0, 0.5), 
                 height = c(0, 0.5), fraction.gauss = c(0.1, 0.9),
@@ -227,12 +206,9 @@ test_that("1d widen general bounds work with fit", {
 #------------------------------------------------------------------------------
 test_that("1d relative general bounds work with fit", {
 
-  object <- gen_species_1d() %>% gen_fit_1d()
-
-  p <- tibble(direct.shift = c(-1, 1), intensity = complex(re=c(-1, 1)))
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- nmrdata_1d_from_scaffold(object)
+  d@processed <- tibble(direct.shift = c(-1, 1), 
+                        intensity = complex(re=c(-1, 1)))
 
   par <- list(position = c(0, 1), width = c(0, 1), 
               height = c(0, 1), nmrdata = d, widen = TRUE,
@@ -249,8 +225,6 @@ test_that("1d relative general bounds work with fit", {
 #==============================================================================>
 test_that("1d absolute offset bounds work with fit", {
 
-  object <- gen_species_1d() %>% gen_fit_1d()
-
   par <- list(position = c(-0.05, 0.05), width = c(-0.5, 1), 
               height = c(-0.5, 0.5), widen = TRUE, relative = FALSE,
               object = object)
@@ -262,8 +236,6 @@ test_that("1d absolute offset bounds work with fit", {
 
 #------------------------------------------------------------------------------
 test_that("1d relative offset bounds work with fit", {
-
-  object <- gen_species_1d() %>% gen_fit_1d()
 
   par <- list(position = c(-0.01, 0.01), width = c(-0.1, 0.1), 
               height = c(-0.5, 0.5), widen = TRUE, relative = TRUE,

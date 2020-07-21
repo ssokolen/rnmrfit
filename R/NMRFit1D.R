@@ -107,10 +107,6 @@ NMRFit1D <- setClass("NMRFit1D",
 #'                  the NMRFit1D object is initialized, TRUE to skip the
 #'                  optimization, enabling more customization. The fit can be
 #'                  run manually using fit().
-#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
-#'                  from Hz to ppm. In most cases, it is recommended to set a
-#'                  single default value using nmroptions$direct$sf, but an
-#'                  override can be provided here.
 #' @param init An initialization, function that takes an NMRFit1D object and
 #'             returns a modified NMRFit1D object. Use the "identity" function
 #'             to override the default initialization in the
@@ -128,12 +124,8 @@ nmrfit_1d <- function(
   species, nmrdata, baseline.order = nmroptions$baseline$order,
   n.knots = nmroptions$baseline$n.knots, 
   phase.order = nmroptions$phase$order, 
-  delay.fit = FALSE, direct.sf = nmroptions$direct$sf,
-  init = nmroptions$fit$init, opts = nmroptions$fit$opts, ...) {
-
-  # Checking to make sure that sweep frequency is defined
-  err <- '"direct.sf" must be provided as input or set using nmroptions$direct$sf'
-  if ( is.null(direct.sf) ) stop(err)
+  delay.fit = FALSE, init = nmroptions$fit$init, 
+  opts = nmroptions$fit$opts, ...) {
 
   #---------------------------------------
   # Generating list of species 
@@ -189,7 +181,7 @@ nmrfit_1d <- function(
 
   # If the fit is delayed, then return current object, otherwise run fit first
   if ( delay.fit ) out
-  else fit(out, direct.sf = direct.sf, init = init, opts = opts)
+  else fit(out, init = init, opts = opts)
 }
 
 
@@ -207,10 +199,6 @@ nmrfit_1d <- function(
 #' data and updates the peak parameters. 
 #' 
 #' @param object An NMRFit1D object.
-#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf = ..., but an override can be
-#'           provided here.
 #' @param init An initialization function that takes NMRFit1D object and returns
 #'             a modified NMRFit1D object. Use the "identity" function to
 #'             override the default initialization in the
@@ -230,11 +218,12 @@ setGeneric("fit",
 #' @rdname fit
 #' @export
 setMethod("fit", "NMRFit1D",
-  function(object, direct.sf = nmroptions$direct$sf, init = nmroptions$fit$init, 
-           opts = nmroptions$fit$opts) {
+  function(object, init = nmroptions$fit$init, opts = nmroptions$fit$opts) {
+
+  sf <- object@sf
 
   # First, run the initialization
-  object <- init(object, sf = direct.sf, init = init, opts = opts)
+  object <- init(object, sf = sf, init = init, opts = opts)
 
   # Ensuring consistent order
   d <- processed(object@nmrdata)
@@ -263,7 +252,7 @@ setMethod("fit", "NMRFit1D",
 
   for (name in names(peaks)) {
     peaks[[name]]$position <- (peaks[[name]]$position - x.range[1])/x.span
-    peaks[[name]]$width <- peaks[[name]]$width/direct.sf/x.span
+    peaks[[name]]$width <- peaks[[name]]$width/sf/x.span
     peaks[[name]]$height <- peaks[[name]]$height/y.range[2]
 
     peaks[[name]] <- as.vector(t(as.matrix(peaks[[name]])))
@@ -358,7 +347,7 @@ setMethod("fit", "NMRFit1D",
   peaks[, data.columns] <- new.peaks
 
   peaks$position <- peaks$position*x.span + x.range[1]
-  peaks$width <- peaks$width*direct.sf*x.span
+  peaks$width <- peaks$width*sf*x.span
   peaks$height <- peaks$height*y.range[2]
 
   peaks(object) <- peaks

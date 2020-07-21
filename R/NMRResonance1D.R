@@ -39,6 +39,7 @@ NMRResonance1D <- setClass("NMRResonance1D",
   slots = c(
     name = 'character',
     id = 'character',
+    sf = 'numeric',
     peaks = 'data.frame',
     couplings = 'data.frame',
     couplings.leeway = 'list',
@@ -48,6 +49,7 @@ NMRResonance1D <- setClass("NMRResonance1D",
   prototype = prototype(
     name = 'resonance',
     id = 'resonance',
+    sf = numeric(0),
     couplings = data.frame(),
     couplings.leeway = list(position = 0, width = 0, 
                             fraction.gauss = 0, area = 0),
@@ -287,10 +289,10 @@ enforce_couplings_1d <- function(nmrresonance, peaks = NULL) {
 #' @param peaks A numeric vector of singlet chemical shifts or a character
 #'              string specifying multiplets of the form "3 d 1.2". See
 #'              ?parse_peaks_1d for more information.
-#' @param sf Sweep frequency (in MHz) -- needed to convert coupling constants
-#'           from Hz to ppm. In most cases, it is recommended to set a single
-#'           default value using nmroptions$direct$sf = ..., but an override can
-#'           be provided here.
+#' @param sf Sweep frequency (in MHz) -- needed to convert coupling
+#'                  constants from Hz to ppm. In most cases, it is recommended
+#'                  to set a single default value using nmroptions$direct$sf =
+#'                  ..., but an override can be provided here.
 #' @param id A string specifying resonance name. If left empty, a name is
 #'           automatically generated from the peaks argument.
 #' @param width Initial estimate of peak width (in Hz). For Voigt lineshapes,
@@ -329,6 +331,10 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
                             position.leeway = 0, width.leeway = 0, 
                             fraction.gauss.leeway = 0, area.leeway = 0) {
 
+  # Checking to make sure that sweep frequency is defined
+  err <- '"sf" must be provided as input or set nmroptions$direct$sf'
+  if ( is.null(sf) ) stop(err)
+
   #---------------------------------------
   # Building peak list
 
@@ -352,13 +358,8 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
     # If there is splitting to do, convert constants from Hz to ppm
     if ( any(coupling$number > 1) ) {
 
-      # Checking to make sure that sweep frequency is defined
-      err <- '"sf" must be provided as input or set using nmroptions'
-      if ( is.null(sf) ) stop(err)
-
       # Converting coupling constant from Hz to ppm
       coupling$constant <- coupling$constant/sf
-
     }
 
     # Looping through the coupling to split the specified peaks
@@ -413,7 +414,7 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
   bounds$lower$fraction.gauss <- 0
   bounds$upper$fraction.gauss <- 1
 
-  nmrresonance = new('NMRResonance1D', id = id, peaks = peaks, 
+  nmrresonance = new('NMRResonance1D', id = id, peaks = peaks, sf = sf,
                                        couplings = couplings, 
                                        couplings.leeway = couplings.leeway,
                                        lower.bounds = bounds$lower,
@@ -422,5 +423,4 @@ nmrresonance_1d <- function(peaks, sf = nmroptions$direct$sf, id = NULL,
   # And then updating if necessary
   if ( add.couplings ) enforce_couplings_1d(nmrresonance)
   else nmrresonance
-
 }

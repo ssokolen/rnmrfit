@@ -179,12 +179,14 @@ setMethod("initialize_heights", "NMRScaffold1D",
 #' @rdname values
 #' @export
 setMethod("values", "NMRScaffold1D",
-  function(object, direct.shift, direct.sf = nmroptions$direct$sf, 
-           sum.level = "all", domain = 'r/i', use.cmplx1 = FALSE) {
+  function(object, direct.shift = NULL, sum.level = "all", domain = 'r/i', 
+           use.cmplx1 = FALSE) {
 
-  # Checking to make sure that sweep frequency is defined
-  err <- '"direct.sf" must be provided as input or set using nmroptions$direct$sf'
-  if ( is.null(direct.sf) ) stop(err)
+  if ( is.null(direct.shift) ) {
+    positions <- peaks(object)$position
+    direct.shift <- seq(min(positions) - 0.2, max(positions) + 0.2,
+                        length.out = 500)
+  }
 
   # Generating components to work with a consistent basis
   components <- components(object, sum.level)
@@ -197,7 +199,7 @@ setMethod("values", "NMRScaffold1D",
     # Converting peak width to ppm
     peaks <- peaks(object)
     parameters <- as.matrix(peaks[, data.columns])
-    parameters[, 2] <- parameters[, 2]/direct.sf
+    parameters[, 2] <- parameters[, 2]/object@sf
 
     p <- as.vector(t(parameters))
     n <- as.integer(length(direct.shift))
@@ -242,10 +244,6 @@ setMethod("values", "NMRScaffold1D",
 #' Calculate total peak areas based on peak parameters.
 #' 
 #' @param object An NMRScaffold1D object.
-#' @param sf Sweep frequency (in MHz) -- needed to convert peak widths from Hz
-#'           to ppm. In most cases, it is recommended to set a single default
-#'           value using nmroptions$direct$sf, but an override can be
-#'           provided here.
 #' @param sum.peaks TRUE to add all individual peaks together and output a
 #'                  single area, FALSE to output a data frame of peak area
 #'                  values.
@@ -265,22 +263,21 @@ setGeneric("areas",
 #' @rdname areas 
 #' @export
 setMethod("areas", "NMRScaffold1D",
-  function(object, sf = nmroptions$direct$sf, sum.peaks = TRUE, 
-           include.id = FALSE, components = 'r/i') {
+  function(object, sum.peaks = FALSE, include.id = FALSE, components = 'r/i') {
 
   # Defining area function
   f <- function(position, width, height, fraction.gauss) {
     # If fraction is 0, treat as Lorentz
     if ( fraction.gauss == 0 ) {
-      pi*width*height
+      pi*width*height/object@sf
     }
     # If fraction is 1, treat as Gauss
     else if ( fraction.gauss == 1) {
-      sqrt(2*pi)*width*height
+      sqrt(2*pi)*width*height/object@sf
     }
     # Else, proceed as Voigt
     else {
-      l.width <- width
+      l.width <- width/object@sf
       g.width <- width*fraction.gauss/(1 - fraction.gauss)
       Re(sqrt(2*pi)*g.width*height /
          Faddeeva_w(complex(im = l.width)/(sqrt(2)*g.width)))
@@ -327,10 +324,6 @@ setMethod("areas", "NMRScaffold1D",
 #'               imaginary data. are displayed in separate subplots.
 #' @param direct.shift Used to override default selection of chemical shift
 #'                     values.
-#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
-#'                  from Hz to ppm. In most cases, it is recommended to set a
-#'                  single default value using nmroptions$direct$sf = ..., but
-#'                  an override can be provided here.
 #' @param sum.level One of either 'all', 'species', 'resonance', 'peak' to
 #'                  specify whether all peaks should be summed together.
 #' @param add.baseline TRUE to add calculated baseline correction (if it exists)
@@ -342,7 +335,6 @@ setMethod("areas", "NMRScaffold1D",
 #' 
 #' @export
 plot.NMRScaffold1D <- function(x, domain = 'r', direct.shift = NULL, 
-                               direct.sf = nmroptions$direct$sf,
                                sum.level = 'species', add.baseline = TRUE, 
                                add.phase = TRUE) { 
 
@@ -373,8 +365,7 @@ plot.NMRScaffold1D <- function(x, domain = 'r', direct.shift = NULL,
               name = "Raw data")
 
     # Total fit
-    d.fit <- nmrdata_1d_from_scaffold(x, direct.shift = direct.shift,
-                                      direct.sf = direct.sf)
+    d.fit <- nmrdata_1d_from_scaffold(x, direct.shift = direct.shift)
 
     d.total.fit <- add_baseline(d.fit, baseline(x), knots(x))
 
@@ -407,8 +398,7 @@ plot.NMRScaffold1D <- function(x, domain = 'r', direct.shift = NULL,
 
   # Initialize plot with the first entry
   d <- components[[1]] %>%
-    nmrdata_1d_from_scaffold(direct.shift = direct.shift,
-                             direct.sf = direct.sf)
+    nmrdata_1d_from_scaffold(direct.shift = direct.shift)
 
   if ( add.baseline ) d <- add_baseline(d, baseline(x), knots(x))
   
@@ -424,8 +414,7 @@ plot.NMRScaffold1D <- function(x, domain = 'r', direct.shift = NULL,
   if ( length(components) > 1 ) {
     for ( i in 2:length(components) ) {
       d <- components[[i]] %>%
-        nmrdata_1d_from_scaffold(direct.shift = direct.shift,
-                                 direct.sf = direct.sf)
+        nmrdata_1d_from_scaffold(direct.shift = direct.shift)
 
       if ( add.baseline ) d <- add_baseline(d, baseline(x), knots(x))
         

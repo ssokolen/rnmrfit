@@ -30,6 +30,7 @@ NMRSpecies1D <- setClass("NMRSpecies1D",
   slots = c(
     name = 'character',
     id = 'character',
+    sf = 'numeric',
     children = 'list',
     connections = 'data.frame',
     connections.leeway = 'numeric'
@@ -37,6 +38,7 @@ NMRSpecies1D <- setClass("NMRSpecies1D",
   prototype = prototype(
     name = 'species',
     id = 'species',
+    sf = numeric(0),
     children = list(),
     connections = data.frame(),
     connections.leeway = 0
@@ -94,7 +96,6 @@ nmrspecies_1d <- function(resonances, areas = NULL, id = NULL,
   else if ( class(resonances) != 'list' ) resonances <- list(resonances)
 
   for (i in 1:length(resonances)) {
-
     resonance <- resonances[[i]]
 
     if ( class(resonance) == 'NMRSpecies1D' ) {
@@ -116,6 +117,11 @@ nmrspecies_1d <- function(resonances, areas = NULL, id = NULL,
     resonance.id <- names(resonances)[i]
     if (! is.null(resonance.id) ) resonances.list[[i]]@id <- resonance.id
   }
+
+  # All resonances must have the same sweep frequency
+  sf <- unique(map_dbl(resonances.list, ~ .@sf))
+  err <- 'All resonances used to define a species must have the same "sf".'
+  if ( length(sf) > 1 ) stop(err)
 
   #---------------------------------------
   # Defining connections if areas provided
@@ -155,7 +161,61 @@ nmrspecies_1d <- function(resonances, areas = NULL, id = NULL,
   # Generating id if it doesn't exist
   if ( is.null(id) ) id <- paste(valid.ids, collapse = '-')
 
-  new('NMRSpecies1D', id = id, children = resonances.list, 
-                      connections = connections, 
-                      connections.leeway = connections.leeway)
+  species <- new('NMRSpecies1D', id = id, sf = sf, children = resonances.list, 
+                                 connections = connections, 
+                                 connections.leeway = connections.leeway)
+
+  # Reconciling peak height with areas (only useful for plotting/debugging)
+  if ( nrow(connections) > 0 ) {
+    peaks <- peaks(species) %>% arrange(resonance, peak)
+    areas <- areas(species) %>% arrange(resonance, peak)
+    coeff <- areas$area/peaks$height
+
+    couplings <- couplings(species)
+    nrow <- nrow(connections) + nrow(couplings)
+    ncol <- nrow(peaks)
+
+    mat <- matrix(0, nrow = nrow, ncol = ncol)
+    rhs <- rep(0, nrow)
+    dir <- rep("=", nrow)
+
+    # Building up species constraints
+    f_species <- function(row) {
+      index1 <- peaks$resonance == row[,1]
+      index2 <- peaks$resonance == row[,2]
+
+      out <- rep(0, nrow(peaks))
+      out[index1] = coeff[index1]*row[,3]
+      out[index2] = -coeff[index2]
+      out
+    }
+
+    # Building up resonance constraints
+    f_resonances <- function(row) {
+      index1 <- (peaks$resonance == row[,1]) & (peaks$peak == row[,3]) 
+      index2 <- (peaks$resonance == row[,2]) & (peaks$peak == row[,4])
+
+      out <- rep(0, nrow(peaks))
+      out[index1] = coeff[index1]*row[,6]
+      out[index2] = -coeff[index2]
+      out
+    }
+
+    species_list <- map(split(connections, 1:nrow(connections)), f_species)
+    resonance_list <- map(split(couplings, 1:nrow(couplings)), f_resonances)
+    
+    mat <- do.call(rbind, c(species_list, resonance_list))
+
+    # Then setting maximum height to 1
+    mat <- rbind(mat, diag(nrow(peaks)))
+    rhs <- c(rhs, rep(1, nrow(peaks)))
+    dir <- c(dir, rep("<=", nrow(peaks)))
+
+    # Solving
+    lp <- lp("max", rep(1, nrow(peaks)), mat, dir, rhs)
+    peaks$height <- lp$solution
+    peaks(species) <- peaks
+  }
+
+  species
 }

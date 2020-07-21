@@ -1,26 +1,5 @@
 context("1D Fit")
 
-# Add complex noise
-add_noise <- function(y, sd) {
-  set.seed(1111)
-  n <- length(y)
-  y + cmplx1(r = rnorm(n, 0, sd), i = rnorm(n, 0, sd))
-}
-
-add_baseline <- function(x, order) {
-  basis <- splines::bs(x, degree = length(order) - 1, intercept = TRUE)
-  baseline <- (basis %*% order)[, 1]
-  cmplx1(r = baseline, i = baseline)
-}
-
-add_phase <- function(x, y, theta) {
-  if ( length(theta) > 1 ) {
-    theta = theta[1] + theta[2]*x
-  }
-  cmplx1(r = Re(y)*cos(theta) + Im(y)*sin(theta), 
-         i = -Re(y)*sin(theta) + Im(y)*cos(theta))
-}
-
 #==============================================================================>
 test_that("1d fit construction works", {
 
@@ -30,15 +9,9 @@ test_that("1d fit construction works", {
   # Basic peak
   r_ideal <- nmrresonance_1d('0.5 s', width = 3)
 
-  n <- 200
-  x <- seq(0, 1, length.out = n)
-  y <- values(r_ideal, x) %>% add_noise(0.02)
-  p <- tibble(direct.shift = x,
-              intensity = y)
-
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- r_ideal %>%
+    nmrdata_1d_from_scaffold() %>%
+    add_noise(0.02)
 
   # Fitting
   r <- nmrresonance_1d('0.485 s')
@@ -68,15 +41,9 @@ test_that("1d fit works with singlets", {
   # Basic peak
   r_ideal <- nmrresonance_1d('0.5 s', width = 3)
 
-  n <- 200
-  x <- seq(0, 1, length.out = n)
-  y <- values(r_ideal, x) %>% add_noise(0.02)
-  p <- tibble(direct.shift = x,
-              intensity = y)
-
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- r_ideal %>%
+    nmrdata_1d_from_scaffold() %>%
+    add_noise(0.02)
 
   # Fitting
   r <- nmrresonance_1d('0.485 s')
@@ -89,12 +56,10 @@ test_that("1d fit works with singlets", {
 
   #----------------------------------------
   # Adding baseline
-  p <- tibble(direct.shift = x,
-              intensity = y + add_baseline(x, c(0, 0.2, 0.1)))
-
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- r_ideal %>%
+    nmrdata_1d_from_scaffold() %>%
+    add_baseline(c(0, 0.2, 0.1)) %>%
+    add_noise(0.02)
 
   # Fitting
   f <- nmrfit_1d(r, d)
@@ -106,13 +71,11 @@ test_that("1d fit works with singlets", {
 
   #----------------------------------------
   # Adding phase
-  p <- tibble(direct.shift = x,
-              intensity = y + add_baseline(x, c(0, 0.2, 0.1))) %>%
-       mutate(intensity = add_phase(direct.shift, intensity, 0.1))
-
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- r_ideal %>%
+    nmrdata_1d_from_scaffold() %>%
+    add_phase(0.1) %>%
+    add_baseline(c(0, 0.2, 0.1)) %>% 
+    add_noise(0.02)
 
   # Fitting
   f <- nmrfit_1d(r, d)
@@ -136,15 +99,9 @@ test_that("1d fit works with multiplets", {
   # Basic peak
   r_ideal <- nmrresonance_1d('0.5 t 15', width = 3)
 
-  n <- 200
-  x <- seq(0, 1, length.out = n)
-  y <- values(r_ideal, x) %>% add_noise(0.02)
-  p <- tibble(direct.shift = x,
-              intensity = y)
-
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- r_ideal %>%
+    nmrdata_1d_from_scaffold() %>%
+    add_noise(0.02)
 
   # Fitting
   r <- nmrresonance_1d('0.485 t 20', position.leeway = 0.5)
@@ -169,15 +126,9 @@ test_that("1d fit works with species", {
   peaks(r2) <- peaks(r2) %>% mutate(height = height*2)
   s_ideal <- nmrspecies_1d(list(r1, r2))
 
-  n <- 200
-  x <- seq(0, 1, length.out = n)
-  y <- values(s_ideal, x) %>% add_noise(0.02)
-  p <- tibble(direct.shift = x,
-              intensity = y)
-
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- s_ideal %>%
+    nmrdata_1d_from_scaffold() %>%
+    add_noise(0.02)
 
   # Fitting
   r1 <- nmrresonance_1d('0.185 t 20', position.leeway = 0.5)
@@ -193,12 +144,10 @@ test_that("1d fit works with species", {
 
   #----------------------------------------
   # Adding baseline
-  p <- tibble(direct.shift = x,
-              intensity = y + add_baseline(x, c(0, 0.2, 0.1)))
-
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- s_ideal %>%
+    nmrdata_1d_from_scaffold() %>%
+    add_baseline(c(0, 0.2, 0.1)) %>%
+    add_noise(0.02)
 
   # Fitting
   f <- nmrfit_1d(s, d)
@@ -210,13 +159,11 @@ test_that("1d fit works with species", {
 
   #----------------------------------------
   # Adding phase
-  p <- tibble(direct.shift = x,
-              intensity = y + add_baseline(x, c(0, 0.2, 0.1))) %>%
-       mutate(intensity = add_phase(direct.shift, intensity, c(0.1, 0.2)))
-
-  d <- new("NMRData1D")
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf))
-  d@processed <- p
+  d <- s_ideal %>%
+    nmrdata_1d_from_scaffold() %>%
+    add_phase(c(0.1, 0.2)) %>%
+    add_baseline(c(0, 0.2, 0.1)) %>%
+    add_noise(0.02)
 
   # Fitting
   f <- nmrfit_1d(s, d, phase.order = 1)

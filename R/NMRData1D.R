@@ -303,29 +303,17 @@ nmrdata_1d_from_jcamp <- function(path, blocks.number = 1, ntuples.number = 1) {
 #' 
 #' @param object An NMRScaffold1D object
 #' @param direct.shift Vector of chemical shift data in ppm.
-#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
-#'                  from Hz to ppm. In most cases, it is recommended to set a
-#'                  single default value using nmroptions$direct$sf = ..., but
-#'                  an override can be provided here.
 #' 
 #' @return An NMRData1D object.
 #' 
 #' @export
-nmrdata_1d_from_scaffold <- function(
-  object, direct.shift = NULL, direct.sf = nmroptions$direct$sf) {
-
-  if ( is.null(direct.shift) ) {
-    positions <- peaks(object)$position
-    direct.shift <- seq(min(positions) - 0.2, max(positions) + 0.2,
-                        length.out = 200)
-  }
+nmrdata_1d_from_scaffold <- function(object, direct.shift = NULL) {
 
   # Using the procs file to load the processed data
-  processed <- values(object, direct.shift = direct.shift, 
-                      direct.sf = direct.sf, use.cmplx1 = TRUE)
+  processed <- values(object, direct.shift = direct.shift, use.cmplx1 = TRUE)
 
   # acqus just contains the sf
-  acqus <- list(direct = list(sf = direct.sf))
+  acqus <- list(direct = list(sfo1 = object@sf))
 
   # Returning class object
   new("NMRData1D", processed = processed, acqus = acqus)
