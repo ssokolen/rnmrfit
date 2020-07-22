@@ -58,8 +58,8 @@ NMRMixture1D <- setClass("NMRMixture1D",
 #'                ids.
 #' @param id An optional string specifying mixture name. If left empty, the
 #'           mixture name is left as the default "mixture"
-#' @param ... Options passed to nmrspecies_1d if resonances are being converted
-#'            from character/numeric vectors. See ?nmrresonance_1d for more
+#' @param ... Options passed to nmrspecies_1d if species are being generated 
+#'            from character/numeric vectors. See ?nmrspecies_1d for more
 #'            details.
 #' 
 #' @return An NMRMixture1D object.

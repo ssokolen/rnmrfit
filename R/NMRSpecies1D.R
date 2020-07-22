@@ -100,8 +100,7 @@ nmrspecies_1d <- function(resonances, areas = NULL, id = NULL,
 
     if ( class(resonance) == 'NMRSpecies1D' ) {
       err <- paste("An NMRSpecies1D can't be constructed from other",
-                   "NMRSpecies1D objects. Use resonances() to first extract",
-                   "the resonance list before creating a new object.")
+                   "NMRSpecies1D objects.")
       stop(err)
     }
     # If the object is already an NMRResonance1D object, add it directly

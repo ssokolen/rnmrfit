@@ -310,23 +310,16 @@ setMethod("initialize_heights", "NMRScaffold2D",
 #' @rdname values
 #' @export
 setMethod("values", "NMRScaffold2D",
-  function(object, direct.shift, indirect.shift,
-           direct.sf = nmroptions$direct$sf, 
-           indirect.sf = nmroptions$indirect$sf, 
-           sum.level = "all", domain = 'rr/ri/ir/ii', use.cmplx1 = FALSE) {
-
-  # Checking to make sure that sweep frequency is defined
-  err <- '"direct.sf" must be provided as input or set using nmroptions$direct$sf'
-  if ( is.null(direct.sf) ) stop(err)
-
-  err <- '"indirect.sf" must be provided as input or set using nmroptions$indirect$sf'
-  if ( is.null(indirect.sf) ) stop(err)
+  function(object, direct.shift, indirect.shift, sum.level = "all", 
+           domain = 'rr/ri/ir/ii', use.cmplx1 = FALSE) {
 
   err <- '"direct.shift" and "indirect.shift" vectors must be same length'
   if ( length(direct.shift) != length(indirect.shift) ) stop(err)
 
   # Generating components to work with a consistent basis
   components <- components(object, sum.level)
+  
+  sf <- object@sf
 
   # Function to apply to each component
   data.columns <- c('position', 'width', 'height', 'fraction.gauss')
@@ -351,8 +344,8 @@ setMethod("values", "NMRScaffold2D",
     # Converting peak width to ppm
     parameters <- as.matrix(peaks[, data.columns])
     logic <- dimensions == "direct"
-    parameters[logic, 2] <- parameters[logic, 2]/direct.sf
-    parameters[!logic, 2] <- parameters[!logic, 2]/indirect.sf
+    parameters[logic, 2] <- parameters[logic, 2]/sf[1]
+    parameters[!logic, 2] <- parameters[!logic, 2]/sf[2]
 
     p <- as.vector(t(parameters))
     n <- as.integer(length(direct.shift))
@@ -490,11 +483,6 @@ setMethod("volumes", "NMRScaffold2D",
 #' @param direct.shift Used to override default selection of chemical shift
 #'                     values.
 #' @param indirect.shift Similar to direct.shift but for the indirect dimension.
-#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
-#'                  from Hz to ppm. In most cases, it is recommended to set a
-#'                  single default value using nmroptions$direct$sf = ..., but
-#'                  an override can be provided here.
-#' @param indirect.sf Similar to direct.sf but for the indirect dimension.
 #' @param sum.level One of either 'all', 'species', 'resonance', 'peak' to
 #'                  specify whether all peaks should be summed together.
 #' @param add.baseline TRUE to add calculated baseline correction (if it exists)
@@ -507,8 +495,6 @@ setMethod("volumes", "NMRScaffold2D",
 #' @export
 plot.NMRScaffold2D <- function(x, domain = 'rr', direct.shift = NULL,
                                indirect.shift = NULL,
-                               direct.sf = nmroptions$direct$sf,
-                               indirect.sf = nmroptions$indirect$sf,
                                sum.level = 'species', add.baseline = TRUE, 
                                add.phase = TRUE) { 
 
@@ -541,8 +527,7 @@ plot.NMRScaffold2D <- function(x, domain = 'rr', direct.shift = NULL,
 
     # Total fit
     d.fit <- nmrdata_2d_from_scaffold(
-      x, direct.shift = direct.shift, indirect.shift = indirect.shift,
-      direct.sf = direct.sf, indirect.sf = indirect.sf
+      x, direct.shift = direct.shift, indirect.shift = indirect.shift
     )
 
     d.total.fit <- add_baseline(d.fit, baseline(x), knots(x))
@@ -582,7 +567,6 @@ plot.NMRScaffold2D <- function(x, domain = 'rr', direct.shift = NULL,
   d <- components[[1]] %>%
     nmrdata_2d_from_scaffold(
       direct.shift = direct.shift, indirect.shift = indirect.shift,
-      direct.sf = direct.sf, indirect.sf = indirect.sf
     )
 
   if ( add.baseline ) d <- add_baseline(d, baseline(x), knots(x))
@@ -601,7 +585,6 @@ plot.NMRScaffold2D <- function(x, domain = 'rr', direct.shift = NULL,
       d <- components[[i]] %>%
         nmrdata_2d_from_scaffold(
           direct.shift = direct.shift, indirect.shift = indirect.shift,
-          direct.sf = direct.sf, indirect.sf = indirect.sf
         )
 
       if ( add.baseline ) d <- add_baseline(d, baseline(x), knots(x))

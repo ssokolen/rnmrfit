@@ -220,10 +220,8 @@ setGeneric("fit",
 setMethod("fit", "NMRFit1D",
   function(object, init = nmroptions$fit$init, opts = nmroptions$fit$opts) {
 
-  sf <- object@sf
-
   # First, run the initialization
-  object <- init(object, sf = sf, init = init, opts = opts)
+  object <- init(object)
 
   # Ensuring consistent order
   d <- processed(object@nmrdata)
@@ -235,6 +233,8 @@ setMethod("fit", "NMRFit1D",
   x.span <- x.range[2] - x.range[1]
   y <- d$intensity
   y.range <- range(Re(y))
+
+  sf <- object@sf
 
   # Normalizing data
   x <- (x - x.range[1])/x.span

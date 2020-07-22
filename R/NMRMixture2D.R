@@ -25,11 +25,13 @@ NMRMixture2D <- setClass("NMRMixture2D",
   slots = c(
     name = 'character',
     id = 'character',
+    sf = 'numeric',
     children = 'list'
   ),
   prototype = prototype(
     name = 'mixture',
     id = 'mixture',
+    sf = numeric(0),
     children = list()
   )
 )
@@ -54,11 +56,13 @@ NMRMixture2D <- setClass("NMRMixture2D",
 #' Generates an NMRMixture2D object from a list of NMRResonance2D/NMRSpecies2D
 #' objects.
 #' 
-#' @param species A list of NMRSpecies2D objects. If list elements are named,
-#'                these names will be use to replace species ids.
+#' @param species A list of NMRSpecies2D or NMRResonance2D objects. If list
+#'                elements are named, these names will be use to replace species
+#'                ids.
 #' @param id An optional string specifying mixture name. If left empty, the
 #'           mixture name is left as the default "mixture"
-#' @param ... Currently ignored.
+#' @param ... Options passed to nmrspecies_2d if NMRResonance2D objects need to
+#'            be converted. See ?nmrspecies_2d for more details.
 #' 
 #' @return An NMRMixture2D object.
 #' 
@@ -82,9 +86,12 @@ nmrmixture_2d <- function(species, id = "mixture", ...) {
     if ( class(specie) == 'NMRSpecies2D' ) {
       species.list <- c(species.list, specie)
     }
+    else if ( class(specie) == 'NMRResonance2D' ) {
+      species.list <- c(species.list, nmrspecies_2d(specie, ...))
+    }
     # Unlike 1D, other inputs can't be converted
     else {
-      err <- '"species" must be a list of NMRSpecies2D objects.'
+      err <- '"species" must consist of NMRSpecies2D or NMRResonance2D objects.'
       stop(err)
     }
     # Modifying id if provided
@@ -92,7 +99,17 @@ nmrmixture_2d <- function(species, id = "mixture", ...) {
     if (! is.null(specie.id) ) id(species.list[[i]]) <- specie.id
   }
 
+  # All species must have the same sweep frequency
+  sf <- map(species.list, ~ .@sf)
+  n <- length(sf)
+  if ( n > 1 ) {
+    logic <- all(unlist(map2(sf[1:(n-1)], sf[2:n], identical)))
+    err <- 'All species used to define a mixture must have the same "sf".'
+    if (! logic ) stop(err)
+  }
+  sf <- sf[[1]]
+
   #---------------------------------------
   # Resulting mixture object
-  out <- new('NMRMixture2D', id = id, children = species.list)
+  out <- new('NMRMixture2D', id = id, sf = sf, children = species.list)
 }

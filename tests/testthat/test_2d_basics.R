@@ -128,30 +128,21 @@ test_that("2d lineshape works", {
   species <- nmrspecies_2d(list(r1, r2), id = id)
 
   # Generating 2D data
-  x1 <- seq(0, 1, length.out = 50)
-  x2 <- seq(0, 1, length.out = 50)
-  p <- expand.grid(x1 = x1, x2 = x2)
-
-  intensity <- values(species, p$x1, p$x2, components = 'rr/ri/ir/ii')
-
-  p <- tibble(direct.shift = p$x1, indirect.shift = p$x2,
-              intensity = intensity)
-
-  d <- new("NMRData2D")
-  d@processed <- p
-
+  d <- nmrdata_2d_from_scaffold(species)
   p <- plot(d)
   htmlwidgets::saveWidget(p, "2d_data.htm")
 
   direct.2d <- direct(d)@processed$intensity
-  indirect.2d <<- indirect(d)@processed$intensity
+  indirect.2d <- indirect(d)@processed$intensity
 
   # Generating 1D data
   species <- nmrspecies_1d(list(r1.direct, r2.direct), id = id)
-  direct.1d <- values(species, x1)
+  direct.shift <- unique(processed(d)$direct.shift)
+  direct.1d <- values(species, direct.shift, use.cmplx1 = TRUE)$intensity 
 
   species <- nmrspecies_1d(list(r1.indirect, r2.indirect), id = id)
-  indirect.1d <<- values(species, x2)
+  indirect.shift <- unique(processed(d)$indirect.shift)
+  indirect.1d <- values(species, indirect.shift, use.cmplx1 = TRUE)$intensity
 
   # Comparing
   expect_equal(direct.2d/max(Re(direct.2d)), 
@@ -172,20 +163,7 @@ test_that("2d fit construction works", {
   resonance <- nmrresonance_2d(r1.direct, r1.indirect)
 
   # Generating 2D data
-  x1 <- seq(0, 1, length.out = 50)
-  x2 <- seq(0, 1, length.out = 50)
-  p <- expand.grid(x1 = x1, x2 = x2)
-
-  intensity <- values(resonance, p$x1, p$x2, components = 'rr/ri/ir/ii')
-
-  p <- tibble(direct.shift = p$x1, indirect.shift = p$x2,
-              intensity = intensity)
-
-  d <- new("NMRData2D")
-  d@processed <- p
-
-  d@acqus <- list(direct = list(sfo1 = nmroptions$sf),
-                  indirect = list(sfo1 = nmroptions$sf))
+  d <- nmrdata_2d_from_scaffold(resonance)
 
   # Fitting
   r <- nmrresonance_2d('0.485 s', '0.685s')

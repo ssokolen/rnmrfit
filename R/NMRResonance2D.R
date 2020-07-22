@@ -27,11 +27,13 @@ NMRResonance2D <- setClass("NMRResonance2D",
   slots = c(
     name = "character",
     id = "character",
+    sf = "numeric",
     dimensions = "list"
   ),
   prototype = prototype(
     name = 'resonance',
-    id = 'resonance'
+    id = 'resonance',
+    sf = numeric(0)
   )
 )
 
@@ -146,5 +148,6 @@ nmrresonance_2d <- function(direct.peaks, indirect.peaks,
   # Generate object
 
   dimensions <- list(direct = direct, indirect = indirect)
-  new('NMRResonance2D', id = id, dimensions = dimensions)
+  new('NMRResonance2D', id = id, sf = c(direct.sf, indirect.sf),
+                        dimensions = dimensions)
 }

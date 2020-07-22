@@ -117,16 +117,6 @@ NMRFit2D <- setClass("NMRFit2D",
 #'                  the NMRFit2D object is initialized, TRUE to skip the
 #'                  optimization, enabling more customization. The fit can be
 #'                  run manually using fit().
-#' @param direct.sf Sweep frequency (MHz) in the direct dimension -- needed to
-#'                  convert coupling constants from Hz to ppm. In most cases, it
-#'                  is recommended to set a single default value using
-#'                  nmroptions$direct$sf  = ..., but an override can be
-#'                  provided here.
-#' @param indirect.sf Sweep frequency (MHz) in the indirect dimension -- needed
-#'                    to convert coupling constants from Hz to ppm. In most
-#'                    cases, it is recommended to set a single default value
-#'                    using nmroptions$indirect$sf  = ..., but an override
-#'                    can be provided here.
 #' @param init An initialization, function that takes an NMRFit2D object and
 #'             returns a modified NMRFit2D object. Use the "identity" function
 #'             to override the default initialization in the
@@ -144,17 +134,8 @@ nmrfit_2d <- function(
   species, nmrdata, baseline.order = nmroptions$baseline$order,
   n.knots = nmroptions$baseline$n.knots, 
   phase.order = nmroptions$phase$order, 
-  delay.fit = FALSE, direct.sf = nmroptions$direct$sf, 
-  indirect.sf = nmroptions$indirect$sf, 
-  init = nmroptions$fit$init, opts = nmroptions$fit$opts, ...) {
-
-  # Checking to make sure that sweep frequency is defined
-  err <- '"direct.sf" must be provided as input or set using nmroptions'
-  if ( is.null(direct.sf) ) stop(err)
-
-  # Checking to make sure that sweep frequency is defined
-  err <- '"indirect.sf" must be provided as input or set using nmroptions'
-  if ( is.null(indirect.sf) ) stop(err)
+  delay.fit = FALSE, init = nmroptions$fit$init, 
+  opts = nmroptions$fit$opts, ...) {
 
   #---------------------------------------
   # Generating list of species 
@@ -213,8 +194,7 @@ nmrfit_2d <- function(
 
   # If the fit is delayed, then return current object, otherwise run fit first
   if ( delay.fit ) out
-  else fit(out, direct.sf = direct.sf, indirect.sf = indirect.sf, 
-           init = init, opts = opts)
+  else fit(out, init = init, opts = opts)
 }
 
 
@@ -228,12 +208,10 @@ nmrfit_2d <- function(
 #' @rdname fit
 #' @export
 setMethod("fit", "NMRFit2D",
-  function(object, direct.sf = nmroptions$direct$sf, 
-           indirect.sf = nmroptions$indirect$sf, init = nmroptions$fit$init, 
-           opts = nmroptions$fit$opts) {
+  function(object, init = nmroptions$fit$init, opts = nmroptions$fit$opts) {
 
   # First, run the initialization
-  object <- init(object, sf = sf, init = init, opts = opts)
+  object <- init(object)
 
   # Ensuring consistent order
   d <- processed(object@nmrdata)
@@ -248,6 +226,8 @@ setMethod("fit", "NMRFit2D",
   x2.span <- x2.range[2] - x2.range[1]
   y <- d$intensity
   y.range <- range(Re(y))
+  
+  sf <- object@sf
 
   # Normalizing data
   x1 <- (x1 - x1.range[1])/x1.span
@@ -279,8 +259,8 @@ setMethod("fit", "NMRFit2D",
                     (peaks[[name]]$position - x2.range[1])/x2.span)
 
     peaks[[name]]$width <- 
-      ifelse(logic, peaks[[name]]$width/direct.sf/x1.span,
-                    peaks[[name]]$width/indirect.sf/x2.span)
+      ifelse(logic, peaks[[name]]$width/sf[1]/x1.span,
+                    peaks[[name]]$width/sf[2]/x2.span)
 
     peaks[[name]]$height <- peaks[[name]]$height/sqrt(y.range[2])
 
@@ -398,8 +378,8 @@ setMethod("fit", "NMRFit2D",
 
   peaks$width <- ifelse(
     dimensions == "direct",
-    peaks$width*direct.sf*x1.span,
-    peaks$width*indirect.sf*x2.span)
+    peaks$width*sf[1]*x1.span,
+    peaks$width*sf[2]*x2.span)
 
   peaks$height <- peaks$height*sqrt(y.range[2])
 

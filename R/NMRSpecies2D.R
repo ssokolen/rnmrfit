@@ -30,6 +30,7 @@ NMRSpecies2D <- setClass("NMRSpecies2D",
   slots = c(
     name = 'character',
     id = 'character',
+    sf = 'numeric',
     children = 'list',
     connections = 'data.frame',
     connections.leeway = 'numeric'
@@ -37,6 +38,7 @@ NMRSpecies2D <- setClass("NMRSpecies2D",
   prototype = prototype(
     name = "species",
     id = "species",
+    sf = numeric(0),
     children = list(),
     connections = data.frame(),
     connections.leeway = 0
@@ -90,8 +92,7 @@ nmrspecies_2d <- function(resonances, volumes = NULL, id = NULL,
 
     if ( class(resonance) == 'NMRSpecies2D' ) {
       err <- paste("An NMRSpecies2D can't be constructed from other",
-                   "NMRSpecies2D objects. Use resonances() to first extract",
-                   "the resonance list before creating a new object.")
+                   "NMRSpecies2D objects.")
       stop(err)
     }
     # If the object is already an NMRResonance2D object, add it directly
@@ -108,6 +109,16 @@ nmrspecies_2d <- function(resonances, volumes = NULL, id = NULL,
     resonance.id <- names(resonances)[i]
     if (! is.null(resonance.id) ) id(resonances.list[[i]]) <- resonance.id
   }
+
+  # All resonances must have the same sweep frequency
+  sf <- map(resonances.list, ~ .@sf)
+  n <- length(sf)
+  if ( n > 1 ) {
+    logic <- all(unlist(map2(sf[1:(n-1)], sf[2:n], identical)))
+    err <- 'All resonances used to define a species must have the same "sf".'
+    if (! logic ) stop(err)
+  }
+  sf <- sf[[1]]
 
   #---------------------------------------
   # Defining connections if volumes provided
@@ -147,7 +158,7 @@ nmrspecies_2d <- function(resonances, volumes = NULL, id = NULL,
   # Generating id if it doesn't exist
   if ( is.null(id) ) id <- paste(valid.ids, collapse = '-')
 
-  new('NMRSpecies2D', id = id, children = resonances.list, 
+  new('NMRSpecies2D', id = id, sf = sf, children = resonances.list, 
                       connections = connections, 
                       connections.leeway = connections.leeway)
 }

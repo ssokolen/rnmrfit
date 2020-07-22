@@ -218,18 +218,13 @@ read_processed_2d <- function(path, procs.list, number = NA) {
 #' @param object An NMRScaffold2D object
 #' @param direct.shift Vector of chemical shift data in ppm.
 #' @param indirect.shift Similar to direct.shift but for the indirect dimension.
-#' @param direct.sf Sweep frequency (in MHz) -- needed to convert peak widths
-#'                  from Hz to ppm. In most cases, it is recommended to set a
-#'                  single default value using nmroptions$direct$sf = ..., but
-#'                  an override can be provided here.
-#' @param indirect.sf Similar to direct.sf but for the indirect dimension.
 #' 
 #' @return An NMRData2D object.
 #' 
 #' @export
 nmrdata_2d_from_scaffold <- function(
-  object, direct.shift = NULL, indirect.shift = NULL, 
-  direct.sf = nmroptions$direct$sf, indirect.sf = nmroptions$indirect$sf) {
+  object, direct.shift = NULL, indirect.shift = NULL
+  ) {
 
   if ( is.null(direct.shift) ) {
     positions <- peaks(direct(object))$position
@@ -254,15 +249,10 @@ nmrdata_2d_from_scaffold <- function(
 
   # Using the procs file to load the processed data
   processed <- values(object, direct.shift = direct.shift,
-                      indirect.shift = indirect.shift,
-                      direct.sf = direct.sf, indirect.sf = indirect.sf,
-                      use.cmplx1 = TRUE)
-
-  # acqus just contains the sf
-  acqus <- list(direct = list(sf = direct.sf), indirect = list(sf = indirect.sf))
+                      indirect.shift = indirect.shift, use.cmplx1 = TRUE)
 
   # Returning class object
-  new("NMRData2D", processed = processed, acqus = acqus)
+  new("NMRData2D", processed = processed)
 }
 
 
