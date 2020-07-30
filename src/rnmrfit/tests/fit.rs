@@ -1,4 +1,4 @@
-extern crate rustnmrfit;
+extern crate rnmrfit;
 
 #[macro_use(stack)]
 extern crate ndarray;
@@ -10,7 +10,7 @@ use ndarray_rand::rand::SeedableRng;
 use ndarray_rand::rand_distr::{Normal, Distribution};
 use rand_isaac::isaac64::Isaac64Rng;
 
-use rustnmrfit::{eval_1d, fit_1d, eval_2d, fit_2d};
+use rnmrfit::{eval_1d, fit_1d, eval_2d, fit_2d};
 
 //--------------------------------------
 fn test_fit_1d(nl: usize, nb: usize, np: usize, offset: f64, tol: f64) {
@@ -33,7 +33,7 @@ fn test_fit_1d(nl: usize, nb: usize, np: usize, offset: f64, tol: f64) {
     // Adding some noise for a bit of realism
     let seed = 1111;
     let mut rng = Isaac64Rng::seed_from_u64(seed);
-    let noise = Array::random_using(y.raw_dim(), Normal::new(0., 0.01).unwrap(), &mut rng);
+    let noise = Array::random_using(y.raw_dim(), Normal::new(0., 0.005).unwrap(), &mut rng);
     y += &noise;
 
     let mut lb = Array::zeros((p.len(),));
