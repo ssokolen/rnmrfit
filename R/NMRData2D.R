@@ -586,7 +586,7 @@ setMethod("indirect", "NMRData2D",
 
 
 #------------------------------------------------------------------------------
-#' Plot NMRData2D object
+#' Plot NMRData2D object as a series of 1D lines
 #' 
 #' Convenience function that generates a plot of the spectral data.
 #' 
@@ -675,7 +675,7 @@ setMethod("plot", "NMRData2D", plot.NMRData2D)
 
 
 #------------------------------------------------------------------------------
-#' Add to existing NMRData2D plot
+#' Add to existing NMRData2D plot as 1D lines
 #' 
 #' Meant to be primarily an internal function that adds a new line to an
 #' existing plot.
@@ -726,3 +726,91 @@ lines.NMRData2D <- function(x, p, domain = 'rr', legendgroup = 2,
 }
 
 setMethod("lines", "NMRData2D", lines.NMRData2D)
+
+
+
+#------------------------------------------------------------------------------
+#' Plot NMRData2D object as contour
+#' 
+#' Convenience function that generates a plot of the spectral data.
+#' 
+#' @param x An NMRData2D object.
+#' @param domain One of either 'rr', 'ri', 'ir', or 'ii' corresponding to
+#'               combinations of real and imaginary data from the direct and
+#'               indirect dimensions.
+#' 
+#' @return A plot_ly plot.
+#' 
+#' @export
+contour.NMRData2D <- function(x, domain = 'rr', n = 1000, span = 0.03) {
+
+  f <- list(
+    family = "Courier New, monospace",
+    size = 16,
+    color = "#7f7f7f"
+  )
+
+  xaxis <- list(
+    title = "Direct chemical shift (ppm)",
+    titlefont = f,
+    autorange = "reversed"
+  )
+  yaxis <- list(
+    title = "Indirect chemical shift (ppm)",
+    titlefont = f,
+    autorange = "reversed"
+  )
+
+  #---------------------------------------
+  err <- '"domain" must be one of "rr", "ri", "ir", or "ii"'
+  if (! domain %in% c("rr", "ri", "ir", "ii") ) stop(err)
+
+  d <- values(x, domain = domain) %>%
+    mutate(intensity = sign(intensity)*log10(abs(intensity) + 1))
+
+
+
+  # Trying to widen
+  d.test <- d %>%
+    pivot_wider(names_from = indirect.shift, values_from = intensity, 
+                values_fn = length) %>%
+    select(-direct.shift)
+
+  if ( all(d.test == 1) ) {
+    print("data square")
+
+    x1 <- unique(d$direct.shift)
+    x2 <- unique(d$indirect.shift)
+    z <- d %>%
+      pivot_wider(names_from = indirect.shift, values_from = intensity) %>%
+      select(-direct.shift) %>%
+      as.matrix()
+
+  } else {
+    print("data not square")
+
+    m <- gam(intensity ~ s(direct.shift, indirect.shift), data = f(1000))
+
+    x1 <- seq(min(d$direct.shift), max(d$direct.shift), length.out = n)
+    x2 <- seq(min(d$indirect.shift), max(d$indirect.shift), length.out = n)
+    d.grid <- expand.grid(x1 = x1, x2 = x2)
+    d.grid$y <- predict(m, newdata = d.grid)
+
+    z <- d.grid %>%
+      pivot_wider(names_from = x2, values_from = y) %>%
+      select(-x1) %>%
+      as.matrix()
+
+  }
+
+  z <- z/max(z)
+
+  print("done calculations")
+
+  p <- plot_ly(x = x1, y = x2, z = z, type = "contour") %>%
+       layout(xaxis = xaxis, yaxis = yaxis)
+
+  p 
+}
+
+setMethod("plot", "NMRData2D", plot.NMRData2D)

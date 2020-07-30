@@ -11,6 +11,7 @@ Depends:
     plotly (>= 4.6.0),
     proto (>= 1.0.0),
     RcppFaddeeva (>= 0.1.0),
+    signal (>= 0.7),
     splines,
     tidyverse,
     vctrs,

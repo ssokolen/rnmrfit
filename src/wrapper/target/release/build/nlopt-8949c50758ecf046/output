@@ -1,16 +1,14 @@
 running: "cmake" "/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/./nlopt-2.5.0" "-DBUILD_SHARED_LIBS=OFF" "-DCMAKE_CXX_COMPILER=c++" "-DCMAKE_CXX_FLAGS=" "-DCMAKE_INSTALL_PREFIX=/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out" "-DCMAKE_C_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_C_COMPILER=/usr/bin/cc" "-DCMAKE_BUILD_TYPE=Release"
 -- The C compiler identification is GNU 10.1.0
 -- The CXX compiler identification is GNU 10.1.0
--- Check for working C compiler: /usr/bin/cc
--- Check for working C compiler: /usr/bin/cc - works
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
 -- Detecting C compile features
 -- Detecting C compile features - done
--- Check for working CXX compiler: /usr/bin/c++
--- Check for working CXX compiler: /usr/bin/c++ - works
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
 -- NLopt version 2.5.0
@@ -78,11 +76,11 @@ running: "cmake" "/home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec82
 -- Performing Test SUPPORTS_STDCXX11 - Success
 -- Performing Test HAS_FPIC
 -- Performing Test HAS_FPIC - Success
--- Found PythonInterp: /usr/bin/python (found version "3.8.3") 
--- Found PythonLibs: /usr/lib/libpython3.8.so (found version "3.8.3") 
--- Found NumPy: version "1.18.4" /usr/lib/python3.8/site-packages/numpy/core/include
+-- Found PythonInterp: /usr/bin/python (found version "3.8.5") 
+-- Found PythonLibs: /usr/lib/libpython3.8.so (found version "3.8.5") 
+-- Found NumPy: version "1.19.1" /usr/lib/python3.8/site-packages/numpy/core/include
 -- Found Guile: /usr (found version "2.2.6") 
--- Found SWIG: /usr/bin/swig (found version "4.0.1") 
+-- Found SWIG: /usr/bin/swig (found version "4.0.2")  
 -- Could NOT find Octave (missing: OCTAVE_EXECUTABLE OCTAVE_ROOT_DIR OCTAVE_LIBRARIES) 
 -- Could NOT find Matlab (missing: Matlab_INCLUDE_DIRS Matlab_MEX_LIBRARY Matlab_MEX_EXTENSION Matlab_MX_LIBRARY MX_LIBRARY) (found version "NOTFOUND")
 -- Configuring done
@@ -117,63 +115,63 @@ make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/ta
 [ 40%] Building C object CMakeFiles/nlopt.dir/src/algs/neldermead/sbplx.c.o
 [ 42%] Building C object CMakeFiles/nlopt.dir/src/algs/auglag/auglag.c.o
 [ 44%] Building C object CMakeFiles/nlopt.dir/src/algs/bobyqa/bobyqa.c.o
+[ 46%] Building C object CMakeFiles/nlopt.dir/src/algs/isres/isres.c.o
+[ 48%] Building C object CMakeFiles/nlopt.dir/src/algs/slsqp/slsqp.c.o
+[ 50%] Building C object CMakeFiles/nlopt.dir/src/algs/esch/esch.c.o
+[ 52%] Building C object CMakeFiles/nlopt.dir/src/api/general.c.o
+[ 54%] Building C object CMakeFiles/nlopt.dir/src/api/options.c.o
+[ 56%] Building C object CMakeFiles/nlopt.dir/src/api/optimize.c.o
+[ 58%] Building C object CMakeFiles/nlopt.dir/src/api/deprecated.c.o
+[ 60%] Building C object CMakeFiles/nlopt.dir/src/api/f77api.c.o
+[ 62%] Building C object CMakeFiles/nlopt.dir/src/util/mt19937ar.c.o
+[ 64%] Building C object CMakeFiles/nlopt.dir/src/util/sobolseq.c.o
+[ 66%] Building C object CMakeFiles/nlopt.dir/src/util/timer.c.o
+[ 68%] Building C object CMakeFiles/nlopt.dir/src/util/stop.c.o
+[ 70%] Building C object CMakeFiles/nlopt.dir/src/util/redblack.c.o
+[ 72%] Building C object CMakeFiles/nlopt.dir/src/util/qsort_r.c.o
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
+[ 74%] Building C object CMakeFiles/nlopt.dir/src/util/rescale.c.o
 Scanning dependencies of target nlopt_guile_swig_compilation
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 46%] Swig compile nlopt.i for guile
+[ 76%] Swig compile nlopt.i for guile
+[ 78%] Linking C static library libnlopt.a
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 46%] Built target nlopt_guile_swig_compilation
+[ 78%] Built target nlopt_guile_swig_compilation
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 Scanning dependencies of target nlopt_swig_compilation
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 48%] Swig compile nlopt.i for python
-make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 48%] Built target nlopt_swig_compilation
-[ 50%] Building C object CMakeFiles/nlopt.dir/src/algs/isres/isres.c.o
-[ 52%] Building C object CMakeFiles/nlopt.dir/src/algs/slsqp/slsqp.c.o
-[ 54%] Building C object CMakeFiles/nlopt.dir/src/algs/esch/esch.c.o
-[ 56%] Building C object CMakeFiles/nlopt.dir/src/api/general.c.o
-[ 58%] Building C object CMakeFiles/nlopt.dir/src/api/options.c.o
-[ 60%] Building C object CMakeFiles/nlopt.dir/src/api/optimize.c.o
-[ 62%] Building C object CMakeFiles/nlopt.dir/src/api/deprecated.c.o
-[ 64%] Building C object CMakeFiles/nlopt.dir/src/api/f77api.c.o
-[ 66%] Building C object CMakeFiles/nlopt.dir/src/util/mt19937ar.c.o
-[ 68%] Building C object CMakeFiles/nlopt.dir/src/util/sobolseq.c.o
-[ 70%] Building C object CMakeFiles/nlopt.dir/src/util/timer.c.o
-[ 72%] Building C object CMakeFiles/nlopt.dir/src/util/stop.c.o
-[ 74%] Building C object CMakeFiles/nlopt.dir/src/util/redblack.c.o
-[ 76%] Building C object CMakeFiles/nlopt.dir/src/util/qsort_r.c.o
-[ 78%] Building C object CMakeFiles/nlopt.dir/src/util/rescale.c.o
-[ 80%] Linking C static library libnlopt.a
+[ 80%] Swig compile nlopt.i for python
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 [ 80%] Built target nlopt
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-Scanning dependencies of target _nlopt
-make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 82%] Building CXX object src/swig/CMakeFiles/_nlopt.dir/CMakeFiles/_nlopt.dir/nloptPYTHON_wrap.cxx.o
 Scanning dependencies of target nlopt_guile
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 84%] Building CXX object src/swig/CMakeFiles/nlopt_guile.dir/CMakeFiles/nlopt_guile.dir/nloptGUILE_wrap.cxx.o
-[ 86%] Linking CXX shared module nlopt_guile.so
+[ 82%] Building CXX object src/swig/CMakeFiles/nlopt_guile.dir/CMakeFiles/nlopt_guile.dir/nloptGUILE_wrap.cxx.o
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 86%] Built target nlopt_guile
+[ 82%] Built target nlopt_swig_compilation
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 Scanning dependencies of target testopt
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 88%] Building C object test/CMakeFiles/testopt.dir/testfuncs.c.o
-[ 90%] Building C object test/CMakeFiles/testopt.dir/testopt.c.o
-[ 92%] Building C object test/CMakeFiles/testopt.dir/__/src/util/timer.c.o
-[ 94%] Building C object test/CMakeFiles/testopt.dir/__/src/util/mt19937ar.c.o
-[ 96%] Building C object test/CMakeFiles/testopt.dir/__/src/util/nlopt-getopt.c.o
-[ 98%] Linking C executable testopt
+[ 84%] Building C object test/CMakeFiles/testopt.dir/testfuncs.c.o
+[ 86%] Building C object test/CMakeFiles/testopt.dir/testopt.c.o
+[ 88%] Building C object test/CMakeFiles/testopt.dir/__/src/util/timer.c.o
+[ 90%] Building C object test/CMakeFiles/testopt.dir/__/src/util/mt19937ar.c.o
+[ 92%] Building C object test/CMakeFiles/testopt.dir/__/src/util/nlopt-getopt.c.o
+[ 94%] Linking C executable testopt
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
-[ 98%] Built target testopt
+[ 94%] Built target testopt
+make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
+Scanning dependencies of target _nlopt
+make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
+make[3]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
+[ 96%] Building CXX object src/swig/CMakeFiles/_nlopt.dir/CMakeFiles/_nlopt.dir/nloptPYTHON_wrap.cxx.o
+[ 98%] Linking CXX shared module nlopt_guile.so
+make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
+[ 98%] Built target nlopt_guile
 [100%] Linking CXX shared module _nlopt.so
 make[3]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build'
 [100%] Built target _nlopt

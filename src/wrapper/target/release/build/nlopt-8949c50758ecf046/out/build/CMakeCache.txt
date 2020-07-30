@@ -390,13 +390,13 @@ PYTHON_LIBRARY:FILEPATH=/usr/lib/libpython3.8.so
 PYTHON_LIBRARY_DEBUG:FILEPATH=PYTHON_LIBRARY_DEBUG-NOTFOUND
 
 //Path to a file.
-SWIG_DIR:PATH=/usr/share/swig/4.0.1
+SWIG_DIR:PATH=/usr/share/swig/4.0.2
 
 //Path to a program.
 SWIG_EXECUTABLE:FILEPATH=/usr/bin/swig
 
 //Swig version
-SWIG_VERSION:STRING=4.0.1
+SWIG_VERSION:STRING=4.0.2
 
 //check thread local keyword
 WITH_THREADLOCAL:BOOL=ON
@@ -427,9 +427,9 @@ CMAKE_CACHEFILE_DIR:INTERNAL=/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/ta
 //Major version of cmake used to create the current loaded cache
 CMAKE_CACHE_MAJOR_VERSION:INTERNAL=3
 //Minor version of cmake used to create the current loaded cache
-CMAKE_CACHE_MINOR_VERSION:INTERNAL=17
+CMAKE_CACHE_MINOR_VERSION:INTERNAL=18
 //Patch version of cmake used to create the current loaded cache
-CMAKE_CACHE_PATCH_VERSION:INTERNAL=3
+CMAKE_CACHE_PATCH_VERSION:INTERNAL=0
 //ADVANCED property for variable: CMAKE_COLOR_MAKEFILE
 CMAKE_COLOR_MAKEFILE-ADVANCED:INTERNAL=1
 //Path to CMake executable.
@@ -564,7 +564,7 @@ CMAKE_RANLIB-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_READELF
 CMAKE_READELF-ADVANCED:INTERNAL=1
 //Path to CMake installation.
-CMAKE_ROOT:INTERNAL=/usr/share/cmake-3.17
+CMAKE_ROOT:INTERNAL=/usr/share/cmake-3.18
 //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS
 CMAKE_SHARED_LINKER_FLAGS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_DEBUG
@@ -618,13 +618,13 @@ CPACK_BINARY_TZ-ADVANCED:INTERNAL=1
 //Details about finding Guile
 FIND_PACKAGE_MESSAGE_DETAILS_Guile:INTERNAL=[/usr][/usr/include/guile/2.2][/usr/lib/libguile-2.2.so][v2.2.6()]
 //Details about finding NUMPY
-FIND_PACKAGE_MESSAGE_DETAILS_NUMPY:INTERNAL=/usr/lib/python3.8/site-packages/numpy/core/include1.18.4
+FIND_PACKAGE_MESSAGE_DETAILS_NUMPY:INTERNAL=/usr/lib/python3.8/site-packages/numpy/core/include1.19.1
 //Details about finding PythonInterp
-FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/usr/bin/python][v3.8.3()]
+FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/usr/bin/python][v3.8.5()]
 //Details about finding PythonLibs
-FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs:INTERNAL=[/usr/lib/libpython3.8.so][/usr/include/python3.8][v3.8.3()]
+FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs:INTERNAL=[/usr/lib/libpython3.8.so][/usr/include/python3.8][v3.8.5()]
 //Details about finding SWIG
-FIND_PACKAGE_MESSAGE_DETAILS_SWIG:INTERNAL=[/usr/bin/swig][/usr/share/swig/4.0.1][v4.0.1()]
+FIND_PACKAGE_MESSAGE_DETAILS_SWIG:INTERNAL=[/usr/bin/swig][/usr/share/swig/4.0.2][c ][v4.0.2()]
 //ADVANCED property for variable: GUILE_INCLUDE_DIR
 GUILE_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: GUILE_LIBRARY

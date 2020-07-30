@@ -89,12 +89,12 @@ setMethod("check_conformity", "NMRScaffold2D",
   d <- processed(nmrdata)
   peaks <- peaks(object) 
 
-  direct.peaks <- filter(peaks, dimension == "direct")
+  direct.peaks <- dplyr::filter(peaks, dimension == "direct")
   direct.logic <- (direct.peaks$position < min(d$direct.shift)) | 
                   (direct.peaks$position > max(d$direct.shift)) 
 
 
-  indirect.peaks <- filter(peaks, dimension == "indirect")
+  indirect.peaks <- dplyr::filter(peaks, dimension == "indirect")
   indirect.logic <- (indirect.peaks$position < min(d$indirect.shift)) | 
                     (indirect.peaks$position > max(d$indirect.shift))
 
@@ -178,10 +178,10 @@ setMethod("split_dimensions", "NMRScaffold2D",
     if (! identical(entries, c('direct', 'indirect')) ) stop(err)
 
     # If all of the above is met, then split components
-    direct <- filter(value, dimension == 'direct') %>% select(-dimension)
+    direct <- dplyr::filter(value, dimension == 'direct') %>% select(-dimension)
     object@dimensions$direct <- setter(object@dimensions$direct, direct)
 
-    indirect <- filter(value, dimension == 'indirect') %>% select(-dimension)
+    indirect <- dplyr::filter(value, dimension == 'indirect') %>% select(-dimension)
     object@dimensions$indirect <- setter(object@dimensions$indirect, indirect)
     
     validObject(object)

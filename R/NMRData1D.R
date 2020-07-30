@@ -56,6 +56,11 @@ setValidity("NMRData1D", validNMRData1D)
 #' called using \code{nmrdata_1d_from_pdata()} or
 #' \code{nmrdata_1d_from_jcamp()}.
 #' 
+#' The ability to read data from a raw csv file is provided as a placeholder
+#' until more data types are supported. csv files are assumed to have chemical
+#' shift as 1st column, real domain data as 2nd column, and imaginary domain
+#' data as 3rd column.
+#' 
 #' @param path Path to a Bruker scan directory or JCAMP-DX file.
 #' @param procs.number Specifies pdata directory to load. Defaults to the lowest
 #'                     available number. Ignored if loading from a JCAMP-DX
@@ -296,6 +301,22 @@ nmrdata_1d_from_jcamp <- function(path, blocks.number = 1, ntuples.number = 1) {
 
 
 
+#------------------------------------------------------------------------
+#' @rdname nmrdata_1d
+#' @export
+nmrdata_1d_from_csv <- function(path) {
+
+  d <- read_csv(path, col_names = FALSE, col_types = 'ddd')
+  direct.shift <- pull(d, 1)
+  intensity <- cmplx1(r = pull(d, 2), i = pull(d, 3))
+
+  processed <- tibble(direct.shift = direct.shift, intensity = intensity)
+
+  new("NMRData1D", processed = processed) 
+}
+
+
+
 #------------------------------------------------------------------------------
 #' Convert NMRScaffold1D to NMRData1D
 #' 
@@ -318,6 +339,132 @@ nmrdata_1d_from_scaffold <- function(object, direct.shift = NULL) {
   # Returning class object
   new("NMRData1D", processed = processed, acqus = acqus)
 }
+
+
+
+#==============================================================================>
+#  Corrections
+#==============================================================================>
+
+
+
+#------------------------------------------------------------------------------
+#' Correct phase
+#' 
+#' Applies basic entropy minimization algorithm to correct overall phase.
+#' 
+#' @param object An NMRData object.
+#' @param iterations How many times to iterate the correction. A scaling term
+#'                   must be calculated at the beginning of the correction and
+#'                   it makes sense to update this scaling term once a rough
+#'                   correction has been established -- so a minimum of 2
+#'                   iterations is recommended.
+#' 
+#' @return A new NMRData object with corrected phase. If return.phase is TRUE, a
+#'         two element vector is returned representing the 0 and 1st order phase
+#'         terms.
+#' 
+#' @name correct_phase
+#' @export
+setGeneric("correct_phase", 
+  function(object, ...) standardGeneric("correct_phase")
+)
+
+
+
+#' @rdname correct_phase
+#' @export
+setMethod("correct_phase", "NMRData1D", 
+  function(object, iterations = 2) {
+
+    # Choosing scaling factor
+    d <- values(object, "r")
+    x <- d$direct.shift
+    y <- d$intensity 
+
+    y <- y - median(y)
+
+    r <- sgolayfilt(y, p = 3, n = 5, m = 2)
+    h <- abs(r)/max(abs(r))
+    sw <- max(x) - min(x)
+
+    entropy <- sum(h*log(h))
+    penalty <- sum(y[y < 0]^2)
+    scaling <- abs(entropy/penalty)
+    
+    f <- function(p) {
+      corrected <- add_phase(object, p)
+      
+      y <- values(corrected, "r")$intensity
+      y <- y - median(y)
+      r <- sgolayfilt(y, p = 3, n = 5, m = 2)
+      h <- abs(r)/max(abs(r))
+
+      entropy <- sum(h*log(h))
+      penalty <- scaling*sum(y[y < 0]^2)
+
+      -entropy + penalty
+    }
+
+    opt <- optim(c(0, 0), f, method = "L-BFGS-B", 
+                 lower = c(-pi, -pi/sw), upper = c(pi, pi/sw))
+
+    # Iterate if required
+    out <- add_phase(object, opt$par) 
+
+    if ( iterations > 1 ) {
+      out <- correct_phase(out, iterations = iterations - 1)
+    }
+
+    out
+  })
+
+
+
+#------------------------------------------------------------------------------
+#' Correct reference
+#' 
+#' A very basic algorithm used to correct the chemical shift scale. The biggest
+#' positive peak within a certain distance of the the current 0 ppm region is
+#' set as the new 0.
+#' 
+#' @param object An NMRData object.
+#' @param span The ppm distance to search for the biggest peak starting from the
+#'             current value of 0 ppm.
+#' 
+#' @return A new NMRData object with corrected chemical shift data.
+#' 
+#' @name correct_reference
+#' @export
+setGeneric("correct_reference", 
+  function(object, ...) standardGeneric("correct_reference")
+)
+
+
+
+#' @rdname correct_reference
+#' @export
+setMethod("correct_reference", "NMRData1D", 
+  function(object, span = 1) {
+
+    # Choosing scaling factor
+    d <- values(object, "r")
+    x <- d$direct.shift
+    y <- d$intensity
+
+    logic <- (x > -span) & (x < span)
+    x <- x[logic]
+    y <- y[logic]
+
+    x.shift <- x[y == max(y)]
+
+    d <- processed(object)
+    d$direct.shift <- d$direct.shift - x.shift[1]
+    object@processed <- d
+
+    object
+  })
+
 
 
 

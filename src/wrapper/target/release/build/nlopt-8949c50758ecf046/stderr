@@ -1,4 +1,4 @@
-CMake Warning (dev) at /usr/share/cmake-3.17/Modules/UseSWIG.cmake:607 (message):
+CMake Warning (dev) at /usr/share/cmake-3.18/Modules/UseSWIG.cmake:633 (message):
   Policy CMP0078 is not set: UseSWIG generates standard target names.  Run
   "cmake --help-policy CMP0078" for policy details.  Use the cmake_policy
   command to set the policy and suppress this warning.
@@ -7,17 +7,17 @@ Call Stack (most recent call first):
   src/swig/CMakeLists.txt:23 (swig_add_library)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Warning (dev) at /usr/share/cmake-3.17/Modules/UseSWIG.cmake:460 (message):
+CMake Warning (dev) at /usr/share/cmake-3.18/Modules/UseSWIG.cmake:486 (message):
   Policy CMP0086 is not set: UseSWIG honors SWIG_MODULE_NAME via -module
   flag.  Run "cmake --help-policy CMP0086" for policy details.  Use the
   cmake_policy command to set the policy and suppress this warning.
 
 Call Stack (most recent call first):
-  /usr/share/cmake-3.17/Modules/UseSWIG.cmake:702 (SWIG_ADD_SOURCE_TO_MODULE)
+  /usr/share/cmake-3.18/Modules/UseSWIG.cmake:728 (SWIG_ADD_SOURCE_TO_MODULE)
   src/swig/CMakeLists.txt:23 (swig_add_library)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Warning (dev) at /usr/share/cmake-3.17/Modules/UseSWIG.cmake:607 (message):
+CMake Warning (dev) at /usr/share/cmake-3.18/Modules/UseSWIG.cmake:633 (message):
   Policy CMP0078 is not set: UseSWIG generates standard target names.  Run
   "cmake --help-policy CMP0078" for policy details.  Use the cmake_policy
   command to set the policy and suppress this warning.
@@ -26,17 +26,17 @@ Call Stack (most recent call first):
   src/swig/CMakeLists.txt:50 (swig_add_library)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Warning (dev) at /usr/share/cmake-3.17/Modules/UseSWIG.cmake:460 (message):
+CMake Warning (dev) at /usr/share/cmake-3.18/Modules/UseSWIG.cmake:486 (message):
   Policy CMP0086 is not set: UseSWIG honors SWIG_MODULE_NAME via -module
   flag.  Run "cmake --help-policy CMP0086" for policy details.  Use the
   cmake_policy command to set the policy and suppress this warning.
 
 Call Stack (most recent call first):
-  /usr/share/cmake-3.17/Modules/UseSWIG.cmake:702 (SWIG_ADD_SOURCE_TO_MODULE)
+  /usr/share/cmake-3.18/Modules/UseSWIG.cmake:728 (SWIG_ADD_SOURCE_TO_MODULE)
   src/swig/CMakeLists.txt:50 (swig_add_library)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Warning (dev) at /usr/share/cmake-3.17/Modules/CPack.cmake:598 (option):
+CMake Warning (dev) at /usr/share/cmake-3.18/Modules/CPack.cmake:598 (option):
   Policy CMP0077 is not set: option() honors normal variables.  Run "cmake
   --help-policy CMP0077" for policy details.  Use the cmake_policy command to
   set the policy and suppress this warning.
@@ -47,7 +47,7 @@ Call Stack (most recent call first):
   CMakeLists.txt:343 (include)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Warning (dev) at /usr/share/cmake-3.17/Modules/CPack.cmake:605 (option):
+CMake Warning (dev) at /usr/share/cmake-3.18/Modules/CPack.cmake:605 (option):
   Policy CMP0077 is not set: option() honors normal variables.  Run "cmake
   --help-policy CMP0077" for policy details.  Use the cmake_policy command to
   set the policy and suppress this warning.
@@ -58,7 +58,7 @@ Call Stack (most recent call first):
   CMakeLists.txt:343 (include)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Warning (dev) at /usr/share/cmake-3.17/Modules/CPack.cmake:606 (option):
+CMake Warning (dev) at /usr/share/cmake-3.18/Modules/CPack.cmake:606 (option):
   Policy CMP0077 is not set: option() honors normal variables.  Run "cmake
   --help-policy CMP0077" for policy details.  Use the cmake_policy command to
   set the policy and suppress this warning.
@@ -69,7 +69,7 @@ Call Stack (most recent call first):
   CMakeLists.txt:343 (include)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Warning (dev) at /usr/share/cmake-3.17/Modules/CPack.cmake:607 (option):
+CMake Warning (dev) at /usr/share/cmake-3.18/Modules/CPack.cmake:607 (option):
   Policy CMP0077 is not set: option() honors normal variables.  Run "cmake
   --help-policy CMP0077" for policy details.  Use the cmake_policy command to
   set the policy and suppress this warning.
@@ -80,7 +80,6 @@ Call Stack (most recent call first):
   CMakeLists.txt:343 (include)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-make[3]: Warning: File 'CMakeFiles/nlopt.dir/depend.make' has modification time 0.024 s in the future
 /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/cdirect/hybrid.c: In function ‘optimize_rect’:
 /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/cdirect/hybrid.c:91:6: warning: ‘nlopt_minimize’ is deprecated [-Wdeprecated-declarations]
    91 |      ret = nlopt_minimize(p->local_alg, n, fcount, p,
@@ -110,12 +109,6 @@ In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9
 /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.h:304:28: note: declared here
   304 | NLOPT_EXTERN(nlopt_result) nlopt_minimize_constrained(nlopt_algorithm algorithm, int n, nlopt_func_old f, void *f_data, int m, nlopt_func_old fc, void *fc_data, ptrdiff_t fc_datum_size,
       |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:112: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:116: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 503: Can't wrap 'operator =' unless renamed to a valid identifier.
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
-/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 362: operator= ignored
 In function ‘hfti_’,
     inlined from ‘lsei_’ at /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/slsqp/slsqp.c:1176:5,
     inlined from ‘lsq_’ at /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/algs/slsqp/slsqp.c:1417:5:
@@ -271,6 +264,13 @@ In file included from /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9
 /home/stanislav/.cargo/registry/src/github.com-1ecc6299db9ec823/nlopt-0.5.1/nlopt-2.5.0/src/api/nlopt.h:321:20: note: declared here
   321 | NLOPT_EXTERN(void) nlopt_set_stochastic_population(int pop) NLOPT_DEPRECATED;
       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:112: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:116: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 503: Can't wrap 'operator =' unless renamed to a valid identifier.
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:140: Warning 325: Nested struct not currently supported (myfunc_data ignored)
+/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/src/api/nlopt.hpp:274: Warning 362: operator= ignored
+make[3]: Warning: File 'test/CMakeFiles/testopt.dir/depend.make' has modification time 0.0081 s in the future
 make[3]: warning:  Clock skew detected.  Your build may be incomplete.
-make[3]: Warning: File 'test/CMakeFiles/testopt.dir/depend.make' has modification time 0.031 s in the future
+make[3]: Warning: File 'src/swig/CMakeFiles/_nlopt.dir/depend.make' has modification time 0.0054 s in the future
 make[3]: warning:  Clock skew detected.  Your build may be incomplete.

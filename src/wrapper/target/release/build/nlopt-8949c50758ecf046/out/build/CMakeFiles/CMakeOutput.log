@@ -1,4 +1,4 @@
-The system is: Linux - 5.6.15-arch1-1 - x86_64
+The system is: Linux - 5.7.10-arch1-1 - x86_64
 Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
 Compiler: /usr/bin/cc 
 Build flags: ;-ffunction-sections;-fdata-sections;-fPIC;-m64
@@ -10,7 +10,7 @@ The output was:
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
 
-The C compiler identification is GNU, found in "/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/3.17.3/CompilerIdC/a.out"
+The C compiler identification is GNU, found in "/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/3.18.0/CompilerIdC/a.out"
 
 Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
 Compiler: /usr/bin/c++ 
@@ -23,32 +23,16 @@ The output was:
 
 Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
 
-The CXX compiler identification is GNU, found in "/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/3.17.3/CompilerIdCXX/a.out"
-
-Determining if the C compiler works passed with the following output:
-Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
-
-Run Build Command(s):/usr/bin/make cmTC_246c8/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_246c8.dir/build.make CMakeFiles/cmTC_246c8.dir/build
-make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_246c8.dir/testCCompiler.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_246c8.dir/testCCompiler.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_246c8
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_246c8.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_246c8.dir/testCCompiler.c.o  -o cmTC_246c8 
-make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-
-
+The CXX compiler identification is GNU, found in "/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/3.18.0/CompilerIdCXX/a.out"
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_b5614/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_b5614.dir/build.make CMakeFiles/cmTC_b5614.dir/build
+Run Build Command(s):/usr/bin/make cmTC_af03c/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_af03c.dir/build.make CMakeFiles/cmTC_af03c.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -v -o CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.17/Modules/CMakeCCompilerABI.c
+Building C object CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -v -o CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 Target: x86_64-pc-linux-gnu
@@ -56,8 +40,8 @@ Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --
 Thread model: posix
 Supported LTO compression algorithms: zlib zstd
 gcc version 10.1.0 (GCC) 
-COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/cc1 -quiet -v /usr/share/cmake-3.17/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -m64 -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o -version -ffunction-sections -fdata-sections -fPIC -o /tmp/ccY4ToZV.s
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/cc1 -quiet -v /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -m64 -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o -version -ffunction-sections -fdata-sections -fPIC -o /tmp/ccBmNyty.s
 GNU C17 (GCC) version 10.1.0 (x86_64-pc-linux-gnu)
 	compiled by GNU C version 10.1.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.21-GMP
 
@@ -75,15 +59,15 @@ GNU C17 (GCC) version 10.1.0 (x86_64-pc-linux-gnu)
 
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 Compiler executable checksum: 8cbeeaf463513b43dc3c4cd12e0bccb6
-COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
- as -v --64 -o CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o /tmp/ccY4ToZV.s
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o /tmp/ccBmNyty.s
 GNU assembler version 2.34.0 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.34.0
 COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
-Linking C executable cmTC_b5614
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b5614.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64    -v -rdynamic CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o  -o cmTC_b5614 
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+Linking C executable cmTC_af03c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_af03c.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64   -v -rdynamic CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o -o cmTC_af03c 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper
@@ -94,9 +78,9 @@ Supported LTO compression algorithms: zlib zstd
 gcc version 10.1.0 (GCC) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_b5614' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc0fvOgU.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_b5614 /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../.. CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crtn.o
-COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_b5614' '-mtune=generic' '-march=x86-64'
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_af03c' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc8C7OCV.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_af03c /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../.. CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crtn.o
+COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_af03c' '-mtune=generic' '-march=x86-64'
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -121,11 +105,11 @@ Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):/usr/bin/make cmTC_b5614/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp']
-  ignore line: [make  -f CMakeFiles/cmTC_b5614.dir/build.make CMakeFiles/cmTC_b5614.dir/build]
+  ignore line: [Run Build Command(s):/usr/bin/make cmTC_af03c/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp']
+  ignore line: [make  -f CMakeFiles/cmTC_af03c.dir/build.make CMakeFiles/cmTC_af03c.dir/build]
   ignore line: [make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -v -o CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.17/Modules/CMakeCCompilerABI.c]
+  ignore line: [Building C object CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -v -o CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [Target: x86_64-pc-linux-gnu]
@@ -133,8 +117,8 @@ Parsed C implicit link information from above output:
   ignore line: [Thread model: posix]
   ignore line: [Supported LTO compression algorithms: zlib zstd]
   ignore line: [gcc version 10.1.0 (GCC) ]
-  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/cc1 -quiet -v /usr/share/cmake-3.17/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -m64 -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o -version -ffunction-sections -fdata-sections -fPIC -o /tmp/ccY4ToZV.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/cc1 -quiet -v /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -m64 -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o -version -ffunction-sections -fdata-sections -fPIC -o /tmp/ccBmNyty.s]
   ignore line: [GNU C17 (GCC) version 10.1.0 (x86_64-pc-linux-gnu)]
   ignore line: [	compiled by GNU C version 10.1.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.21-GMP]
   ignore line: []
@@ -152,15 +136,15 @@ Parsed C implicit link information from above output:
   ignore line: []
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
   ignore line: [Compiler executable checksum: 8cbeeaf463513b43dc3c4cd12e0bccb6]
-  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [ as -v --64 -o CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o /tmp/ccY4ToZV.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [ as -v --64 -o CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o /tmp/ccBmNyty.s]
   ignore line: [GNU assembler version 2.34.0 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.34.0]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [Linking C executable cmTC_b5614]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b5614.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64    -v -rdynamic CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o  -o cmTC_b5614 ]
+  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-o' 'CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [Linking C executable cmTC_af03c]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_af03c.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64   -v -rdynamic CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o -o cmTC_af03c ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper]
@@ -171,13 +155,13 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 10.1.0 (GCC) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_b5614' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc0fvOgU.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_b5614 /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../.. CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-ffunction-sections' '-fdata-sections' '-fPIC' '-m64' '-v' '-rdynamic' '-o' 'cmTC_af03c' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc8C7OCV.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_af03c /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../.. CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crtn.o]
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/cc0fvOgU.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/cc8C7OCV.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -193,7 +177,7 @@ Parsed C implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-pie] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_b5614] ==> ignore
+    arg [cmTC_af03c] ==> ignore
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o] ==> ignore
@@ -202,7 +186,7 @@ Parsed C implicit link information from above output:
     arg [-L/lib/../lib] ==> dir [/lib/../lib]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../..] ==> dir [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../..]
-    arg [CMakeFiles/cmTC_b5614.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_af03c.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--push-state] ==> ignore
     arg [--as-needed] ==> ignore
@@ -226,30 +210,14 @@ Parsed C implicit link information from above output:
   implicit fwks: []
 
 
-Determining if the CXX compiler works passed with the following output:
-Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
-
-Run Build Command(s):/usr/bin/make cmTC_e101e/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_e101e.dir/build.make CMakeFiles/cmTC_e101e.dir/build
-make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_e101e.dir/testCXXCompiler.cxx.o
-/usr/bin/c++     -o CMakeFiles/cmTC_e101e.dir/testCXXCompiler.cxx.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
-Linking CXX executable cmTC_e101e
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e101e.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_e101e.dir/testCXXCompiler.cxx.o  -o cmTC_e101e 
-make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-
-
-
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_19a41/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_19a41.dir/build.make CMakeFiles/cmTC_19a41.dir/build
+Run Build Command(s):/usr/bin/make cmTC_9a6a2/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_9a6a2.dir/build.make CMakeFiles/cmTC_9a6a2.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o
-/usr/bin/c++    -v -o CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.17/Modules/CMakeCXXCompilerABI.cpp
+Building CXX object CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++   -v -o CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.18/Modules/CMakeCXXCompilerABI.cpp
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 Target: x86_64-pc-linux-gnu
@@ -257,8 +225,8 @@ Configured with: /build/gcc/src/gcc/configure --prefix=/usr --libdir=/usr/lib --
 Thread model: posix
 Supported LTO compression algorithms: zlib zstd
 gcc version 10.1.0 (GCC) 
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake-3.17/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/cct2SuPw.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake-3.18/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/ccTBP9Cn.s
 GNU C++14 (GCC) version 10.1.0 (x86_64-pc-linux-gnu)
 	compiled by GNU C version 10.1.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.21-GMP
 
@@ -279,15 +247,15 @@ GNU C++14 (GCC) version 10.1.0 (x86_64-pc-linux-gnu)
 
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 Compiler executable checksum: 262bfe0a9d27898ea74cb944d94238f6
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- as -v --64 -o CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o /tmp/cct2SuPw.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccTBP9Cn.s
 GNU assembler version 2.34.0 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.34.0
 COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
-Linking CXX executable cmTC_19a41
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_19a41.dir/link.txt --verbose=1
-/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_19a41 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+Linking CXX executable cmTC_9a6a2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9a6a2.dir/link.txt --verbose=1
+/usr/bin/c++  -v -rdynamic CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_9a6a2 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper
@@ -298,9 +266,9 @@ Supported LTO compression algorithms: zlib zstd
 gcc version 10.1.0 (GCC) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_19a41' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccUGRguW.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_19a41 /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../.. CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crtn.o
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_19a41' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_9a6a2' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc3Ktp0K.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_9a6a2 /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../.. CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_9a6a2' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -331,11 +299,11 @@ Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):/usr/bin/make cmTC_19a41/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp']
-  ignore line: [make  -f CMakeFiles/cmTC_19a41.dir/build.make CMakeFiles/cmTC_19a41.dir/build]
+  ignore line: [Run Build Command(s):/usr/bin/make cmTC_9a6a2/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp']
+  ignore line: [make  -f CMakeFiles/cmTC_9a6a2.dir/build.make CMakeFiles/cmTC_9a6a2.dir/build]
   ignore line: [make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/usr/bin/c++    -v -o CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.17/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Building CXX object CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.18/Modules/CMakeCXXCompilerABI.cpp]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [Target: x86_64-pc-linux-gnu]
@@ -343,8 +311,8 @@ Parsed CXX implicit link information from above output:
   ignore line: [Thread model: posix]
   ignore line: [Supported LTO compression algorithms: zlib zstd]
   ignore line: [gcc version 10.1.0 (GCC) ]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake-3.17/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/cct2SuPw.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake-3.18/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/ccTBP9Cn.s]
   ignore line: [GNU C++14 (GCC) version 10.1.0 (x86_64-pc-linux-gnu)]
   ignore line: [	compiled by GNU C version 10.1.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.21-GMP]
   ignore line: []
@@ -365,15 +333,15 @@ Parsed CXX implicit link information from above output:
   ignore line: []
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
   ignore line: [Compiler executable checksum: 262bfe0a9d27898ea74cb944d94238f6]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  ignore line: [ as -v --64 -o CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o /tmp/cct2SuPw.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [ as -v --64 -o CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccTBP9Cn.s]
   ignore line: [GNU assembler version 2.34.0 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.34.0]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  ignore line: [Linking CXX executable cmTC_19a41]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_19a41.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_19a41 ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [Linking CXX executable cmTC_9a6a2]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9a6a2.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++  -v -rdynamic CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_9a6a2 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper]
@@ -384,13 +352,13 @@ Parsed CXX implicit link information from above output:
   ignore line: [gcc version 10.1.0 (GCC) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_19a41' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccUGRguW.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_19a41 /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../.. CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_9a6a2' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc3Ktp0K.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_9a6a2 /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../.. CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crtn.o]
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccUGRguW.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/cc3Ktp0K.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -406,7 +374,7 @@ Parsed CXX implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-pie] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_19a41] ==> ignore
+    arg [cmTC_9a6a2] ==> ignore
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/Scrt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../lib/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/crtbeginS.o] ==> ignore
@@ -415,7 +383,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/lib/../lib] ==> dir [/lib/../lib]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../..] ==> dir [/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../..]
-    arg [CMakeFiles/cmTC_19a41.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_9a6a2.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -438,14 +406,14 @@ Parsed CXX implicit link information from above output:
 Determining if the include file dlfcn.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_ca2bf/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_ca2bf.dir/build.make CMakeFiles/cmTC_ca2bf.dir/build
+Run Build Command(s):/usr/bin/make cmTC_20dc9/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_20dc9.dir/build.make CMakeFiles/cmTC_20dc9.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_ca2bf.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_ca2bf.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_ca2bf
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ca2bf.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_ca2bf.dir/CheckIncludeFile.c.o  -o cmTC_ca2bf 
+Building C object CMakeFiles/cmTC_20dc9.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_20dc9.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_20dc9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_20dc9.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_20dc9.dir/CheckIncludeFile.c.o -o cmTC_20dc9 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -454,14 +422,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file getopt.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_c3f59/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_c3f59.dir/build.make CMakeFiles/cmTC_c3f59.dir/build
+Run Build Command(s):/usr/bin/make cmTC_48de2/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_48de2.dir/build.make CMakeFiles/cmTC_48de2.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_c3f59.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_c3f59.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_c3f59
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c3f59.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_c3f59.dir/CheckIncludeFile.c.o  -o cmTC_c3f59 
+Building C object CMakeFiles/cmTC_48de2.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_48de2.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_48de2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_48de2.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_48de2.dir/CheckIncludeFile.c.o -o cmTC_48de2 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -470,14 +438,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file unistd.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_ab74f/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_ab74f.dir/build.make CMakeFiles/cmTC_ab74f.dir/build
+Run Build Command(s):/usr/bin/make cmTC_c60ae/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_c60ae.dir/build.make CMakeFiles/cmTC_c60ae.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_ab74f.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_ab74f.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_ab74f
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ab74f.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_ab74f.dir/CheckIncludeFile.c.o  -o cmTC_ab74f 
+Building C object CMakeFiles/cmTC_c60ae.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_c60ae.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_c60ae
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c60ae.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_c60ae.dir/CheckIncludeFile.c.o -o cmTC_c60ae 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -486,14 +454,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file string.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_d7b72/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_d7b72.dir/build.make CMakeFiles/cmTC_d7b72.dir/build
+Run Build Command(s):/usr/bin/make cmTC_0a6b6/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_0a6b6.dir/build.make CMakeFiles/cmTC_0a6b6.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_d7b72.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_d7b72.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_d7b72
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d7b72.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_d7b72.dir/CheckIncludeFile.c.o  -o cmTC_d7b72 
+Building C object CMakeFiles/cmTC_0a6b6.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_0a6b6.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0a6b6
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0a6b6.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_0a6b6.dir/CheckIncludeFile.c.o -o cmTC_0a6b6 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -502,14 +470,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file strings.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_4e6a5/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_4e6a5.dir/build.make CMakeFiles/cmTC_4e6a5.dir/build
+Run Build Command(s):/usr/bin/make cmTC_189d3/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_189d3.dir/build.make CMakeFiles/cmTC_189d3.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_4e6a5.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_4e6a5.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_4e6a5
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4e6a5.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_4e6a5.dir/CheckIncludeFile.c.o  -o cmTC_4e6a5 
+Building C object CMakeFiles/cmTC_189d3.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_189d3.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_189d3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_189d3.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_189d3.dir/CheckIncludeFile.c.o -o cmTC_189d3 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -518,14 +486,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file inttypes.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_52992/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_52992.dir/build.make CMakeFiles/cmTC_52992.dir/build
+Run Build Command(s):/usr/bin/make cmTC_76dc4/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_76dc4.dir/build.make CMakeFiles/cmTC_76dc4.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_52992.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_52992.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_52992
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_52992.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_52992.dir/CheckIncludeFile.c.o  -o cmTC_52992 
+Building C object CMakeFiles/cmTC_76dc4.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_76dc4.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_76dc4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_76dc4.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_76dc4.dir/CheckIncludeFile.c.o -o cmTC_76dc4 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -534,14 +502,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file memory.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_12bb7/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_12bb7.dir/build.make CMakeFiles/cmTC_12bb7.dir/build
+Run Build Command(s):/usr/bin/make cmTC_fef7e/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_fef7e.dir/build.make CMakeFiles/cmTC_fef7e.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_12bb7.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_12bb7.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_12bb7
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_12bb7.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_12bb7.dir/CheckIncludeFile.c.o  -o cmTC_12bb7 
+Building C object CMakeFiles/cmTC_fef7e.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_fef7e.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_fef7e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fef7e.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_fef7e.dir/CheckIncludeFile.c.o -o cmTC_fef7e 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -550,14 +518,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file stdlib.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_0172c/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_0172c.dir/build.make CMakeFiles/cmTC_0172c.dir/build
+Run Build Command(s):/usr/bin/make cmTC_d2d39/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_d2d39.dir/build.make CMakeFiles/cmTC_d2d39.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_0172c.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_0172c.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_0172c
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0172c.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_0172c.dir/CheckIncludeFile.c.o  -o cmTC_0172c 
+Building C object CMakeFiles/cmTC_d2d39.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_d2d39.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_d2d39
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d2d39.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_d2d39.dir/CheckIncludeFile.c.o -o cmTC_d2d39 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -566,14 +534,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file stdint.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_a77a0/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_a77a0.dir/build.make CMakeFiles/cmTC_a77a0.dir/build
+Run Build Command(s):/usr/bin/make cmTC_d165b/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_d165b.dir/build.make CMakeFiles/cmTC_d165b.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_a77a0.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_a77a0.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_a77a0
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a77a0.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_a77a0.dir/CheckIncludeFile.c.o  -o cmTC_a77a0 
+Building C object CMakeFiles/cmTC_d165b.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_d165b.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_d165b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d165b.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_d165b.dir/CheckIncludeFile.c.o -o cmTC_d165b 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -582,14 +550,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file time.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_7a6a6/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_7a6a6.dir/build.make CMakeFiles/cmTC_7a6a6.dir/build
+Run Build Command(s):/usr/bin/make cmTC_cfe9f/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_cfe9f.dir/build.make CMakeFiles/cmTC_cfe9f.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_7a6a6.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_7a6a6.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_7a6a6
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7a6a6.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_7a6a6.dir/CheckIncludeFile.c.o  -o cmTC_7a6a6 
+Building C object CMakeFiles/cmTC_cfe9f.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_cfe9f.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_cfe9f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cfe9f.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_cfe9f.dir/CheckIncludeFile.c.o -o cmTC_cfe9f 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -598,14 +566,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file sys/types.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_59f05/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_59f05.dir/build.make CMakeFiles/cmTC_59f05.dir/build
+Run Build Command(s):/usr/bin/make cmTC_d0d1d/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_d0d1d.dir/build.make CMakeFiles/cmTC_d0d1d.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_59f05.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_59f05.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_59f05
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_59f05.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_59f05.dir/CheckIncludeFile.c.o  -o cmTC_59f05 
+Building C object CMakeFiles/cmTC_d0d1d.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_d0d1d.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_d0d1d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d0d1d.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_d0d1d.dir/CheckIncludeFile.c.o -o cmTC_d0d1d 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -614,14 +582,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file sys/stat.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_898e6/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_898e6.dir/build.make CMakeFiles/cmTC_898e6.dir/build
+Run Build Command(s):/usr/bin/make cmTC_02a1e/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_02a1e.dir/build.make CMakeFiles/cmTC_02a1e.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_898e6.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_898e6.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_898e6
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_898e6.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_898e6.dir/CheckIncludeFile.c.o  -o cmTC_898e6 
+Building C object CMakeFiles/cmTC_02a1e.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_02a1e.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_02a1e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_02a1e.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_02a1e.dir/CheckIncludeFile.c.o -o cmTC_02a1e 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -630,14 +598,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file sys/time.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_bc4a4/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_bc4a4.dir/build.make CMakeFiles/cmTC_bc4a4.dir/build
+Run Build Command(s):/usr/bin/make cmTC_a2f30/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_a2f30.dir/build.make CMakeFiles/cmTC_a2f30.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_bc4a4.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_bc4a4.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_bc4a4
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bc4a4.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_bc4a4.dir/CheckIncludeFile.c.o  -o cmTC_bc4a4 
+Building C object CMakeFiles/cmTC_a2f30.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_a2f30.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_a2f30
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a2f30.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_a2f30.dir/CheckIncludeFile.c.o -o cmTC_a2f30 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -646,16 +614,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function getpid exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_a580a/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_a580a.dir/build.make CMakeFiles/cmTC_a580a.dir/build
+Run Build Command(s):/usr/bin/make cmTC_34b96/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_34b96.dir/build.make CMakeFiles/cmTC_34b96.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[2]: Warning: File 'CMakeFiles/cmTC_a580a.dir/progress.make' has modification time 0.00062 s in the future
-Building C object CMakeFiles/cmTC_a580a.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=getpid   -o CMakeFiles/cmTC_a580a.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
-Linking C executable cmTC_a580a
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a580a.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=getpid    -rdynamic CMakeFiles/cmTC_a580a.dir/CheckFunctionExists.c.o  -o cmTC_a580a 
-make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+Building C object CMakeFiles/cmTC_34b96.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=getpid -o CMakeFiles/cmTC_34b96.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
+Linking C executable cmTC_34b96
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_34b96.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=getpid -rdynamic CMakeFiles/cmTC_34b96.dir/CheckFunctionExists.c.o -o cmTC_34b96 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -664,14 +630,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function syscall exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_f9213/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_f9213.dir/build.make CMakeFiles/cmTC_f9213.dir/build
+Run Build Command(s):/usr/bin/make cmTC_8d183/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_8d183.dir/build.make CMakeFiles/cmTC_8d183.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_f9213.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=syscall   -o CMakeFiles/cmTC_f9213.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
-Linking C executable cmTC_f9213
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f9213.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=syscall    -rdynamic CMakeFiles/cmTC_f9213.dir/CheckFunctionExists.c.o  -o cmTC_f9213 
+Building C object CMakeFiles/cmTC_8d183.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=syscall -o CMakeFiles/cmTC_8d183.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
+Linking C executable cmTC_8d183
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8d183.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=syscall -rdynamic CMakeFiles/cmTC_8d183.dir/CheckFunctionExists.c.o -o cmTC_8d183 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -680,21 +646,21 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function isinf exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_779d2/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_779d2.dir/build.make CMakeFiles/cmTC_779d2.dir/build
+Run Build Command(s):/usr/bin/make cmTC_1188b/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_1188b.dir/build.make CMakeFiles/cmTC_1188b.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_779d2.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isinf   -o CMakeFiles/cmTC_779d2.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Building C object CMakeFiles/cmTC_1188b.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isinf -o CMakeFiles/cmTC_1188b.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
 <command-line>: warning: conflicting types for built-in function ‘isinf’; expected ‘int()’ [-Wbuiltin-declaration-mismatch]
-/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+/usr/share/cmake-3.18/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
     7 |   CHECK_FUNCTION_EXISTS(void);
       |   ^~~~~~~~~~~~~~~~~~~~~
-/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:1:1: note: ‘isinf’ is declared in header ‘<math.h>’
+/usr/share/cmake-3.18/Modules/CheckFunctionExists.c:1:1: note: ‘isinf’ is declared in header ‘<math.h>’
   +++ |+#include <math.h>
     1 | #ifdef CHECK_FUNCTION_EXISTS
-Linking C executable cmTC_779d2
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_779d2.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isinf    -rdynamic CMakeFiles/cmTC_779d2.dir/CheckFunctionExists.c.o  -o cmTC_779d2 
+Linking C executable cmTC_1188b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1188b.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isinf -rdynamic CMakeFiles/cmTC_1188b.dir/CheckFunctionExists.c.o -o cmTC_1188b 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -703,21 +669,21 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function isnan exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_9af33/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_9af33.dir/build.make CMakeFiles/cmTC_9af33.dir/build
+Run Build Command(s):/usr/bin/make cmTC_1d99b/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_1d99b.dir/build.make CMakeFiles/cmTC_1d99b.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_9af33.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isnan   -o CMakeFiles/cmTC_9af33.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Building C object CMakeFiles/cmTC_1d99b.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isnan -o CMakeFiles/cmTC_1d99b.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
 <command-line>: warning: conflicting types for built-in function ‘isnan’; expected ‘int()’ [-Wbuiltin-declaration-mismatch]
-/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+/usr/share/cmake-3.18/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
     7 |   CHECK_FUNCTION_EXISTS(void);
       |   ^~~~~~~~~~~~~~~~~~~~~
-/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:1:1: note: ‘isnan’ is declared in header ‘<math.h>’
+/usr/share/cmake-3.18/Modules/CheckFunctionExists.c:1:1: note: ‘isnan’ is declared in header ‘<math.h>’
   +++ |+#include <math.h>
     1 | #ifdef CHECK_FUNCTION_EXISTS
-Linking C executable cmTC_9af33
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9af33.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isnan    -rdynamic CMakeFiles/cmTC_9af33.dir/CheckFunctionExists.c.o  -o cmTC_9af33 
+Linking C executable cmTC_1d99b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1d99b.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=isnan -rdynamic CMakeFiles/cmTC_1d99b.dir/CheckFunctionExists.c.o -o cmTC_1d99b 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -726,16 +692,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function gettimeofday exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_ed295/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_ed295.dir/build.make CMakeFiles/cmTC_ed295.dir/build
+Run Build Command(s):/usr/bin/make cmTC_69a5c/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_69a5c.dir/build.make CMakeFiles/cmTC_69a5c.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[2]: Warning: File 'CMakeFiles/cmTC_ed295.dir/progress.make' has modification time 0.00047 s in the future
-Building C object CMakeFiles/cmTC_ed295.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=gettimeofday   -o CMakeFiles/cmTC_ed295.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
-Linking C executable cmTC_ed295
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ed295.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=gettimeofday    -rdynamic CMakeFiles/cmTC_ed295.dir/CheckFunctionExists.c.o  -o cmTC_ed295 
-make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+Building C object CMakeFiles/cmTC_69a5c.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=gettimeofday -o CMakeFiles/cmTC_69a5c.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
+Linking C executable cmTC_69a5c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_69a5c.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=gettimeofday -rdynamic CMakeFiles/cmTC_69a5c.dir/CheckFunctionExists.c.o -o cmTC_69a5c 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -744,16 +708,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function qsort_r exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_0aca5/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_0aca5.dir/build.make CMakeFiles/cmTC_0aca5.dir/build
+Run Build Command(s):/usr/bin/make cmTC_7f626/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_7f626.dir/build.make CMakeFiles/cmTC_7f626.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[2]: Warning: File 'CMakeFiles/cmTC_0aca5.dir/progress.make' has modification time 0.0075 s in the future
-Building C object CMakeFiles/cmTC_0aca5.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=qsort_r   -o CMakeFiles/cmTC_0aca5.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
-Linking C executable cmTC_0aca5
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0aca5.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=qsort_r    -rdynamic CMakeFiles/cmTC_0aca5.dir/CheckFunctionExists.c.o  -o cmTC_0aca5 
-make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+Building C object CMakeFiles/cmTC_7f626.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=qsort_r -o CMakeFiles/cmTC_7f626.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
+Linking C executable cmTC_7f626
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7f626.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=qsort_r -rdynamic CMakeFiles/cmTC_7f626.dir/CheckFunctionExists.c.o -o cmTC_7f626 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -762,14 +724,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function time exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_fad35/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_fad35.dir/build.make CMakeFiles/cmTC_fad35.dir/build
+Run Build Command(s):/usr/bin/make cmTC_45d8b/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_45d8b.dir/build.make CMakeFiles/cmTC_45d8b.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_fad35.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=time   -o CMakeFiles/cmTC_fad35.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
-Linking C executable cmTC_fad35
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fad35.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=time    -rdynamic CMakeFiles/cmTC_fad35.dir/CheckFunctionExists.c.o  -o cmTC_fad35 
+Building C object CMakeFiles/cmTC_45d8b.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=time -o CMakeFiles/cmTC_45d8b.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
+Linking C executable cmTC_45d8b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_45d8b.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=time -rdynamic CMakeFiles/cmTC_45d8b.dir/CheckFunctionExists.c.o -o cmTC_45d8b 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -778,23 +740,21 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function copysign exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_8ccad/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_8ccad.dir/build.make CMakeFiles/cmTC_8ccad.dir/build
+Run Build Command(s):/usr/bin/make cmTC_5d0c1/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_5d0c1.dir/build.make CMakeFiles/cmTC_5d0c1.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[2]: Warning: File 'CMakeFiles/cmTC_8ccad.dir/progress.make' has modification time 0.0077 s in the future
-Building C object CMakeFiles/cmTC_8ccad.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=copysign   -o CMakeFiles/cmTC_8ccad.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Building C object CMakeFiles/cmTC_5d0c1.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=copysign -o CMakeFiles/cmTC_5d0c1.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
 <command-line>: warning: conflicting types for built-in function ‘copysign’; expected ‘double(double,  double)’ [-Wbuiltin-declaration-mismatch]
-/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+/usr/share/cmake-3.18/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
     7 |   CHECK_FUNCTION_EXISTS(void);
       |   ^~~~~~~~~~~~~~~~~~~~~
-/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:1:1: note: ‘copysign’ is declared in header ‘<math.h>’
+/usr/share/cmake-3.18/Modules/CheckFunctionExists.c:1:1: note: ‘copysign’ is declared in header ‘<math.h>’
   +++ |+#include <math.h>
     1 | #ifdef CHECK_FUNCTION_EXISTS
-Linking C executable cmTC_8ccad
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8ccad.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=copysign    -rdynamic CMakeFiles/cmTC_8ccad.dir/CheckFunctionExists.c.o  -o cmTC_8ccad 
-make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+Linking C executable cmTC_5d0c1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5d0c1.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=copysign -rdynamic CMakeFiles/cmTC_5d0c1.dir/CheckFunctionExists.c.o -o cmTC_5d0c1 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -803,14 +763,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the include file stddef.h exists passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_acd1b/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_acd1b.dir/build.make CMakeFiles/cmTC_acd1b.dir/build
+Run Build Command(s):/usr/bin/make cmTC_0577d/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_0577d.dir/build.make CMakeFiles/cmTC_0577d.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_acd1b.dir/CheckIncludeFile.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_acd1b.dir/CheckIncludeFile.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_acd1b
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_acd1b.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_acd1b.dir/CheckIncludeFile.c.o  -o cmTC_acd1b 
+Building C object CMakeFiles/cmTC_0577d.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_0577d.dir/CheckIncludeFile.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0577d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0577d.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_0577d.dir/CheckIncludeFile.c.o -o cmTC_0577d 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -819,14 +779,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining size of uint32_t passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_ffd0b/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_ffd0b.dir/build.make CMakeFiles/cmTC_ffd0b.dir/build
+Run Build Command(s):/usr/bin/make cmTC_7ebb6/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_7ebb6.dir/build.make CMakeFiles/cmTC_7ebb6.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_ffd0b.dir/SIZEOF_UINT32_T.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_ffd0b.dir/SIZEOF_UINT32_T.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UINT32_T.c
-Linking C executable cmTC_ffd0b
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ffd0b.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_ffd0b.dir/SIZEOF_UINT32_T.c.o  -o cmTC_ffd0b 
+Building C object CMakeFiles/cmTC_7ebb6.dir/SIZEOF_UINT32_T.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_7ebb6.dir/SIZEOF_UINT32_T.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UINT32_T.c
+Linking C executable cmTC_7ebb6
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7ebb6.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_7ebb6.dir/SIZEOF_UINT32_T.c.o -o cmTC_7ebb6 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -835,14 +795,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining size of unsigned int passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_4809f/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_4809f.dir/build.make CMakeFiles/cmTC_4809f.dir/build
+Run Build Command(s):/usr/bin/make cmTC_370ef/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_370ef.dir/build.make CMakeFiles/cmTC_370ef.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_4809f.dir/SIZEOF_UNSIGNED_INT.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_4809f.dir/SIZEOF_UNSIGNED_INT.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UNSIGNED_INT.c
-Linking C executable cmTC_4809f
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4809f.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_4809f.dir/SIZEOF_UNSIGNED_INT.c.o  -o cmTC_4809f 
+Building C object CMakeFiles/cmTC_370ef.dir/SIZEOF_UNSIGNED_INT.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_370ef.dir/SIZEOF_UNSIGNED_INT.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UNSIGNED_INT.c
+Linking C executable cmTC_370ef
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_370ef.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_370ef.dir/SIZEOF_UNSIGNED_INT.c.o -o cmTC_370ef 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -851,14 +811,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining size of unsigned long passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_9d7f2/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_9d7f2.dir/build.make CMakeFiles/cmTC_9d7f2.dir/build
+Run Build Command(s):/usr/bin/make cmTC_c01e8/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_c01e8.dir/build.make CMakeFiles/cmTC_c01e8.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_9d7f2.dir/SIZEOF_UNSIGNED_LONG.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64    -o CMakeFiles/cmTC_9d7f2.dir/SIZEOF_UNSIGNED_LONG.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UNSIGNED_LONG.c
-Linking C executable cmTC_9d7f2
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9d7f2.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64     -rdynamic CMakeFiles/cmTC_9d7f2.dir/SIZEOF_UNSIGNED_LONG.c.o  -o cmTC_9d7f2 
+Building C object CMakeFiles/cmTC_c01e8.dir/SIZEOF_UNSIGNED_LONG.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64  -o CMakeFiles/cmTC_c01e8.dir/SIZEOF_UNSIGNED_LONG.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CheckTypeSize/SIZEOF_UNSIGNED_LONG.c
+Linking C executable cmTC_c01e8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c01e8.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64  -rdynamic CMakeFiles/cmTC_c01e8.dir/SIZEOF_UNSIGNED_LONG.c.o -o cmTC_c01e8 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -867,23 +827,21 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Determining if the function sqrt exists in the m passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_5d98a/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_5d98a.dir/build.make CMakeFiles/cmTC_5d98a.dir/build
+Run Build Command(s):/usr/bin/make cmTC_e3059/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_e3059.dir/build.make CMakeFiles/cmTC_e3059.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[2]: Warning: File 'CMakeFiles/cmTC_5d98a.dir/progress.make' has modification time 0.0047 s in the future
-Building C object CMakeFiles/cmTC_5d98a.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=sqrt   -o CMakeFiles/cmTC_5d98a.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.17/Modules/CheckFunctionExists.c
+Building C object CMakeFiles/cmTC_e3059.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=sqrt -o CMakeFiles/cmTC_e3059.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.18/Modules/CheckFunctionExists.c
 <command-line>: warning: conflicting types for built-in function ‘sqrt’; expected ‘double(double)’ [-Wbuiltin-declaration-mismatch]
-/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+/usr/share/cmake-3.18/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
     7 |   CHECK_FUNCTION_EXISTS(void);
       |   ^~~~~~~~~~~~~~~~~~~~~
-/usr/share/cmake-3.17/Modules/CheckFunctionExists.c:1:1: note: ‘sqrt’ is declared in header ‘<math.h>’
+/usr/share/cmake-3.18/Modules/CheckFunctionExists.c:1:1: note: ‘sqrt’ is declared in header ‘<math.h>’
   +++ |+#include <math.h>
     1 | #ifdef CHECK_FUNCTION_EXISTS
-Linking C executable cmTC_5d98a
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5d98a.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=sqrt    -rdynamic CMakeFiles/cmTC_5d98a.dir/CheckFunctionExists.c.o  -o cmTC_5d98a  -lm 
-make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+Linking C executable cmTC_e3059
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e3059.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DCHECK_FUNCTION_EXISTS=sqrt -rdynamic CMakeFiles/cmTC_e3059.dir/CheckFunctionExists.c.o -o cmTC_e3059  -lm 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -892,14 +850,14 @@ make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/tar
 Performing C SOURCE FILE Test HAVE_THREAD_LOCAL_STORAGE succeeded with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_9cade/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_9cade.dir/build.make CMakeFiles/cmTC_9cade.dir/build
+Run Build Command(s):/usr/bin/make cmTC_7c3c8/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_7c3c8.dir/build.make CMakeFiles/cmTC_7c3c8.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_9cade.dir/src.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE   -o CMakeFiles/cmTC_9cade.dir/src.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTC_9cade
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9cade.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE    -rdynamic CMakeFiles/cmTC_9cade.dir/src.c.o  -o cmTC_9cade 
+Building C object CMakeFiles/cmTC_7c3c8.dir/src.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE -o CMakeFiles/cmTC_7c3c8.dir/src.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_7c3c8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7c3c8.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DHAVE_THREAD_LOCAL_STORAGE -rdynamic CMakeFiles/cmTC_7c3c8.dir/src.c.o -o cmTC_7c3c8 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -914,16 +872,14 @@ Source file was:
 Determining if the __cplusplus exist passed with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_6a4a6/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_6a4a6.dir/build.make CMakeFiles/cmTC_6a4a6.dir/build
+Run Build Command(s):/usr/bin/make cmTC_91fea/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_91fea.dir/build.make CMakeFiles/cmTC_91fea.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[2]: Warning: File 'CMakeFiles/cmTC_6a4a6.dir/progress.make' has modification time 0.0022 s in the future
-Building CXX object CMakeFiles/cmTC_6a4a6.dir/CheckSymbolExists.cxx.o
-/usr/bin/c++     -o CMakeFiles/cmTC_6a4a6.dir/CheckSymbolExists.cxx.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
-Linking CXX executable cmTC_6a4a6
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6a4a6.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_6a4a6.dir/CheckSymbolExists.cxx.o  -o cmTC_6a4a6 
-make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+Building CXX object CMakeFiles/cmTC_91fea.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -o CMakeFiles/cmTC_91fea.dir/CheckSymbolExists.cxx.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+Linking CXX executable cmTC_91fea
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_91fea.dir/link.txt --verbose=1
+/usr/bin/c++ -rdynamic CMakeFiles/cmTC_91fea.dir/CheckSymbolExists.cxx.o -o cmTC_91fea 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -945,16 +901,14 @@ int main(int argc, char** argv)
 Performing C++ SOURCE FILE Test SUPPORTS_STDCXX11 succeeded with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_647a6/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_647a6.dir/build.make CMakeFiles/cmTC_647a6.dir/build
+Run Build Command(s):/usr/bin/make cmTC_ecdd4/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_ecdd4.dir/build.make CMakeFiles/cmTC_ecdd4.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[2]: Warning: File 'CMakeFiles/cmTC_647a6.dir/progress.make' has modification time 0.0019 s in the future
-Building CXX object CMakeFiles/cmTC_647a6.dir/src.cxx.o
-/usr/bin/c++    -DSUPPORTS_STDCXX11   -std=c++11 -o CMakeFiles/cmTC_647a6.dir/src.cxx.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.cxx
-Linking CXX executable cmTC_647a6
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_647a6.dir/link.txt --verbose=1
-/usr/bin/c++   -DSUPPORTS_STDCXX11    -rdynamic CMakeFiles/cmTC_647a6.dir/src.cxx.o  -o cmTC_647a6 
-make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+Building CXX object CMakeFiles/cmTC_ecdd4.dir/src.cxx.o
+/usr/bin/c++   -DSUPPORTS_STDCXX11   -std=c++11 -o CMakeFiles/cmTC_ecdd4.dir/src.cxx.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_ecdd4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ecdd4.dir/link.txt --verbose=1
+/usr/bin/c++  -DSUPPORTS_STDCXX11 -rdynamic CMakeFiles/cmTC_ecdd4.dir/src.cxx.o -o cmTC_ecdd4 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 
@@ -964,16 +918,14 @@ int main() { return 0; }
 Performing C SOURCE FILE Test HAS_FPIC succeeded with the following output:
 Change Dir: /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_76533/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make  -f CMakeFiles/cmTC_76533.dir/build.make CMakeFiles/cmTC_76533.dir/build
+Run Build Command(s):/usr/bin/make cmTC_b74d1/fast && make[1]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
+make  -f CMakeFiles/cmTC_b74d1.dir/build.make CMakeFiles/cmTC_b74d1.dir/build
 make[2]: Entering directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
-make[2]: Warning: File 'CMakeFiles/cmTC_76533.dir/progress.make' has modification time 0.0032 s in the future
-Building C object CMakeFiles/cmTC_76533.dir/src.c.o
-/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAS_FPIC   -fPIC -o CMakeFiles/cmTC_76533.dir/src.c.o   -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTC_76533
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_76533.dir/link.txt --verbose=1
-/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DHAS_FPIC    -rdynamic CMakeFiles/cmTC_76533.dir/src.c.o  -o cmTC_76533 
-make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+Building C object CMakeFiles/cmTC_b74d1.dir/src.c.o
+/usr/bin/cc   -ffunction-sections -fdata-sections -fPIC -m64 -DHAS_FPIC   -fPIC -o CMakeFiles/cmTC_b74d1.dir/src.c.o -c /media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_b74d1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b74d1.dir/link.txt --verbose=1
+/usr/bin/cc  -ffunction-sections -fdata-sections -fPIC -m64 -DHAS_FPIC -rdynamic CMakeFiles/cmTC_b74d1.dir/src.c.o -o cmTC_b74d1 
 make[2]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 make[1]: Leaving directory '/media/sf_files/Dal/Code/rnmrfit_dev/src/wrapper/target/release/build/nlopt-8949c50758ecf046/out/build/CMakeFiles/CMakeTmp'
 

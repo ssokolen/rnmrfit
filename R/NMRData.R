@@ -634,7 +634,7 @@ setMethod("filter_direct", "NMRData",
     if ( is.na(upper) ) upper <- max(d$direct.shift)
 
     # Directly apply internal filter function
-    d <- filter(d, .filter_shift(direct.shift, lower, upper, round, align))
+    d <- dplyr::filter(d, .filter_shift(direct.shift, lower, upper, round, align))
     object@processed <- d
 
     object
@@ -663,7 +663,7 @@ setMethod("filter_indirect", "NMRData",
 
     # Apply internal filter function grouped by direct shift
     d <- group_by(d, direct.shift) %>%
-           filter(d, .filter_shift(indirect.shift, lower, upper, round, align))
+           dplyr::filter(d, .filter_shift(indirect.shift, lower, upper, round, align))
     object@processed <- ungroup(d)
 
     object

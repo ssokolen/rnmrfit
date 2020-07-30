@@ -111,6 +111,7 @@ pub fn fit_1d(x: Array1<f64>, y: Array2<f64>, knots: Array1<f64>,
     let n_par: usize = nl + nb*2 + np;
     let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit1D::obj, Target::Minimize, fit);
     //let mut opt = Nlopt::new(Algorithm::Cobyla, n_par, Fit1D::obj, Target::Minimize, fit);
+    //let mut opt = Nlopt::new(Algorithm::Isres, n_par, Fit1D::obj, Target::Minimize, fit);
 
     // Common nlopt setup
     add_constraints(&mut opt, lb, ub, eq, iq);
