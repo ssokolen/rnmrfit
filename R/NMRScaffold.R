@@ -1198,8 +1198,10 @@ setMethod("parse_constraints", "NMRScaffold",
             for ( i in 1:nrow(couplings) ) {
               peak.1 <- couplings$peak.1[i]
               peak.2 <- couplings$peak.2[i]
-              diff <- couplings$position.difference[i]/x.span[[dimension]]
-              ratio <- couplings$area.ratio[i]
+              position <- couplings$position.difference[i]/x.span[[dimension]]
+              area <- couplings$area.ratio[i]
+              width <- couplings$width[i]
+              fraction <- couplings$fraction[i]
 
               logic <- (specie@id == peaks$species) & 
                        (resonance@id == peaks$resonance) &
@@ -1212,43 +1214,51 @@ setMethod("parse_constraints", "NMRScaffold",
               # Each coupling constraint includes position, width, and area
 
               # First, the position
-              leeway <- position.leeway
-              if ( leeway == 0 ) {
-                eq.constraints <- c(eq.constraints, 
-                                    f_position(leeway, diff, indexes))
-              } else {
-                ineq.constraints <- c(ineq.constraints, 
-                                    f_position(leeway, diff, indexes))
+              if ( all(is.finite(position)) ) {
+                leeway <- position.leeway
+                if ( leeway == 0 ) {
+                  eq.constraints <- c(eq.constraints, 
+                                      f_position(leeway, position, indexes))
+                } else {
+                  ineq.constraints <- c(ineq.constraints, 
+                                      f_position(leeway, position, indexes))
+                }
               }
 
               # Then, the width (same by default)
+              if ( all(is.finite(width)) ) {
               leeway <- width.leeway
-              if ( leeway == 0 ) {
-                eq.constraints <- c(eq.constraints, 
-                                    f_width(leeway, indexes))
-              } else {
-                ineq.constraints <- c(ineq.constraints, 
-                                    f_width(leeway, indexes))
+                if ( leeway == 0 ) {
+                  eq.constraints <- c(eq.constraints, 
+                                      f_width(leeway, indexes))
+                } else {
+                  ineq.constraints <- c(ineq.constraints, 
+                                      f_width(leeway, indexes))
+                }
               }
 
               # Then, the fraction Gauss (same by default)
-              leeway <- fraction.leeway
-              if ( leeway == 0 ) {
-                eq.constraints <- c(eq.constraints, 
-                                    f_fraction(leeway, indexes))
-              } else {
-                ineq.constraints <- c(ineq.constraints, 
-                                    f_fraction(leeway, indexes))
+              if ( all(is.finite(fraction)) ) {
+                leeway <- fraction.leeway
+                if ( leeway == 0 ) {
+                  eq.constraints <- c(eq.constraints, 
+                                      f_fraction(leeway, indexes))
+                } else {
+                  ineq.constraints <- c(ineq.constraints, 
+                                      f_fraction(leeway, indexes))
+                }
               }
 
               # Finally, the area
-              leeway <- area.leeway
-              if ( leeway == 0 ) {
-                eq.constraints <- c(eq.constraints, 
-                                    f_area(leeway, ratio, indexes))
-              } else {
-                ineq.constraints <- c(ineq.constraints, 
-                                    f_area(leeway, ratio, indexes))
+              if ( all(is.finite(area)) ) {
+                leeway <- area.leeway
+                if ( leeway == 0 ) {
+                  eq.constraints <- c(eq.constraints, 
+                                      f_area(leeway, area, indexes))
+                } else {
+                  ineq.constraints <- c(ineq.constraints, 
+                                      f_area(leeway, area, indexes))
+                }
               }
             }
           }

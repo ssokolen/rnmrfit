@@ -29,14 +29,14 @@
 #'                intensity values of the baseline based on the chemical shift
 #'                locations of the knots. The default baseline order and the
 #'                number of internal knots can be set using
-#'                nmrpotions$baseline = list(order = 3, n.knots = 0),
-#'                with the baseline vector length equal to the order + n.knots +
-#'                1.
+#'                nmrpotions$baseline$order = 3, nmroptions$baseline$n.knots =
+#'                0, with the baseline vector length equal to the order +
+#'                n.knots + 1.
 #' @slot phase A vector of phase correction terms, corresponding to either 0 or
 #'             1st order phase correction. The default phase correction order
-#'             can be set using nmroptions$phase = list(order=1). Note
-#'             that the 0 order term is always calculated with respect to 0 ppm
-#'             and the first order term has units of degrees per ppm.
+#'             can be set using nmroptions$phase$order = 0. Note that the 0
+#'             order term is always calculated with respect to 0 ppm and the
+#'             first order term has units of degrees per ppm.
 #' @slot bounds A lower and upper bounds on baseline and phase terms. Both lower
 #'              and upper bounds are lists containing "baseline", and "phase"
 #'              elements. A "peaks" element is also generated dynamically from
@@ -299,12 +299,49 @@ setMethod("fit", "NMRFit1D",
   }
 
   #---------------------------------------
+  # Checking opts
+  algorithm <- opts$algorithm
+  err <- '"algorithm" option must be one of "SLSQP" or "ISRES"'
+  if (! algorithm %in% c("SLSQP", "ISRES") ) stop(err)
+
+  if ( algorithm == "SLSQP" ) algorithm <- 0
+  else algorithm <- 1
+
+  padding <- opts$padding/x.span
+  err <- '"padding" option must 0 or greater'
+  if ( padding < 0 ) stop(err)
+
+  xtol_rel <- opts$xtol_rel
+  err <- '"xtol_rel" option must be between 0 and 1'
+  if ( (xtol_rel <= 0) | (xtol_rel >= 1) ) stop(err)
+
+  maxtime <- opts$maxtime
+  err <- '"maxtime" option must be 0 (disabled) or greater'
+  if ( maxtime < 0 ) stop(err)
+
+  #---------------------------------------
   # Generating constraint lists
 
   constraints <- parse_constraints(object, x.span)
 
   eq.constraints <- constraints[[1]]
   ineq.constraints <- constraints[[2]]
+
+  # Adding padding constraints
+  if ( padding > 0 ) {
+    peaks <- peaks(object)
+    n <- nrow(peaks)
+
+    pos.left <- peaks$position[1:(n-1)]
+    pos.right <- peaks$position[2:n]
+
+    logic <- pos.left < pos.right
+    pos.left <- ifelse(logic, 1:(n-1), -(1:(n-1)))
+    pos.right <- ifelse(!logic, 2:n, -(2:n))
+
+    pad.constraints <- map2(pos.left, pos.right, ~ c(0, -padding, .x, .y))
+    ineq.constraints <- c(ineq.constraints, pad.constraints)
+  }
 
   #---------------------------------------
   # Performing the fit
@@ -332,7 +369,10 @@ setMethod("fit", "NMRFit1D",
     eq = as.double(eq.constraints),
     iq = as.double(ineq.constraints),
     neq = as.integer(length(eq.constraints)),
-    niq = as.integer(length(ineq.constraints))
+    niq = as.integer(length(ineq.constraints)),
+    alg = as.integer(algorithm),
+    xtr = as.double(xtol_rel),
+    mxt = as.double(maxtime)
   )
   object@time <- as.numeric(proc.time() - start.time)[3]
 

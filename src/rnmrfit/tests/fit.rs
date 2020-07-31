@@ -73,7 +73,7 @@ fn test_fit_1d(nl: usize, nb: usize, np: usize, offset: f64, tol: f64) {
     }
 
     // Fitting
-    let (par, result) = fit_1d(x, y, knots, p0.clone(), lb, ub, nl, nb, np, None, None);
+    let (par, result) = fit_1d(x, y, knots, p0.clone(), lb, ub, nl, nb, np, None, None, 0, 1e-4, 0.0);
 
     // Testing optimization state
     let success = match result {

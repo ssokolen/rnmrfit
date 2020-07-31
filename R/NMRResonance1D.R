@@ -234,13 +234,16 @@ split_peaks_1d <- function(peaks, number, constant) {
 #' inequality constraints around a fraction of the fixed values.
 #' 
 #' @param nmrresonance An NMRResonance1D object to be modified.
-#' @param peaks Vector of peak numbers to enforce coupling. The default is to
-#'              select all peaks.
+#' @param position TRUE to enforce position differences.
+#' @param width TRUE to enforce constant width. 
+#' @param fraction TRUE to enforce constant fraction gauss. 
+#' @param area TRUE to enforce area ratios. 
 #' 
 #' @return An NMRResonance1D object with a new set of coupling constraints.
 #' 
 #' @export
-enforce_couplings_1d <- function(nmrresonance, peaks = NULL) {
+enforce_couplings_1d <- function(nmrresonance, position = TRUE, width = TRUE,
+                                 fraction = TRUE, area = TRUE) {
 
   # Checking validity
   if ( class(nmrresonance) != 'NMRResonance1D' ) {
@@ -250,8 +253,6 @@ enforce_couplings_1d <- function(nmrresonance, peaks = NULL) {
 
   # Filtering peaks
   d <- nmrresonance@peaks
-  if ( is.null(peaks) ) peaks <- d$peak
-  d <- d[d$peak %in% peaks, ]
 
   # There must be more than one peak to add couplings
   if ( nrow(d) <= 1 ) return(nmrresonance)
@@ -260,11 +261,19 @@ enforce_couplings_1d <- function(nmrresonance, peaks = NULL) {
   index.1 <- 1:(nrow(d) - 1)
   index.2 <- 2:nrow(d)
 
-  differences <- d$position[index.2] - d$position[index.1]
-  ratios <- d$height[index.2]/d$height[index.1]
+  # Initializing NA values
+  differences <- NA
+  ratios <- NA
+
+  if ( position ) differences <- d$position[index.2] - d$position[index.1]
+  if ( area ) ratios <- d$height[index.2]/d$height[index.1]
+  
+  if (! width ) width <- NA
+  if (! fraction ) fraction <- NA
+
   couplings <- data.frame(peak.1 = d$peak[index.1], peak.2 = d$peak[index.2],
                           position.difference = differences,
-                          area.ratio = ratios)
+                          area.ratio = ratios, width = width, fraction = fraction)
 
   nmrresonance@couplings <- rbind(nmrresonance@couplings, couplings)
   nmrresonance

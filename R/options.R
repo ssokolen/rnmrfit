@@ -11,41 +11,72 @@ opts <- list(
     .class = "numeric"
   ),
   
-  "baseline" = list(
-    .value = list(order = 3, n.knots = 0),
-    .length = 2,
-    .class = "list",
-    .validate = function (x) { 
-      all(names(x) %in% c('degree', 'n.knots')) &&
-      all(lapply(x, class) == 'numeric')
-    }
+  "baseline" = set_opt(
+    order = list(
+      .value = 3,
+      .length = 1,
+      .class = "numeric",
+      .validate = function (x) { x %in% c(-1, 0:20) },
+      .failed_msg = "Value must be -1 (disabled) or 0-20."
+    ),
+    n.knots = list(
+      .value = 0,
+      .length = 1,
+      .class = "numeric",
+      .validate = function (x) { x >= 0 },
+      .failed_msg = "Value must be a positive integer."
+    )
   ),
   
-  "phase" = list(
-    .value = list(order = 0),
-    .length = 1,
-    .class = "list",
-    .validate = function (x) { 
-      ( names(x) == 'order' ) &&
-      all(lapply(x, class) == 'numeric')
-    } 
+  "phase" = set_opt(
+    order = list(
+      .value = 0,
+      .length = 1,
+      .class = "numeric",
+      .validate = function (x) { x %in% c(-1, 0, 1) },
+      .failed_msg = "Value must be -1 (disabled), 0, or 1."
+    )
   ),
 
-  "fit" = list(
-    .value = list(
-      opts = list(),
-      init = function (object, ...) {
+  "fit" = set_opt(
+    opts = set_opt(
+      algorithm = list(
+        .value = "SLSQP",
+        .length = 1,
+        .class = "character",
+        .validate = function (x) { x %in% c("SLSQP", "ISRES") },
+        .failed_msg = 'Only "SLSQP" and "ISRES" currently supported.'
+      ),
+      padding = list(
+        .value = 0,
+        .length = 1,
+        .class = "numeric",
+        .validate = function(x) {x >= 0},
+        .failed_msg = "Value must be positive."
+      ),
+      xtol_rel = list(
+        .value = 1e-4,
+        .length = 1,
+        .class = "numeric",
+        .validate = function(x) {(x > 0) & (x < 1)},
+        .failed_msg = "Value should be between 0 and 1."
+      ),
+      maxtime = list(
+        .value = 0,
+        .length = 1,
+        .class = "numeric",
+        .validate = function(x) {x >= 0},
+        .failed_msg = "Value must be positive."
+      )
+    ),
+    init = list(
+      .value = function (object, ...) {
         object <- initialize_heights(object, nmrdata = object@nmrdata)
         object <- set_conservative_bounds(object, nmrdata = object@nmrdata)
         object
-      }
-    ),
-    .length = 2,
-    .class = "list",
-    .validate = function (x) {
-      all(names(x) %in% c('opts', 'init')) &&
-      ( class(x[['init']]) == 'function' )
-    }
+      },
+      .class = "function"
+    )
   )
 )
 

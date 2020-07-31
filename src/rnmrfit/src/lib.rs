@@ -24,9 +24,6 @@ pub fn add_constraints<F: ObjFn<T>, T>(opt: &mut Nlopt<F, T>, lb: Array1<f64>, u
                                        eq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
                                        iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>) {
 
-    // Basic constraints
-    opt.set_maxeval(1000).unwrap();
-    opt.set_xtol_rel(1e-4).unwrap();
 
     // Set simple bounds
     let lb = lb.to_vec();
@@ -100,18 +97,33 @@ pub fn fit_1d(x: Array1<f64>, y: Array2<f64>, knots: Array1<f64>,
               p: Array1<f64>, lb: Array1<f64>, ub: Array1<f64>,
               nl: usize, nb: usize, np: usize,
               eq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
-              iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>)
+              iq: Option<Vec<(usize, f64, Vec<usize>, Vec<usize>)>>,
+              alg: i32, xtr: f64, mxt: f64)
 
     -> (Array<f64, Ix1>, Result<(SuccessState, f64), (FailState, f64)>) {
 
-    // Generate Fit object
-    let fit = Fit1D::new(x, y, knots, nl, nb, np);
-
     // Initializing nlopt object
     let n_par: usize = nl + nb*2 + np;
-    let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit1D::obj, Target::Minimize, fit);
+
+    let fit = Fit1D::new(x, y, knots, nl, nb, np);
+
+    let mut opt: Nlopt<fn(&[f64], Option<&mut [f64]>, &mut Fit1D) -> f64, Fit1D>;
+
     //let mut opt = Nlopt::new(Algorithm::Cobyla, n_par, Fit1D::obj, Target::Minimize, fit);
-    //let mut opt = Nlopt::new(Algorithm::Isres, n_par, Fit1D::obj, Target::Minimize, fit);
+    
+    if alg == 0 {
+        opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit1D::obj, Target::Minimize, fit);
+    } else if alg == 1{
+        opt = Nlopt::new(Algorithm::Isres, n_par, Fit1D::obj, Target::Minimize, fit);
+    } else {
+        panic!("Only SLSQP and ISRES algorithms supported.");
+    }
+    
+    // Basic constraints
+    if mxt > 0.0 {
+        opt.set_maxtime(mxt).unwrap();
+    }
+    opt.set_xtol_rel(xtr).unwrap();
 
     // Common nlopt setup
     add_constraints(&mut opt, lb, ub, eq, iq);
@@ -197,6 +209,10 @@ pub fn fit_2d(x_direct: Array1<f64>, x_indirect: Array1<f64>, y: Array2<f64>,
     let n_par: usize = nl + nb*4 + np;
     let mut opt = Nlopt::new(Algorithm::Slsqp, n_par, Fit2D::obj, Target::Minimize, fit);
     //let mut opt = Nlopt::new(Algorithm::Cobyla, n_par, Fit1D::obj, Target::Minimize, fit);
+
+    // Basic constraints
+    opt.set_maxeval(1000).unwrap();
+    opt.set_xtol_rel(1e-4).unwrap();
 
     // Common nlopt setup
     add_constraints(&mut opt, lb, ub, eq, iq);

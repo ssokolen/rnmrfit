@@ -63,7 +63,7 @@ pub extern fn fit_1d(x: *const c_double, y: *const c_double, knots: *const c_dou
                      p: *mut c_double, lb: *const c_double, ub: *const c_double,  
                      n: i32, nl: i32, nb: i32, np: i32, nk: i32,
                      eq: *const c_double, iq: *const c_double,
-                     neq: i32, niq: i32) {
+                     neq: i32, niq: i32, alg: i32, xtr: f64, mxt: f64) {
 
     let n = n as usize;
     let nl = nl as usize;
@@ -106,7 +106,8 @@ pub extern fn fit_1d(x: *const c_double, y: *const c_double, knots: *const c_dou
     let ub = Array::from_shape_vec((nl + nb*2 + np,), ub.to_vec()).unwrap();
 
     // Calling fit
-    let (p_out, _) = rnmrfit::fit_1d(x, y, knots, p_in, lb, ub, nl, nb, np, eq_in, iq_in);
+    let (p_out, _) = rnmrfit::fit_1d(x, y, knots, p_in, lb, ub, nl, nb, np, eq_in, iq_in,
+                                     alg, xtr, mxt);
 
     // Copying over new parameters
     for i in 0 .. (nl + nb*2 + np) {
