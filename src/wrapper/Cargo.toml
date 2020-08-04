@@ -10,4 +10,5 @@ crate-type = ["staticlib"]
 [dependencies]
 libc = "*"
 ndarray = "0.13.0"
+nlopt = "0.5.1"
 rnmrfit = { path = "../rnmrfit", version = "0.1.0" }

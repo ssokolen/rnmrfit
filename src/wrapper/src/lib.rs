@@ -1,6 +1,7 @@
 use libc::c_double;
 use ndarray::prelude::*;
 use std::slice;
+use nlopt::{SuccessState, FailState};
 
 use rnmrfit;
 
@@ -63,7 +64,8 @@ pub extern fn fit_1d(x: *const c_double, y: *const c_double, knots: *const c_dou
                      p: *mut c_double, lb: *const c_double, ub: *const c_double,  
                      n: i32, nl: i32, nb: i32, np: i32, nk: i32,
                      eq: *const c_double, iq: *const c_double,
-                     neq: i32, niq: i32, alg: i32, xtr: f64, mxt: f64) {
+                     neq: i32, niq: i32, alg: i32, xtr: f64, mxt: f64,
+                     out: *mut i32) {
 
     let n = n as usize;
     let nl = nl as usize;
@@ -95,7 +97,8 @@ pub extern fn fit_1d(x: *const c_double, y: *const c_double, knots: *const c_dou
     let knots: &[f64] = unsafe { slice::from_raw_parts(knots, nk) };
     let p: &mut[f64] = unsafe { slice::from_raw_parts_mut(p, nl + nb*2 + np) };   
     let lb: &[f64] = unsafe { slice::from_raw_parts(lb, nl + nb*2 + np) };   
-    let ub: &[f64] = unsafe { slice::from_raw_parts(ub, nl + nb*2 + np) };   
+    let ub: &[f64] = unsafe { slice::from_raw_parts(ub, nl + nb*2 + np) };
+    let out: &mut[i32] = unsafe { slice::from_raw_parts_mut(out, 1) };
 
     // Converting rest into arrays
     let x = Array::from_shape_vec((n,), x.to_vec()).unwrap();
@@ -106,13 +109,36 @@ pub extern fn fit_1d(x: *const c_double, y: *const c_double, knots: *const c_dou
     let ub = Array::from_shape_vec((nl + nb*2 + np,), ub.to_vec()).unwrap();
 
     // Calling fit
-    let (p_out, _) = rnmrfit::fit_1d(x, y, knots, p_in, lb, ub, nl, nb, np, eq_in, iq_in,
-                                     alg, xtr, mxt);
+    let (p_out, result) = rnmrfit::fit_1d(x, y, knots, p_in, lb, ub, nl, nb, np, eq_in, iq_in,
+                                          alg, xtr, mxt);
 
     // Copying over new parameters
     for i in 0 .. (nl + nb*2 + np) {
         p[i] = p_out[i];
     }
+
+    // Encoding status
+    out[0] = match result {
+        Ok((code, _value)) => { 
+            match code {
+                SuccessState::Success => 1,
+                SuccessState::StopValReached => 2,
+                SuccessState::FtolReached => 3,
+                SuccessState::XtolReached => 4,
+                SuccessState::MaxEvalReached => 5,
+                SuccessState::MaxTimeReached => 6,
+            }
+        },
+        Err((code, _value)) => { 
+            match code {
+                FailState::Failure => -1,
+                FailState::InvalidArgs => -2,
+                FailState::OutOfMemory => -3,
+                FailState::RoundoffLimited => -4,
+                FailState::ForcedStop => -5,
+            }
+        }
+    };
 }
 
 #[no_mangle]

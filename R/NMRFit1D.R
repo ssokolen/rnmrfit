@@ -56,7 +56,9 @@ NMRFit1D <- setClass("NMRFit1D",
     phase = 'numeric',
     lower.bounds = 'list',
     upper.bounds = 'list',
-    time = 'numeric'
+    time = 'numeric',
+    status = 'character',
+    code = 'numeric'
   ),
   prototype = prototype(
     knots = numeric(0), 
@@ -64,7 +66,9 @@ NMRFit1D <- setClass("NMRFit1D",
     phase = c(0),
     lower.bounds = NULL,
     upper.bounds = NULL,
-    time = c(0)
+    time = c(0),
+    status = 'no fit attempted',
+    code = c(0)
   )
 )
 
@@ -372,11 +376,50 @@ setMethod("fit", "NMRFit1D",
     niq = as.integer(length(ineq.constraints)),
     alg = as.integer(algorithm),
     xtr = as.double(xtol_rel),
-    mxt = as.double(maxtime)
+    mxt = as.double(maxtime),
+    out = as.integer(0)
   )
   object@time <- as.numeric(proc.time() - start.time)[3]
 
-  par$par <- out
+  # Defining error codes
+  positive_codes <- c(
+    "success", "stop value reached", "ftol value reached", "xtol reached",
+    "max evaluations reached", "max time reached"
+  )
+
+  negative_codes <- c(
+    "unspecified failure", "invalid arguments", "out of memory",
+    "significant roundoff errors", "forced stop"
+  )
+
+  code <- out[[2]]
+  print(code)
+  if ( (code > 0) & (code <= length(positive_codes)) ) {
+    object@status <- positive_codes[code]
+    object@code <- 0
+  } else if ( (code < 0) & (-code <= length(negative_codes)) ) {
+    object@status <- negative_codes[-code]
+    object@code <- -code
+  } else {
+    object@status <- "error communicating with rust"
+    object@code <- 99
+  }
+
+  # Issuing warning messages as required
+  if ( code == 0 ) {
+    wrn <- "Error communicating with rust -- solution may be suboptimal."
+    warning(wrn)
+  } else if ( code > 4 ) {
+    wrn <- "Fit terminated prematurely -- %s -- solution may be suboptimal"
+    wrn <- sprintf(wrn, object@status)
+    warning(wrn)
+  } else if ( code < 0 ) {
+    wrn <- "Fit failed -- %s"
+    wrn <- sprintf(wrn, object@status)
+    warning(wrn)
+  }
+
+  par$par <- out[[1]]
 
   #---------------------------------------
   # Unpacking and rescaling parameters

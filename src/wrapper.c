@@ -1,5 +1,6 @@
 #define R_NO_REMAP
 #define STRICT_R_HEADERS
+#include <R.h>
 #include <Rinternals.h>
 
 // Import C headers for rust API
@@ -9,15 +10,22 @@
 SEXP fit_1d_wrapper(SEXP x, SEXP y, SEXP knots, SEXP p, SEXP lb, SEXP ub,  
 		    SEXP n, SEXP nl, SEXP nb, SEXP np, SEXP nk,
 		    SEXP eq, SEXP iq, SEXP neq, SEXP niq,
-		    SEXP alg, SEXP xtr, SEXP mxt){
+		    SEXP alg, SEXP xtr, SEXP mxt,
+		    SEXP out){
 
   fit_1d(REAL(x), REAL(y), REAL(knots), REAL(p), REAL(lb), REAL(ub), 
  	 Rf_asInteger(n), Rf_asInteger(nl), Rf_asInteger(nb), Rf_asInteger(np), Rf_asInteger(nk),
 	 REAL(eq), REAL(iq),
 	 Rf_asInteger(neq), Rf_asInteger(niq),
-	 Rf_asInteger(alg), Rf_asReal(xtr), Rf_asReal(mxt));
-  
-  return p;
+	 Rf_asInteger(alg), Rf_asReal(xtr), Rf_asReal(mxt),
+	 INTEGER(out));
+
+  SEXP vec = PROTECT(Rf_allocVector(VECSXP, 2));
+  SET_VECTOR_ELT(vec, 0, p);
+  SET_VECTOR_ELT(vec, 1, out);
+
+  UNPROTECT(1);
+  return vec;
 }
 
 SEXP eval_1d_wrapper(SEXP x, SEXP y, SEXP knots, SEXP p,   
@@ -93,7 +101,7 @@ SEXP phase_2d_wrapper(SEXP x_direct, SEXP x_indirect, SEXP y,
 
 // Standard R package stuff
 static const R_CallMethodDef CallEntries[] = {
-  {"fit_1d_wrapper", (DL_FUNC) &fit_1d_wrapper, 18},
+  {"fit_1d_wrapper", (DL_FUNC) &fit_1d_wrapper, 19},
   {"eval_1d_wrapper", (DL_FUNC) &eval_1d_wrapper, 9},
   {"baseline_1d_wrapper", (DL_FUNC) &baseline_1d_wrapper, 7},
   {"phase_1d_wrapper", (DL_FUNC) &phase_1d_wrapper, 5},
