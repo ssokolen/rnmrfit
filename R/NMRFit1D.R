@@ -393,7 +393,6 @@ setMethod("fit", "NMRFit1D",
   )
 
   code <- out[[2]]
-  print(code)
   if ( (code > 0) & (code <= length(positive_codes)) ) {
     object@status <- positive_codes[code]
     object@code <- 0

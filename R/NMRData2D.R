@@ -738,11 +738,15 @@ setMethod("lines", "NMRData2D", lines.NMRData2D)
 #' @param domain One of either 'rr', 'ri', 'ir', or 'ii' corresponding to
 #'               combinations of real and imaginary data from the direct and
 #'               indirect dimensions.
+#' @param cutoff Value from 0 to 1 on a log scale used to cutoff noise in the
+#'               data. For reference, a cutoff of 0.5 corresponds to the square
+#'               root of the maximum value. Values of 0.7 or 0.8 may be required
+#'               for full data.
 #' 
 #' @return A plot_ly plot.
 #' 
 #' @export
-contour.NMRData2D <- function(x, domain = 'rr', n = 1000, span = 0.03) {
+contour.NMRData2D <- function(x, domain = 'rr', cutoff = 0.7) {
 
   f <- list(
     family = "Courier New, monospace",
@@ -766,9 +770,8 @@ contour.NMRData2D <- function(x, domain = 'rr', n = 1000, span = 0.03) {
   if (! domain %in% c("rr", "ri", "ir", "ii") ) stop(err)
 
   d <- values(x, domain = domain) %>%
-    mutate(intensity = sign(intensity)*log10(abs(intensity) + 1))
-
-
+    mutate(intensity = sign(intensity)*log10(abs(intensity) + 1)) %>%
+    arrange(direct.shift, indirect.shift)
 
   # Trying to widen
   d.test <- d %>%
@@ -777,7 +780,6 @@ contour.NMRData2D <- function(x, domain = 'rr', n = 1000, span = 0.03) {
     select(-direct.shift)
 
   if ( all(d.test == 1) ) {
-    print("data square")
 
     x1 <- unique(d$direct.shift)
     x2 <- unique(d$indirect.shift)
@@ -787,30 +789,33 @@ contour.NMRData2D <- function(x, domain = 'rr', n = 1000, span = 0.03) {
       as.matrix()
 
   } else {
-    print("data not square")
+    err <- "Non-uniformly sampled data is not currently supported."
+    stop(err)
 
-    m <- gam(intensity ~ s(direct.shift, indirect.shift), data = f(1000))
+    m <- gam(intensity ~ s(direct.shift, indirect.shift), data = d)
 
     x1 <- seq(min(d$direct.shift), max(d$direct.shift), length.out = n)
     x2 <- seq(min(d$indirect.shift), max(d$indirect.shift), length.out = n)
-    d.grid <- expand.grid(x1 = x1, x2 = x2)
+    d.grid <- expand.grid(direct.shift = x1, indirect.shift = x2)
     d.grid$y <- predict(m, newdata = d.grid)
 
     z <- d.grid %>%
-      pivot_wider(names_from = x2, values_from = y) %>%
-      select(-x1) %>%
+      pivot_wider(names_from = indirect.shift, values_from = y) %>%
+      select(-direct.shift) %>%
       as.matrix()
 
   }
 
   z <- z/max(z)
+  z[z < cutoff] <- 0
 
-  print("done calculations")
+  # An option should be added later for base R graphics
+  #contour(x = x1, y = x2, z = z, levels = levels)
 
-  p <- plot_ly(x = x1, y = x2, z = z, type = "contour") %>%
+  p <- plot_ly(x = x1, y = x2, z = t(z), type = "contour") %>%
        layout(xaxis = xaxis, yaxis = yaxis)
 
   p 
 }
 
-setMethod("plot", "NMRData2D", plot.NMRData2D)
+setMethod("contour", "NMRData2D", contour.NMRData2D)
