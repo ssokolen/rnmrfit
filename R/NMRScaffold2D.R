@@ -178,10 +178,10 @@ setMethod("split_dimensions", "NMRScaffold2D",
     if (! identical(entries, c('direct', 'indirect')) ) stop(err)
 
     # If all of the above is met, then split components
-    direct <- dplyr::filter(value, dimension == 'direct') %>% select(-dimension)
+    direct <- dplyr::filter(value, dimension == 'direct') %>% dplyr::select(-dimension)
     object@dimensions$direct <- setter(object@dimensions$direct, direct)
 
-    indirect <- dplyr::filter(value, dimension == 'indirect') %>% select(-dimension)
+    indirect <- dplyr::filter(value, dimension == 'indirect') %>% dplyr::select(-dimension)
     object@dimensions$indirect <- setter(object@dimensions$indirect, indirect)
     
     validObject(object)
@@ -389,7 +389,7 @@ setMethod("values", "NMRScaffold2D",
 
   # If all components were selected, drop identifiers
   if ( sum.level == "all" ) {
-    d <- select(d, direct.shift, indirect.shift, intensity)
+    d <- dplyr::select(d, direct.shift, indirect.shift, intensity)
   }
 
   # Select output for intensity
@@ -442,8 +442,8 @@ setMethod("volumes", "NMRScaffold2D",
   areas <- areas(object, sum.peaks = FALSE, include.id = include.id)
 
   # Volumes are then products of indirect and direct dimension areas
-  all.but.height.ids <- colnames(select(areas, -peak, -area))
-  all.but.dimension.ids <- colnames(select(areas, -peak, -dimension, -area))
+  all.but.height.ids <- colnames(dplyr::select(areas, -peak, -area))
+  all.but.dimension.ids <- colnames(dplyr::select(areas, -peak, -dimension, -area))
 
   volumes <- areas %>%
     group_by_at(all.but.height.ids) %>%

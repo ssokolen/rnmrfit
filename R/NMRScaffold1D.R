@@ -228,7 +228,7 @@ setMethod("values", "NMRScaffold1D",
     ungroup()
 
   # If all components were selected, drop identifiers
-  if ( sum.level == "all" ) d <- select(d, direct.shift, intensity)
+  if ( sum.level == "all" ) d <- dplyr::select(d, direct.shift, intensity)
 
   # Select output for intensity
   d$intensity <- domain(d$intensity, domain, use.cmplx1)
@@ -291,7 +291,7 @@ setMethod("areas", "NMRScaffold1D",
     group_by_all() %>%
     summarize(area = f(position, width, height, fraction.gauss)) %>%
     ungroup() %>%
-    select(-position, -width, -height, -fraction.gauss) %>%
+    dplyr::select(-position, -width, -height, -fraction.gauss) %>%
     as.data.frame()
 
   # Sum if necessary

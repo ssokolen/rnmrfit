@@ -535,7 +535,7 @@ setMethod("projection", "NMRData2D",
 
   # Handling processed data
   d <- d %>%
-    select(-intensity) %>%
+    dplyr::select(-intensity) %>%
     group_by(across(x)) %>%
     summarize(r = sum(r), i = sum(i)) %>%
     ungroup()
@@ -777,7 +777,7 @@ contour.NMRData2D <- function(x, domain = 'rr', cutoff = 0.7) {
   d.test <- d %>%
     pivot_wider(names_from = indirect.shift, values_from = intensity, 
                 values_fn = length) %>%
-    select(-direct.shift)
+    dplyr::select(-direct.shift)
 
   if ( all(d.test == 1) ) {
 
@@ -785,7 +785,7 @@ contour.NMRData2D <- function(x, domain = 'rr', cutoff = 0.7) {
     x2 <- unique(d$indirect.shift)
     z <- d %>%
       pivot_wider(names_from = indirect.shift, values_from = intensity) %>%
-      select(-direct.shift) %>%
+      dplyr::select(-direct.shift) %>%
       as.matrix()
 
   } else {
@@ -801,7 +801,7 @@ contour.NMRData2D <- function(x, domain = 'rr', cutoff = 0.7) {
 
     z <- d.grid %>%
       pivot_wider(names_from = indirect.shift, values_from = y) %>%
-      select(-direct.shift) %>%
+      dplyr::select(-direct.shift) %>%
       as.matrix()
 
   }
