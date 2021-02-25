@@ -76,8 +76,10 @@ At this point, you should now be able to launch RStudio and install `rnmrfit` us
 
 install.packages('devtools')
 library(devtools)
-install_github('ssokolen/rnmrfit', ref = 'rust')
+install_github('ssokolen/rnmrfit', ref = 'rust', INSTALL_opts='--no-multiarch')
 ```
+
+This will only install the 64-bit version, which should be sufficient for most use cases. I personally couldn't get multi-architecture installation to work properly on my computer, but I also don't use Windows much.
 
 ## Tutorials
 
