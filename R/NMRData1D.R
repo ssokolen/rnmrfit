@@ -199,6 +199,75 @@ read_processed_1d <- function(path, procs.list, number = NA) {
 #------------------------------------------------------------------------------
 #' @rdname nmrdata_1d
 #' @export
+nmrdata_1d_from_rs2d <- function(path, procs.number = NA) {
+
+  err <- '"path" must point to an experiment directory containing Proc'
+
+  # Directory must contain Proc
+  logic <- ! 'Proc' %in% list.dirs(path, full.names = FALSE, recursive = FALSE)
+  if ( logic ) stop(err)
+
+  # pdata must contain folders
+  procs.path <- file.path(path, 'Proc')
+  dirs <- list.dirs(procs.path, full.names = FALSE, recursive = FALSE)
+  
+  err <- 'No directories found within Proc.'
+  if ( length(dirs) == 0 ) stop(err)
+
+  # Choosing default number if necessary
+  if ( is.na(procs.number) ) procs.number <- dirs[1]
+  
+  procs.path <- file.path(path, 'Proc', procs.number)
+
+  # Picking off required parameters
+  header.path <- file.path(procs.path, "header.xml")
+  d <- xml2::read_xml(header.path)
+
+  required.procs <- c(
+    "SPECTRAL_WIDTH", 
+    "MATRIX_DIMENSION_1D", 
+    "OBSERVED_FREQUENCY", 
+    "OFFSET_FREQ_1"
+  )
+
+  string.xpath <-"/header/params/entry/key[text()='%s']/../value/value"
+  value.xpath <- sprintf(string.xpath, required.procs)
+  procs.values <- vapply(value.xpath,  
+    function(x) xml_text(xml_find_all(d, x)), ""
+  )
+
+  # Extracting parameters
+  sw.p <- as.numeric(procs.values[1])
+  si <- as.numeric(procs.values[2])
+  sf <- as.numeric(procs.values[3])/1e6
+  ofs <- as.numeric(procs.values[4])
+
+  procs.list <- list(sw.p = sw.p, si = si, sf = sf, ofs = ofs)
+
+  # Formatting the x-axis
+  direct.shift <- seq(-sw.p/2/sf, sw.p/2/sf, length.out = si) - ofs/sf
+
+  # Reading binary files
+  binary.path <- file.path(procs.path, "data.dat")
+  all.data <- safe_read(binary.path, 'bin', size = 4, 
+                        what = 'double', n = si*2, endian = "big")
+  
+  real.data <- all.data[seq(1, si*2, by = 2)]
+  imag.data <- all.data[seq(2, si*2, by = 2)]
+
+  intensity <- cmplx1(r = real.data, i = imag.data)
+
+  # Finally, combine the data
+  processed <- tibble(direct.shift = direct.shift, intensity = intensity)
+
+  # Returning class object
+  new("NMRData1D", processed = processed, parameters = procs.list,
+                   procs = list(), acqus = list()) 
+}
+
+#------------------------------------------------------------------------------
+#' @rdname nmrdata_1d
+#' @export
 nmrdata_1d_from_jcamp <- function(path, blocks.number = 1, ntuples.number = 1) {
 
   jcamp <- read_jcamp(path, process.tags = TRUE, process.entries = TRUE)

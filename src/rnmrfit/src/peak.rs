@@ -102,7 +102,7 @@ impl Lorentz {
             w: w,
             h: h,
 
-            dzdp: -1.0 / w,
+            dzdp: 1.0 / w,
 
             z: 0.0,
             z_2: 0.01,
@@ -120,7 +120,7 @@ impl Lorentz {
     //--------------------------------------
     fn intermediates(&mut self, x: f64) {
 
-        self.z = (x - self.p) / self.w;
+        self.z = (self.p - x) / self.w;
         self.z_2 = self.z * self.z;
 
         self.yo = Complex::new(1.0, self.z)  / (self.z_2 + 1.0);
@@ -217,7 +217,7 @@ impl Voigt {
         let dyndzn = -2.0 * zn * yn + Complex::new( 0.0, 2.0/SQRT_PI );  
         let dzndf = -zn * b;
 
-        let dzdp = -1.0/( SQRT_2 * wg );
+        let dzdp = 1.0/( SQRT_2 * wg );
 
         Voigt {
             p: p,
@@ -251,7 +251,7 @@ impl Voigt {
     //--------------------------------------
     fn intermediates(&mut self, x: f64) {
 
-        self.z =  Complex::new( x - self.p, self.w )  / ( SQRT_2 * self.wg);
+        self.z =  Complex::new( self.p - x, self.w )  / ( SQRT_2 * self.wg);
         self.yo = faddeeva::w( self.z, 1e-6 );
 
     }
@@ -282,7 +282,7 @@ impl PeakFunctions for Voigt {
         let dyodz = -2.0 * self.z * self.yo + Complex::new( 0.0, 2.0/SQRT_PI );  
 
         // Derivatives of z (for chain rule)
-        let dzdw = (self.p - x)/(SQRT_2 * self.w * self.wg);
+        let dzdw = -(self.p - x)/(SQRT_2 * self.w * self.wg);
         let dzdf = -self.z * self.b;
 
         // Position gradient

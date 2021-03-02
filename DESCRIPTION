@@ -15,6 +15,7 @@ Depends:
     splines,
     tidyverse,
     vctrs,
+    xml2,
     zeallot
 Imports: pillar
 License: Apache (>= 2.0)
