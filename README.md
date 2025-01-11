@@ -1,5 +1,7 @@
 # rnmrfit
 
+** The following R package has been deprecated in favour of a standalone Rust implementation available under the master branch. **
+
 This package implements NMR lineshape fitting using the real and imaginary components of the data in the frequency domain. The core of the algorithm is built around the NLOPT nonlinear optimization library with a number of helper scripts designed to facilitate working with NMR data.
 
 More information can be found in the accompanying article: https://doi.org/10.1016/j.jmr.2018.11.004
