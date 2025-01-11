@@ -1,0 +1,11 @@
+##TITLE= Parameter file, TopSpin 3.6.1
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 1	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= lep
+$$ 2023-02-16 11:56:47.191 -0500  lep@hrnmr400
+$$ /home/lep/data/nmr/23Feb16-VANA-1-vial 240/6/pdata/1/assocs
+$$ process /opt/topspin-3.6.1/prog/mod/dirdata
+##$MULTDISP= </home/lep/data/nmr/21June25-Van-B-vial 585/2/pdata/1>
+##END=

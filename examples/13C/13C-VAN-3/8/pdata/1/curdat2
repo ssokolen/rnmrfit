@@ -1,0 +1,17 @@
+##TITLE= Parameter file, TopSpin 4.4.0
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 2	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH & Co. KG
+##OWNER= kathy
+$$ 2024-09-02 07:48:09.287 -0300  kathy@Kathy
+$$ C:/Users/kathy/OneDrive - Dalhousie University/Graduate School/NMR/RustNMRfit/13C-22July21-VAN-8-spl1/22July21-VAN-8-spl1/8/pdata/1/curdat2
+$$ process C:\Bruker\TopSpin4.4.0\prog\mod\dataserver.exe
+##$DATPATH2= <C:/Users/kathy/OneDrive - Dalhousie University/Graduate School/NMR/RustNMRfit/13C-22July21-VAN-8-spl1>
+##$DU2= <>
+##$EXPNO2= 8
+##$NAME2= <22July21-VAN-8-spl1>
+##$PROCNO2= 999
+##$TYPE= <>
+##$USER2= <>
+##END=

@@ -1,0 +1,82 @@
+---
+# General fit settings
+
+# Initial values
+parameters:
+  width: 0.5
+  fraction: 0.0
+
+general_bounds:
+  width: [0.3, 6]
+  # Fit only using Lorentz
+  fraction: [0.0, 0.0] 
+
+# Maximum offsets from initial guesses
+offset_bounds:
+  position: [-2, 2]
+  height: [-0.3, 0.3]
+
+# Ranges are calculated based on where the maximum
+# possible peak extent hits 0.05 of maximum peak value.
+ranges:
+  cutoff: 0.05
+
+---
+# Loading dataset 13C-VAN-1
+dataset: "VAN-1"
+path: "./13C-VAN-1"
+
+# The following is optional processing when reading from fid. 
+# Data can also be read directly from TopSpin output.
+experiments: "*"
+processing:
+  zf: 0.5
+  lb: 2.0
+  # This is basic automated phasing carried out pre-fit.
+  phase: true
+baseline:
+  # Length of baseline spline in ppm.
+  span: 7.5
+phase:
+  order: 1
+  # Maximum phase correction during fit (in degrees).
+  bounds: 360
+
+---
+# Peak definition, organized by species
+
+species: "vanillin"
+# Resonance definition:name pairs
+resonances:
+  "55.58 s": "C8"
+  "110.19 s": "C7"
+  "115.19 s": "C6"
+  "126.38 s": "C5"
+  "129.82 s": "C4"
+  "148.05 s": "C3"
+  "152.68 s": "C2"
+  "190.68 s": "C1"
+
+---
+# Running the fit itself, the name "13C" is only
+# for debugging messages.
+fit: "13C"
+ppm: [50, 200]
+species: ["vanillin"]
+
+---
+# Plot output generating file 13C.html
+plot: "13C"
+ppm: [50, 200]
+experiments: "*"
+species: ["vanillin"]
+
+---
+# Tabular output of peak areas in areas.csv
+calculate_areas: "areas"
+sum_by: resonance
+
+---
+# Tabular output listing peak parameters
+list_parameters: "parameters"
+

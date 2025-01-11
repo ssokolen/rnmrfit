@@ -1,0 +1,11 @@
+##TITLE= Parameter file, TopSpin 4.4.0
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 2	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= lep
+$$ 2024-09-02 08:13:19.293 -0300  kathy@Kathy
+$$ C:/Users/kathy/OneDrive - Dalhousie University/Graduate School/NMR/RustNMRfit/13C-22July11-VANB-1-vial 465/9/pdata/1/assocs
+$$ process C:\Bruker\TopSpin4.4.0\prog\mod\dataserver.exe
+##$MULTDISP= <C:\Users\kathy\OneDrive - Dalhousie University\Graduate School\NMR\RustNMRfit\13C-22July11-VANB-1-vial 465\9\pdata\999>
+##END=

@@ -1,0 +1,46 @@
+##TITLE= Parameter file, TopSpin 3.6.1
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 1	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= lep
+$$ 2022-07-21 11:59:34.716 -0400  lep@hrnmr400
+$$ /home/lep/data/nmr/22July21-VAN-8-spl1/9/pdata/1/t1par
+$$ process /opt/topspin-3.6.1/prog/mod/dirdata
+##$BIGDEL= 100
+##$CALCDN= no
+##$COMPNO= 1
+##$CONV= 1e-05
+##$CURSOR= 1
+##$DRIFT= 5
+##$EDGUESS= 0
+##$EDPARM= 0
+##$FCTTYPE= 4
+##$FIDNUMB= 1
+##$FITT1T2= 0
+##$FITTYPE= 0
+##$GAMM= 10000
+##$GRADIEN= 1
+##$GUESSES= (0..23)
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##$INC= 1
+##$INTRNG= 1
+##$LISTINC= 0.001
+##$LISTTYP= <auto>
+##$LITDEL= 10
+##$MAXPNTS= 32404
+##$NUMPNTS= 32404
+##$NUMTERM= 3
+##$PARM= (0..11)
+0 0 0 0 0 0 0 0 0 0 0 0
+##$PDTYP= <pft2>
+##$REGIONS= 2
+##$SHOWINT= yes
+##$SHOWPP= yes
+##$SHOWTXT= 1
+##$START= 1
+##$X_END= 0
+##$X_START= 0
+##$Y_END= 0
+##$Y_START= 0
+##END=

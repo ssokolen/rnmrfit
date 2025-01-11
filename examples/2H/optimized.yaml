@@ -1,0 +1,91 @@
+---
+# General fit settings
+
+# Initial values
+parameters:
+  width: 2
+  fraction: 0.0
+
+general_bounds:
+  width: [0.3, 6]
+  # Fit only using Lorentz
+  fraction: [0.0, 0.0] 
+
+# Maximum offsets from initial guesses
+offset_bounds:
+  position: [-0.1, 0.1]
+  height: [-0.3, 0.3]
+
+# Ranges are calculated based on where the maximum
+# possible peak extent hits 0.05 of maximum peak value.
+ranges:
+  cutoff: 0.05
+
+---
+# Loading dataset 2H-VAN-1
+dataset: "VAN-1"
+path: "./2H-VAN-1"
+
+# The following is optional processing when reading from fid. 
+# Data can also be read directly from TopSpin output.
+experiments: "*"
+processing:
+  zf: 0.0
+  lb: 1.0
+  # This is basic automated phasing carried out pre-fit.
+  phase: true
+  # Set the first peak above 0.5 height to 2.0 ppm
+  reference:
+    ppm: 2.0
+    threshold: 0.5
+baseline:
+  # Length of baseline spline in ppm.
+  span: 4.0
+phase:
+  order: 1
+  # Maximum phase correction during fit (in degrees).
+  bounds: 360
+
+---
+# Peak definition, organized by species
+
+species: "vanillin"
+# Resonance definition:name pairs
+resonances:
+  "9.82 s": "H1"
+  "8.29 s": "OH2"
+  "7.45 s": "H3"
+  "7.05 s": "H4"
+  "3.91 s": "H5"
+
+---
+species: "TMU"
+resonances: "2.82 s"
+
+---
+species: "Solvent"
+resonances: "2.00 s"
+
+---
+# Running the fit itself, the name "2H" is only
+# for debugging messages.
+fit: "2H"
+ppm: [0, 10]
+species: "*"
+
+---
+# Plot output generating file 2H.html
+plot: "2H"
+ppm: [0, 12]
+experiments: "*"
+species: "*"
+
+---
+# Tabular output of peak areas in areas.csv
+calculate_areas: "areas"
+sum_by: resonance
+
+---
+# Tabular output listing peak parameters
+list_parameters: "parameters"
+

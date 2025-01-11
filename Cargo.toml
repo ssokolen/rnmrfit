@@ -1,0 +1,55 @@
+[package]
+name = "rnmrfit"
+version = "0.3.0"
+authors = ["Stanislav Sokolenko <stanislav@sokolenko.net>"]
+edition = "2018"
+
+exclude = ["resources/*", "*.log"]
+
+[dependencies]
+anyhow = "1"
+byteorder = "1"
+cached = "0"
+cascade = "1"
+chrono = "0"
+colorbrewer = "0"
+css-color-parser = "0"
+enum_dispatch = "0"
+fern = "0"
+getset = "0"
+glob = "0"
+itertools = "0"
+itertools-num = "0"
+lazy_static = "1"
+linked-hash-map = { version = "0", features = ["serde_impl"] }
+log = "0"
+ndarray = { version = "0", features = ["rayon"] }
+ndarray-stats = "0"
+#nlopt = "0"
+#nlopt = "= 0.7"
+nlopt = { path = "../rust-nlopt", version = "0.7" }
+num-integer = "0"
+plotly = "0"
+polars = { version = "0.41", features = ["concat_str", "lazy", "strings"] }
+regex = "1"
+rgb = "0"
+roxmltree = "0"
+rustfft = "6"
+serde = { version = "1", features = ["derive"] }
+serde_yaml = "0"
+statrs = "0"
+structopt = "0"
+thiserror = "1"
+yaml-rust = "0" 
+
+[build-dependencies]
+cc = "1"
+
+[dev-dependencies]
+assert_cmd = "2"
+ndarray-rand = "0"
+rand_isaac = "0"
+
+[[example]]
+name = "rs2d"
+path = "examples/rs2d/rs2d.rs"

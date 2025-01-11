@@ -1,0 +1,35 @@
+
+Report of AU program poptau
+# Start time: 2023-02-06 11:46:36.995 -0500
+
+Number of experiments: 11
+total experiment time will be:  3 min 40 sec
+
+F1P=127.729ppm F2P=125.077ppm
+PH_mode=1  FT_mod=6
+
+
+PROCNO=997
+
+Linear optimization of P 1 in 11 steps, as Step: Group 0
+starting at 39.600000000  endval= 43.600000000 
+OPTIMUM= ZERO
+VARMOD= LIN
+
+Experiment        P 1         Maximum point   Minimum point       Integral
+     1      39.600000000000        10490638       -81286286      -2209666.670639
+     2      40.000000000000        14266728       -61299519       -122442.291956
+     3      40.400000000000        11753231       -51677871      -1980802.045349
+     4      40.800000000000        12004640       -34901175       -435463.932142
+     5      41.200000000000        13658709       -10886406       1214880.651109
+     6      41.600000000000        11128414       -12189009       -314928.885468
+     7      42.000000000000        20200412       -13927969      -1065305.208871
+     8      42.400000000000        39881023       -12822197       1008975.033433
+     9      42.800000000000        49101315       -15811434        473720.220457
+    10      43.200000000000        72619664       -15617463        922611.096657
+    11      43.600000000000        92155675       -11169768       1211664.718967
+ZERO crossing (integrated intensity array) at experiment 4.26 
+ZERO crossing (between POSMAX and NEGMAX)  at experiment 4.72 
+poptau for P 1 finished.
+ZERO at experiment 4.26:  P 1 = 40.905545  
+

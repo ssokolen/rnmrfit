@@ -1,0 +1,52 @@
+---
+# Loading dataset 2H-VAN-1
+dataset: "VAN-1"
+path: "./2H-VAN-1"
+
+experiments: "*"
+# Using the procs dir "1"
+processing: "1"
+
+---
+# Peak definition, organized by species
+
+species: "vanillin"
+# Resonance definition:name pairs
+resonances:
+  "9.82 s": "H1"
+  "8.29 s": "OH2"
+  "7.45 s": "H3"
+  "7.05 s": "H4"
+  "3.91 s": "H5"
+
+---
+species: "TMU"
+resonances: "2.82 s"
+
+---
+species: "Solvent"
+resonances: "2.00 s"
+
+---
+# Running the fit itself, the name "2H" is only
+# for debugging messages.
+fit: "2H"
+ppm: [0, 10]
+species: "*"
+
+---
+# Plot output generating file 2H.html
+plot: "2H"
+ppm: [0, 12]
+experiments: "*"
+species: "*"
+
+---
+# Tabular output of peak areas in areas.csv
+calculate_areas: "areas"
+sum_by: resonance
+
+---
+# Tabular output listing peak parameters
+list_parameters: "parameters"
+

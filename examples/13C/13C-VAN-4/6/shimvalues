@@ -1,0 +1,64 @@
+# Thu Feb 16 18:56:03 2023
+#$$PROBEIDENTIFIER=Z108618_0192
+#$$PROBENAME=PA BBO 400S1 BBF-H-D-05 Z PLUS
+#$$SHIMID=313232
+#
+# Active Shim Gradients
+#
+Z           		16770           
+Z2          		3758            
+Z3          		-3345           
+Z4          		-6378           
+Z5          		-77             
+Z6          		4145            
+X           		-1803           
+XZ          		-5984           
+XZ2         		-2759           
+XZ3         		-2555           
+Y           		6823            
+YZ          		11835           
+YZ2         		-1962           
+YZ3         		1789            
+XY          		8187            
+XYZ         		1915            
+(X2-Y2)     		17935           
+(X2-Y2)Z    		1095            
+X3          		-6928           
+Y3          		-2087           
+#
+# Lock Parameter
+#
+FIELD		9029.266
+LOCKPHASE		76.000  
+LOCKPOWER		-38.000 
+LOCKGAIN		109.559 
+LOCKDC		-75.000 
+LOCKSHIFT		2.040   
+LOOPGAIN		-2.000  
+LOOPTIME		0.100   
+LOOPFILTER		200.000 
+#
+IEEE64_VERSION_CODE 1
+#
+# Shim currents 
+#
+SHIM_SETTING [1 ]  8133.33875543   
+SHIM_SETTING [2 ]  1860.18048272   
+SHIM_SETTING [3 ]  -1759.37723752  
+SHIM_SETTING [4 ]  -3354.73576362  
+SHIM_SETTING [5 ]  -40.26901646    
+SHIM_SETTING [6 ]  -948.37800000   
+SHIM_SETTING [7 ]  -3147.58400000  
+SHIM_SETTING [8 ]  -1451.26300000  
+SHIM_SETTING [9 ]  9433.81000000   
+SHIM_SETTING [10]  4306.36200000   
+SHIM_SETTING [11]  3588.89800000   
+SHIM_SETTING [12]  6225.21000000   
+SHIM_SETTING [13]  -1032.24400000  
+SHIM_SETTING [14]  941.00400000    
+SHIM_SETTING [15]  2180.11100000   
+SHIM_SETTING [16]  576.04300000    
+SHIM_SETTING [17]  -1344.07200000  
+SHIM_SETTING [18]  1007.35500000   
+SHIM_SETTING [19]  -3644.05500000  
+SHIM_SETTING [20]  -1097.62600000  

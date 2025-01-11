@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PeakList modified="2024-09-02T07:46:38">
+  <PeakList1D>
+    <PeakList1DHeader creator="kathy" date="2024-09-02T07:46:35" expNo="7" name="22July21-VAN-8-spl1" owner="" procNo="1" source="C:/Users/kathy/OneDrive - Dalhousie University/Graduate School/NMR/RustNMRfit/13C-22July21-VAN-8-spl1">
+      <PeakPickDetails>F1=233.860794ppm, F2=3.789119ppm, MI=4.00cm, MAXI=10000.00cm, PC=1.400
+      </PeakPickDetails>
+    </PeakList1DHeader>
+    <Peak1D F1="206.538057" intensity="26.82288" type="0"/>
+    <Peak1D F1="206.203318" intensity="12.6445" type="0"/>
+    <Peak1D F1="190.676864" intensity="14.35719" type="0"/>
+    <Peak1D F1="152.683743" intensity="14.5956" type="0"/>
+    <Peak1D F1="148.051376" intensity="14.64152" type="0"/>
+    <Peak1D F1="129.817968" intensity="15.0" type="0"/>
+    <Peak1D F1="126.381432" intensity="11.45214" type="0"/>
+    <Peak1D F1="115.187658" intensity="13.81613" type="0"/>
+    <Peak1D F1="110.188172" intensity="11.20199" type="0"/>
+    <Peak1D F1="55.580471" intensity="14.19254" type="0"/>
+    <Peak1D F1="29.901678" intensity="25.18798" type="0"/>
+    <Peak1D F1="29.537891" intensity="9.808468" type="0"/>
+    <Peak1D F1="29.345342" intensity="19.41924" type="0"/>
+    <Peak1D F1="29.152806" intensity="22.53789" type="0"/>
+    <Peak1D F1="28.960257" intensity="19.29818" type="0"/>
+    <Peak1D F1="28.767722" intensity="9.647104" type="0"/>
+  </PeakList1D>
+</PeakList>
