@@ -39,6 +39,8 @@ Run in terminal:
 ./rnmrfit <path_to_yaml_file>
 ```
 
+Compiled binaries for Linux `rnmrfit` and Windows `rnmrfit.exe` are temporarily available under `examples` directory.
+
 
 ## Examples 
 

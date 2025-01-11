@@ -26,8 +26,8 @@ log = "0"
 ndarray = { version = "0", features = ["rayon"] }
 ndarray-stats = "0"
 #nlopt = "0"
-#nlopt = "= 0.7"
-nlopt = { path = "../rust-nlopt", version = "0.7" }
+nlopt = "= 0.7"
+#nlopt = { path = "../rust-nlopt", version = "0.7" }
 num-integer = "0"
 plotly = "0"
 polars = { version = "0.41", features = ["concat_str", "lazy", "strings"] }
